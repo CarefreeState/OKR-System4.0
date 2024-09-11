@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lbcmmszdntnt.domain.okr.model.mapper.TeamOkrMapper">
+
+    <resultMap extends="BaseResultMap" id="KeyResultsMap" type="cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO">
+        <result property="isOver" column="is_over" jdbcType="BIT"/>
+        <result property="degree" column="degree" jdbcType="INTEGER"/>
+        <collection property="keyResults" ofType="cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult"
+                    resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.KeyResultMapper.BaseResultMap" columnPrefix="k_" />
+    </resultMap>
+
+    <resultMap id="TeamListMap" type="cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="coreId" column="core_id" jdbcType="BIGINT"/>
+        <result property="parentTeamId" column="parent_team_id" jdbcType="BIGINT"/>
+        <result property="teamName" column="team_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="isOver" column="is_over" jdbcType="BIT"/>
+        <association property="manager" resultMap="cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="u_"/>
+    </resultMap>
+
+    <select id="selectChildTeams" resultMap="BaseResultMap" >
+        call GetTreeNodes(#{id,jdbcType=BIGINT})
+    </select>
+
+    <select id="findRootTeam" resultMap="BaseResultMap">
+        call find_root_node(#{id,jdbcType=BIGINT})
+    </select>
+
+    <select id="getTeamOkrList" parameterType="java.lang.Long" resultMap="TeamListMap">
+        select
+            t.id, t.team_name, o.is_over, t.create_time, t.update_time, t.core_id, t.parent_team_id,
+            u.id u_id, u.nickname u_nickname, u.email u_email, u.phone u_phone, u.openid u_openid, u.unionid u_unionid, u.photo u_photo
+        from user u, team_okr t, okr_core o
+        where
+            u.id = #{id,jdbcType=BIGINT}
+          and u.is_deleted = 0 and t.is_deleted = 0 and o.is_deleted = 0
+          and u.id = t.manager_id
+          and t.core_id = o.id
+        order by o.is_over, o.create_time desc
+    </select>
+
+    <select id="selectKeyResultsByTeamId" resultMap="KeyResultsMap">
+        select
+        t.id, t.core_id, t.team_name, t.parent_team_id, t.manager_id, t.create_time, o.is_over, o.degree,
+        k.id k_id, k.first_quadrant_id k_first_quadrant_id,
+        k.content k_content, k.probability k_probability
+        from
+        team_okr t, okr_core o,
+        first_quadrant f left join key_result k on f.id = k.first_quadrant_id
+        where
+        t.is_deleted = 0 and f.is_deleted = 0 and o.is_deleted = 0 and (k.is_deleted = 0 or k.is_deleted is null)
+        and t.id in
+        <foreach collection="ids" open="(" close=")" item="id" separator=",">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+        and t.core_id = o.id
+        and f.core_id = o.id
+        order by t.id
+    </select>
+</mapper>

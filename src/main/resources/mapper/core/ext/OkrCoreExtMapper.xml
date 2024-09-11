@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper">
+
+    <resultMap id="FirstQuadrantEventResultMap" type="cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.FirstQuadrantEvent">
+        <result property="coreId" column="core_id" jdbcType="BIGINT"/>
+        <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="SecondQuadrantEventResultMap" type="cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.SecondQuadrantEvent">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="coreId" column="core_id" jdbcType="BIGINT"/>
+        <result property="cycle" column="cycle" jdbcType="TIMESTAMP"/>
+        <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ThirdQuadrantEventResultMap" type="cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.ThirdQuadrantEvent">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="coreId" column="core_id" jdbcType="BIGINT"/>
+        <result property="cycle" column="cycle" jdbcType="TIMESTAMP"/>
+        <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="DeadlineEventMap" type="cn.lbcmmszdntnt.domain.core.model.po.event.DeadlineEvent">
+        <association property="firstQuadrantEvent" resultMap="FirstQuadrantEventResultMap" columnPrefix="f_"/>
+        <association property="secondQuadrantEvent" resultMap="SecondQuadrantEventResultMap" columnPrefix="s_"/>
+        <association property="thirdQuadrantEvent" resultMap="ThirdQuadrantEventResultMap" columnPrefix="t_"/>
+    </resultMap>
+
+    <select id="getDeadlineEvents" resultMap="DeadlineEventMap">
+        select
+            f.deadline f_deadline, f.core_id f_core_id,
+            s.id s_id, s.deadline s_deadline, o.second_quadrant_cycle s_cycle, s.core_id s_core_id,
+            t.id t_id, t.deadline t_deadline, o.third_quadrant_cycle t_cycle, t.core_id t_core_id
+        from
+            okr_core o, first_quadrant f, second_quadrant s, third_quadrant t
+        where
+            o.is_over = 0 and o.id = f.core_id and o.id = s.core_id and o.id = t.core_id and
+            o.is_deleted = 0 and f.is_deleted = 0 and s.is_deleted = 0 and t.is_deleted = 0
+    </select>
+
+</mapper>
