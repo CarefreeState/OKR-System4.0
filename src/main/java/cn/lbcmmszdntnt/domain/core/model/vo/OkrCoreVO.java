@@ -7,7 +7,6 @@ import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.FourthQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.SecondQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.ThirdQuadrantVO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 /**
@@ -21,16 +20,16 @@ import lombok.Data;
 @Data
 public class OkrCoreVO extends OkrCore {
 
-    @SchemaProperty(name = "第一象限详细信息")
+    @Schema
     private FirstQuadrantVO firstQuadrantVO;
 
-    @SchemaProperty(name = "第二象限详细信息")
+    @Schema
     private SecondQuadrantVO secondQuadrantVO;
 
-    @SchemaProperty(name = "第三象限详细信息")
+    @Schema
     private ThirdQuadrantVO thirdQuadrantVO;
 
-    @SchemaProperty(name = "第四象限详细信息")
+    @Schema
     private FourthQuadrantVO fourthQuadrantVO;
 
 }

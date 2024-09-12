@@ -4,7 +4,6 @@ import cn.lbcmmszdntnt.domain.core.model.po.inner.PriorityNumberOne;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.PriorityNumberTwo;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.SecondQuadrant;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -20,9 +19,9 @@ import java.util.List;
 @Data
 public class SecondQuadrantVO extends SecondQuadrant {
 
-    @SchemaProperty(name = "P1 列表")
+    @Schema
     private List<PriorityNumberOne> priorityNumberOnes;
 
-    @SchemaProperty(name = "P2 列表")
+    @Schema
     private List<PriorityNumberTwo> priorityNumberTwos;
 }

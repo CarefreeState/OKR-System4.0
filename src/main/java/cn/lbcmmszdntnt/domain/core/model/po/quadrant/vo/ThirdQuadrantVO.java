@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.Action;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.ThirdQuadrant;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 @Data
 public class ThirdQuadrantVO extends ThirdQuadrant {
 
-    @SchemaProperty(name = "行动列表")
+    @Schema
     private List<Action> actions;
 
 }
