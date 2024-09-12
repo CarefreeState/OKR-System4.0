@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.common;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

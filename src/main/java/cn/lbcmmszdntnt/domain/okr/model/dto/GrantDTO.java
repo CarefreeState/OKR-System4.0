@@ -1,16 +1,10 @@
 package cn.lbcmmszdntnt.domain.okr.model.dto;
 
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA

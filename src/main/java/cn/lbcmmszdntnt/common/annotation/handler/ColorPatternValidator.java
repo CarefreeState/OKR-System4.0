@@ -1,8 +1,6 @@
 package cn.lbcmmszdntnt.common.annotation.handler;
 
 import cn.lbcmmszdntnt.common.annotation.ColorPattern;
-import cn.lbcmmszdntnt.common.annotation.IntRange;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.util.StringUtils;

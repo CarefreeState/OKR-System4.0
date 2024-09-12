@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

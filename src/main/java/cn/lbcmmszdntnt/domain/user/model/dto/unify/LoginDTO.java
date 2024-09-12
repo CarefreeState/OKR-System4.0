@@ -6,11 +6,9 @@ import cn.lbcmmszdntnt.domain.user.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.convert.ObjectUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.Data;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**

@@ -2,14 +2,10 @@ package cn.lbcmmszdntnt.domain.user.model.dto;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 

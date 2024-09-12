@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 

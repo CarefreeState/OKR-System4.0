@@ -1,14 +1,9 @@
 package cn.lbcmmszdntnt.domain.user.model.dto;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.email.util.EmailValidator;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
 /**
  * Created With Intellij IDEA
