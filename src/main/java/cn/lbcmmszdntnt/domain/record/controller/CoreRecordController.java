@@ -46,7 +46,6 @@ public class CoreRecordController {
     @PostMapping("/search/dayrecord")
     @Operation(summary = "查看一个 OKR 的日记录")
     public SystemJsonResponse<List<DayRecordVO>> searchOkrCoreDayRecord(@RequestBody OkrCoreDTO okrCoreDTO) {
-        okrCoreDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());

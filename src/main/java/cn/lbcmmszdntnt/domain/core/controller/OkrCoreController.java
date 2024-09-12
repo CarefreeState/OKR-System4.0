@@ -19,9 +19,6 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +53,6 @@ public class OkrCoreController {
 
     @PostMapping("/create")
     @Operation(summary = "创建一个 OKR")
-    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Map.class}))})
     public SystemJsonResponse<Map<String, Object>> createOkr(@Valid @RequestBody OkrOperateDTO okrOperateDTO) {
         // 检测
         User user = UserRecordUtil.getUserRecord();
@@ -67,7 +63,6 @@ public class OkrCoreController {
 
     @PostMapping("/search")
     @Operation(summary = "查看一个 OKR")
-    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {OkrCoreVO.class}))})
     public SystemJsonResponse<OkrCoreVO> searchOkrCore(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
         User user = UserRecordUtil.getUserRecord();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());

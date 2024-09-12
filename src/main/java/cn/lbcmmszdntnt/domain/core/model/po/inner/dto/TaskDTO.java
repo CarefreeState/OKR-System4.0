@@ -16,11 +16,11 @@ import lombok.Data;
 @Data
 public class TaskDTO {
 
-    @Schema(name = "象限 ID")
+    @Schema(description = "象限 ID")
     @NotNull(message = "缺少象限 ID")
     private Long quadrantId;
 
-    @Schema(name = "任务内容")
+    @Schema(description = "任务内容")
     @NotBlank(message = "缺少任务内容")
     private String content;
 

@@ -17,11 +17,11 @@ import lombok.Data;
 @Data
 public class OkrTaskRemoveDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotBlank(message = "缺少场景值")
     private String scene;
 
-    @Schema(name = "任务 ID")
+    @Schema(description = "任务 ID")
     @NotNull(message = "缺少任务 ID")
     private Long id;
 

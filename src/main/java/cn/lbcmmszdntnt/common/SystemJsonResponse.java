@@ -5,27 +5,29 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 
-@Schema(name = "统一响应")
+//@Schema(name = "统一响应") 不要加这个，会识别不了泛型的
+@NoArgsConstructor
 @Getter
 public class SystemJsonResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @JsonInclude
-    @SchemaProperty(name = "状态码")
+    @Schema(description = "状态码")
     private int code;
 
     @JsonInclude
-    @SchemaProperty(name = "描述语")
+    @Schema(description = "描述语")
     private String message;
 
     @JsonInclude
-    @Schema(name = "data")
+    @Schema
     private T data;
 
     private SystemJsonResponse(int code, String msg, T data) {

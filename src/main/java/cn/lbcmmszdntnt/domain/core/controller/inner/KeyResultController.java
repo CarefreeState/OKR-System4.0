@@ -23,9 +23,6 @@ import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +61,6 @@ public class KeyResultController {
 
     @PostMapping("/add")
     @Operation(summary = "添加关键结果")
-    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Long.class}))})
     public SystemJsonResponse<Long> addKeyResult(@Valid @RequestBody OkrKeyResultDTO okrKeyResultDTO) {
         // 校验
         User user = UserRecordUtil.getUserRecord();

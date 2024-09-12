@@ -16,11 +16,11 @@ import lombok.Data;
 @Data
 public class KeyResultUpdateDTO {
 
-    @Schema(name = "关键结果 ID")
+    @Schema(description = "关键结果 ID")
     @NotNull(message = "关键结果 ID 不能为空")
     private Long id;
 
-    @Schema(name = "完成概率")
+    @Schema(description = "完成概率")
     @NotNull(message = "完成概率不能为空")
     @IntRange(min = 0, max = 100, message = "完成概率非法")
     private Integer probability;

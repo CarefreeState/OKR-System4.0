@@ -22,9 +22,6 @@ import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -128,7 +125,6 @@ public class StatusFlagController {
 
     @GetMapping("/check")
     @Operation(summary = "检查当前用户的状态指标")
-    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Boolean.class}))})
     public SystemJsonResponse<Boolean> updateKeyResult() {
         // 校验
         Long userId = UserRecordUtil.getUserRecord().getId();

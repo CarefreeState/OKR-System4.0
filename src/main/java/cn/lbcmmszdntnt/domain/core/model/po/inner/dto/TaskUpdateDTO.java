@@ -16,15 +16,15 @@ import lombok.Data;
 @Data
 public class TaskUpdateDTO {
 
-    @Schema(name = "任务 ID")
+    @Schema(description = "任务 ID")
     @NotNull(message = "缺少任务 ID")
     private Long id;
 
-    @Schema(name = "任务内容")
+    @Schema(description = "任务内容")
     @NotBlank(message = "缺少任务内容")
     private String content;
 
-    @Schema(name = "是否完成")
+    @Schema(description = "是否完成")
     @NotNull(message = "任务状态未知")
     private Boolean isCompleted;
 

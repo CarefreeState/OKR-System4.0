@@ -16,30 +16,30 @@ import java.util.Date;
 @Data
 public class KeyResult implements Serializable {
 
-    @Schema(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @Schema(name = "第一象限 ID")
+    @Schema(description = "第一象限 ID")
     private Long firstQuadrantId;
 
-    @Schema(name = "关键结果内容")
+    @Schema(description = "关键结果内容")
     private String content;
 
-    @Schema(name = "完成概率")
+    @Schema(description = "完成概率")
     private Integer probability;
 
-    @Schema(name = "乐观锁")
+    @Schema(description = "乐观锁")
     @JsonIgnore
     private Integer version;
 
-    @Schema(name = "是否删除")
+    @Schema(description = "是否删除")
     @JsonIgnore
     private Boolean isDeleted;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

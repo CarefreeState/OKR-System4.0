@@ -19,16 +19,16 @@ import java.util.Date;
 @Data
 public class InitQuadrantDTO {
 
-    @Schema(name = "象限 ID")
+    @Schema(description = "象限 ID")
     @NotNull(message = "象限 ID 不能为空")
     private Long id;
 
-    @Schema(name = "截止时间")
+    @Schema(description = "截止时间")
     @NotNull(message = "截止时间不能为空")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deadline;
 
-    @Schema(name = "象限周期")
+    @Schema(description = "象限周期")
     @NotNull(message = "象限周期不能为空")
     @Min(value = 0, message = "象限周期必须大于 0")
     private Integer quadrantCycle;

@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.core.model.po;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,39 +17,39 @@ import java.util.Date;
 @Data
 public class OkrCore implements Serializable {
 
-    @SchemaProperty(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @SchemaProperty(name = "庆祝日（星期）")
+    @Schema(description = "庆祝日（星期）")
     private Integer celebrateDay;
 
-    @SchemaProperty(name = "第二象限周期（秒）")
+    @Schema(description = "第二象限周期（秒）")
     private Integer secondQuadrantCycle;
 
-    @SchemaProperty(name = "第三象限周期（秒）")
+    @Schema(description = "第三象限周期（秒）")
     private Integer thirdQuadrantCycle;
 
-    @SchemaProperty(name = "是否结束")
+    @Schema(description = "是否结束")
     private Boolean isOver;
 
-    @SchemaProperty(name = "总结")
+    @Schema(description = "总结")
     private String summary;
 
-    @SchemaProperty(name = "完成度")
+    @Schema(description = "完成度")
     private Integer degree;
 
-    @SchemaProperty(name = "乐观锁")
+    @Schema(description = "乐观锁")
     @JsonIgnore
     private Integer version;
 
-    @SchemaProperty(name = "是否删除")
+    @Schema(description = "是否删除")
     @JsonIgnore
     private Boolean isDeleted;
 
-    @SchemaProperty(name = "创建时间")
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @SchemaProperty(name = "更新时间")
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

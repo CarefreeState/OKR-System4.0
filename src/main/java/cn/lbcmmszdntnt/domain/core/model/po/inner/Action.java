@@ -16,30 +16,30 @@ import java.util.Date;
 @Data
 public class Action implements Serializable {
 
-    @Schema(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @Schema(name = "第三象限 ID")
+    @Schema(description = "第三象限 ID")
     private Long thirdQuadrantId;
 
-    @Schema(name = "行动内容")
+    @Schema(description = "行动内容")
     private String content;
 
-    @Schema(name = "是否完成")
+    @Schema(description = "是否完成")
     private Boolean isCompleted;
 
-    @Schema(name = "乐观锁")
+    @Schema(description = "乐观锁")
     @JsonIgnore
     private Integer version;
 
-    @Schema(name = "是否删除")
+    @Schema(description = "是否删除")
     @JsonIgnore
     private Boolean isDeleted;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

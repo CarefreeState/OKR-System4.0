@@ -17,15 +17,15 @@ import lombok.Data;
 @Data
 public class StatusFlagUpdateDTO {
 
-    @Schema(name = "指标 ID")
+    @Schema(description = "指标 ID")
     @NotNull(message = "缺少指标 ID")
     private Long id;
 
-    @Schema(name = "指标内容")
+    @Schema(description = "指标内容")
     @NotBlank(message = "缺少指标内容")
     private String label;
 
-    @Schema(name = "颜色（#十六进制）")
+    @Schema(description = "颜色（#十六进制）")
     @ColorPattern
     private String color;
 

@@ -24,7 +24,8 @@ public class PreInterceptConfig implements WebMvcConfigurer {
         "/error",
         "/favicon.ico",
         "/swagger-resources/**",
-        "/swagger-ui/**"
+        "/swagger-ui/**",
+        "/swagger-ui.html",
     };
 
     @Value("${visit.swagger}")

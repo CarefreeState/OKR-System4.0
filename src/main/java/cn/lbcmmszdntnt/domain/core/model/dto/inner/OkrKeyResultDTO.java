@@ -20,7 +20,7 @@ import lombok.Data;
 @Data
 public class OkrKeyResultDTO {
 
-    @Schema(name = "场景值")
+    @Schema(description = "场景值")
     @NotBlank(message = "缺少场景值")
     private String scene;
 

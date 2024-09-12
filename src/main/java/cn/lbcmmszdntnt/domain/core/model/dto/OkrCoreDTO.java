@@ -16,11 +16,11 @@ import lombok.Data;
 @Data
 public class OkrCoreDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotNull(message = "缺少场景值")
     private String scene;
 
-    @Schema(name = "OKR 内核 ID")
+    @Schema(description = "OKR 内核 ID")
     @NotNull(message = "缺少OKR 内核 ID")
     private Long coreId;
 

@@ -17,11 +17,11 @@ import lombok.Data;
 @Data
 public class OkrStatusFlagRemoveDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotBlank(message = "缺少场景值")
     private String scene;
 
-    @Schema(name = "状态指标 ID")
+    @Schema(description = "状态指标 ID")
     @NotNull(message = "缺少状态指标 ID")
     private Long id;
 

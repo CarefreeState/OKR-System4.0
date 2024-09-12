@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class OkrInitQuadrantDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotBlank(message = "缺少场景值")
     private String scene;
 

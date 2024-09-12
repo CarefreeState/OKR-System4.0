@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,15 +20,15 @@ import java.util.Date;
 @Data
 public class FirstQuadrantDTO {
 
-    @Schema(name = "第一象限 ID")
+    @Schema(description = "第一象限 ID")
     @NotNull(message = "第一象限 ID 不能为空")
     private Long id;
 
-    @Schema(name = "目标")
+    @Schema(description = "目标")
     @NotBlank(message = "目标不能为空")
     private String objective;
 
-    @Schema(name = "截止时间")
+    @Schema(description = "截止时间")
     @NotNull(message = "截止时间不能为空")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deadline;

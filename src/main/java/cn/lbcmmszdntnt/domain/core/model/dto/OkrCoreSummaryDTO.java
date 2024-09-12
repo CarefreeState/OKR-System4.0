@@ -18,19 +18,19 @@ import lombok.Data;
 @Data
 public class OkrCoreSummaryDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotNull(message = "缺少场景值")
     private String scene;
 
-    @Schema(name = "内核 ID")
+    @Schema(description = "内核 ID")
     @NotNull(message = "缺少OKR 内核 ID")
     private Long coreId;
 
-    @Schema(name = "总结的内容")
+    @Schema(description = "总结的内容")
     @NotBlank(message = "总结没有内容")
     private String summary;
 
-    @Schema(name = "完成度")
+    @Schema(description = "完成度")
     @IntRange(min = 0, max = 300, message = "完成度非法")
     private Integer degree;
 

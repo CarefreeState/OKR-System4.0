@@ -16,20 +16,20 @@ import lombok.Data;
 @Data
 public class OkrOperateDTO {
 
-    @Schema(name = "场景")
+    @Schema(description = "场景")
     @NotNull(message = "缺少场景值")
     private String scene;
 
-    @Schema(name = "团队 OKR ID")
+    @Schema(description = "团队 OKR ID", nullable = true)
     private Long teamOkrId;
 
-    @Schema(name = "邀请密钥")
+    @Schema(description = "邀请密钥", nullable = true)
     private String secret;
 
-    @Schema(name = "邀请码类型")
+    @Schema(description = "邀请码类型", nullable = true)
     private String type;
 
-    @Schema(name = "团队名")
+    @Schema(description = "团队名", nullable = true)
     private String teamName;
 
 }
