@@ -1,15 +1,12 @@
 package cn.lbcmmszdntnt.domain.core.model.dto.inner;
 
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.dto.KeyResultUpdateDTO;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -22,24 +19,13 @@ import java.util.Objects;
 @Data
 public class OkrKeyResultUpdateDTO {
 
-    @SchemaProperty(name = "场景")
+    @Schema(name = "场景")
+    @NotBlank(message = "缺少场景值")
     private String scene;
 
-    @SchemaProperty(name = "更新关键结果的数据")
+    @Schema
+    @NotNull(message = "缺少更新关键结果的数据")
+    @Valid
     private KeyResultUpdateDTO keyResultUpdateDTO;
-
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(keyResultUpdateDTO)) {
-            messageBuilder.append("\n-> 更新关键结果的数据 为 null");
-        }
-        if(!StringUtils.hasText(scene)) {
-            messageBuilder.append("\n-> 缺少场景值");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 
 }

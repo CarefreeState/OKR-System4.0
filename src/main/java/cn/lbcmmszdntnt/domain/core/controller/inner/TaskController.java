@@ -25,6 +25,7 @@ import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -59,12 +60,10 @@ public class TaskController {
     @PostMapping("/{option}/add")
     @Operation(summary = "增加一条任务")
     public SystemJsonResponse addTask(@PathVariable("option") @Parameter(description = "任务选项（0:action, 1:P1, 2:P2）") Integer option,
-                                      @RequestBody OkrTaskDTO okrTaskDTO) {
+                                      @Valid @RequestBody OkrTaskDTO okrTaskDTO) {
         // 检查
-        okrTaskDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         TaskDTO taskDTO = okrTaskDTO.getTaskDTO();
-        taskDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrTaskDTO.getScene());
         TaskService taskService = taskServiceFactory.getService(option);
         // 检测身份
@@ -84,9 +83,8 @@ public class TaskController {
     @PostMapping("/{option}/remove")
     @Operation(summary = ("删除一个任务"))
     public SystemJsonResponse removeTask(@PathVariable("option") @Parameter(description = "任务选项（0:action, 1:P1, 2:P2）") Integer option,
-                                         @RequestBody OkrTaskRemoveDTO okrTaskRemoveDTO) {
+                                         @Valid @RequestBody OkrTaskRemoveDTO okrTaskRemoveDTO) {
         // 检查
-        okrTaskRemoveDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         Long taskId = okrTaskRemoveDTO.getId();
         // 选择服务
@@ -107,11 +105,9 @@ public class TaskController {
     @PostMapping("/{option}/update")
     @Operation(summary = "更新一条任务")
     public SystemJsonResponse updateTask(@PathVariable("option") @Parameter(description = "任务选项（0:Action, 1:P1, 2:P2）") Integer option,
-                                         @RequestBody OkrTaskUpdateDTO okrTaskUpdateDTO) {
+                                         @Valid @RequestBody OkrTaskUpdateDTO okrTaskUpdateDTO) {
         // 检查
-        okrTaskUpdateDTO.validate();
         TaskUpdateDTO taskUpdateDTO = okrTaskUpdateDTO.getTaskUpdateDTO();
-        taskUpdateDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         // 选择服务
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrTaskUpdateDTO.getScene());

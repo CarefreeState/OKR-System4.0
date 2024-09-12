@@ -22,7 +22,11 @@ import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -54,12 +58,10 @@ public class StatusFlagController {
 
     @PostMapping("/add")
     @Operation(summary = "增加一条状态指标")
-    public SystemJsonResponse addStatusFlag(@RequestBody OkrStatusFlagDTO okrStatusFlagDTO) {
+    public SystemJsonResponse addStatusFlag(@Valid @RequestBody OkrStatusFlagDTO okrStatusFlagDTO) {
         // 检查
-        okrStatusFlagDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         StatusFlagDTO statusFlagDTO = okrStatusFlagDTO.getStatusFlagDTO();
-        statusFlagDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagDTO.getScene());
         StatusFlag statusFlag = BeanUtil.copyProperties(statusFlagDTO, StatusFlag.class);
         // 检测身份
@@ -83,8 +85,7 @@ public class StatusFlagController {
 
     @PostMapping("/remove")
     @Operation(summary = "删除一条指标")
-    public SystemJsonResponse remove(@RequestBody OkrStatusFlagRemoveDTO okrStatusFlagRemoveDTO) {
-        okrStatusFlagRemoveDTO.validate();
+    public SystemJsonResponse remove(@Valid @RequestBody OkrStatusFlagRemoveDTO okrStatusFlagRemoveDTO) {
         User user = UserRecordUtil.getUserRecord();
         Long statusFlagId = okrStatusFlagRemoveDTO.getId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagRemoveDTO.getScene());
@@ -102,12 +103,10 @@ public class StatusFlagController {
 
     @PostMapping("/update")
     @Operation(summary = "更新一条指标")
-    public SystemJsonResponse update(@RequestBody OkrStatusFlagUpdateDTO okrStatusFlagUpdateDTO) {
+    public SystemJsonResponse update(@Valid @RequestBody OkrStatusFlagUpdateDTO okrStatusFlagUpdateDTO) {
         // 检查
-        okrStatusFlagUpdateDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         StatusFlagUpdateDTO statusFlagUpdateDTO = okrStatusFlagUpdateDTO.getStatusFlagUpdateDTO();
-        statusFlagUpdateDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagUpdateDTO.getScene());
         StatusFlag statusFlag = BeanUtil.copyProperties(statusFlagUpdateDTO, StatusFlag.class);
         Long statusFlagId = statusFlagUpdateDTO.getId();
@@ -129,6 +128,7 @@ public class StatusFlagController {
 
     @GetMapping("/check")
     @Operation(summary = "检查当前用户的状态指标")
+    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Boolean.class}))})
     public SystemJsonResponse<Boolean> updateKeyResult() {
         // 校验
         Long userId = UserRecordUtil.getUserRecord().getId();

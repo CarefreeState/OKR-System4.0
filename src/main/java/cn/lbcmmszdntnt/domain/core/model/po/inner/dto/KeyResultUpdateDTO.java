@@ -1,13 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.model.po.inner.dto;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.annotation.IntRange;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -20,25 +16,13 @@ import java.util.Objects;
 @Data
 public class KeyResultUpdateDTO {
 
-    @SchemaProperty(name = "关键结果 ID")
+    @Schema(name = "关键结果 ID")
+    @NotNull(message = "关键结果 ID 不能为空")
     private Long id;
 
-    @SchemaProperty(name = "完成概率")
+    @Schema(name = "完成概率")
+    @NotNull(message = "完成概率不能为空")
+    @IntRange(min = 0, max = 100, message = "完成概率非法")
     private Integer probability;
-
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(id)) {
-            messageBuilder.append("\n-> 关键结果 ID 为 null");
-        }
-        if(Objects.isNull(probability) ||
-                probability.compareTo(0) < 0 || probability.compareTo(100) > 0) {
-            messageBuilder.append("\n-> 完成概率非法");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 
 }

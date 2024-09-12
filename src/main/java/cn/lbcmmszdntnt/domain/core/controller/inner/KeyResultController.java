@@ -22,9 +22,12 @@ import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.util.validation.ValidatorUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,12 +64,11 @@ public class KeyResultController {
 
     @PostMapping("/add")
     @Operation(summary = "添加关键结果")
-    public SystemJsonResponse<Long> addKeyResult(@RequestBody OkrKeyResultDTO okrKeyResultDTO) {
+    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Long.class}))})
+    public SystemJsonResponse<Long> addKeyResult(@Valid @RequestBody OkrKeyResultDTO okrKeyResultDTO) {
         // 校验
-        ValidatorUtils.validate(okrKeyResultDTO);
         User user = UserRecordUtil.getUserRecord();
         KeyResultDTO keyResultDTO = okrKeyResultDTO.getKeyResultDTO();
-        keyResultDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultDTO.getScene());
         KeyResult keyResult = BeanUtil.copyProperties(keyResultDTO, KeyResult.class);
         // 检测身份
@@ -97,12 +99,10 @@ public class KeyResultController {
 
     @PostMapping("/update")
     @Operation(summary = "更新完成概率")
-    public SystemJsonResponse updateKeyResult(@RequestBody OkrKeyResultUpdateDTO okrKeyResultUpdateDTO) {
+    public SystemJsonResponse updateKeyResult(@Valid @RequestBody OkrKeyResultUpdateDTO okrKeyResultUpdateDTO) {
         // 校验
-        okrKeyResultUpdateDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         KeyResultUpdateDTO keyResultUpdateDTO = okrKeyResultUpdateDTO.getKeyResultUpdateDTO();
-        keyResultUpdateDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultUpdateDTO.getScene());
         KeyResult keyResult = BeanUtil.copyProperties(keyResultUpdateDTO, KeyResult.class);
         Long keyResultId = keyResult.getId();

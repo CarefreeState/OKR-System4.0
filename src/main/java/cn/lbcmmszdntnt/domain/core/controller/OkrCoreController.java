@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
+import cn.lbcmmszdntnt.common.annotation.IntRange;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
@@ -18,9 +19,14 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -37,6 +43,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/core")
+@Validated
 @Tag(name = "OKR 内核")
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class OkrCoreController {
@@ -49,11 +56,10 @@ public class OkrCoreController {
 
     @PostMapping("/create")
     @Operation(summary = "创建一个 OKR")
-    public SystemJsonResponse<Map<String, Object>> createOkr(@RequestBody OkrOperateDTO okrOperateDTO) {
+    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {Map.class}))})
+    public SystemJsonResponse<Map<String, Object>> createOkr(@Valid @RequestBody OkrOperateDTO okrOperateDTO) {
         // 检测
-        okrOperateDTO.validate();
         User user = UserRecordUtil.getUserRecord();
-//        OkrOperateService okrOperateService = okrServiceSelector.load(okrOperateDTO.getScene());
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrOperateDTO.getScene());
         Map<String, Object> ret = okrOperateService.createOkrCore(user, okrOperateDTO);
         return SystemJsonResponse.SYSTEM_SUCCESS(ret);
@@ -61,10 +67,9 @@ public class OkrCoreController {
 
     @PostMapping("/search")
     @Operation(summary = "查看一个 OKR")
-    public SystemJsonResponse<OkrCoreVO> searchOkrCore(@RequestBody OkrCoreDTO okrCoreDTO) {
-        okrCoreDTO.validate();
+    @ApiResponse(content = {@Content(schema = @Schema(oneOf = {OkrCoreVO.class}))})
+    public SystemJsonResponse<OkrCoreVO> searchOkrCore(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
         User user = UserRecordUtil.getUserRecord();
-//        OkrOperateService okrOperateService = okrServiceSelector.load(okrCoreDTO.getScene());
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         OkrCoreVO okrCoreVO = okrOperateService.selectAllOfCore(user, okrCoreDTO.getCoreId());
         return SystemJsonResponse.SYSTEM_SUCCESS(okrCoreVO);
@@ -72,15 +77,10 @@ public class OkrCoreController {
 
     @PostMapping("/celebrate/{day}")
     @Operation(summary = "确定庆祝日")
-    public SystemJsonResponse confirmCelebrateDay(@RequestBody OkrCoreDTO okrCoreDTO,
-                                                  @PathVariable("day") @Parameter(description = "庆祝日（星期）") Integer celebrateDay) {
-        if(celebrateDay.compareTo(1) < 0 || celebrateDay.compareTo(7) > 0) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.INVALID_CELEBRATE_DAY);
-        }
-        okrCoreDTO.validate();
+    public SystemJsonResponse confirmCelebrateDay(@Valid @RequestBody OkrCoreDTO okrCoreDTO,
+                                                  @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(description = "庆祝日（星期）") Integer celebrateDay) {
         User user = UserRecordUtil.getUserRecord();
         Long coreId = okrCoreDTO.getCoreId();
-//        OkrOperateService okrOperateService = okrServiceSelector.load(okrCoreDTO.getScene());
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         Long userId = okrOperateService.getCoreUser(coreId);
         if(user.getId().equals(userId)){
@@ -94,12 +94,10 @@ public class OkrCoreController {
 
     @PostMapping("/summary")
     @Operation(summary = "总结 OKR")
-    public SystemJsonResponse summaryOKR(@RequestBody OkrCoreSummaryDTO okrCoreSummaryDTO) {
+    public SystemJsonResponse summaryOKR(@Valid @RequestBody OkrCoreSummaryDTO okrCoreSummaryDTO) {
         // 检测
-        okrCoreSummaryDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         Long coreId = okrCoreSummaryDTO.getCoreId();
-//        OkrOperateService okrOperateService = okrServiceSelector.load(okrCoreSummaryDTO.getScene());
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreSummaryDTO.getScene());
         Long userId = okrOperateService.getCoreUser(coreId);
         if(user.getId().equals(userId)) {
@@ -125,12 +123,10 @@ public class OkrCoreController {
 
     @PostMapping("/complete")
     @Operation(summary = "结束 OKR")
-    public SystemJsonResponse complete(@RequestBody OkrCoreDTO okrCoreDTO) {
+    public SystemJsonResponse complete(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
         // 检测
-        okrCoreDTO.validate();
         Long coreId = okrCoreDTO.getCoreId();
         User user = UserRecordUtil.getUserRecord();
-//        OkrOperateService okrOperateService = okrServiceSelector.load(okrCoreDTO.getScene());
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         Long userId = okrOperateService.getCoreUser(coreId);
         if(user.getId().equals(userId)) {

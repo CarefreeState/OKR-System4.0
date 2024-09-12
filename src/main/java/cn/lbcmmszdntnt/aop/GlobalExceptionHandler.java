@@ -9,9 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -46,6 +51,16 @@ public class GlobalExceptionHandler {
                 new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE),
                 request
         );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+        log.error("数据校验出现问题，异常类型:{}", e.getMessage());
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("\n"));
+        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE, message);
     }
 
     @ExceptionHandler(ExpiredJwtException.class)

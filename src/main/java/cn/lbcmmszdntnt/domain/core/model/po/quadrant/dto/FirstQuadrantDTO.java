@@ -1,15 +1,12 @@
 package cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -22,30 +19,17 @@ import java.util.Objects;
 @Data
 public class FirstQuadrantDTO {
 
-    @SchemaProperty(name = "第一象限 ID")
+    @Schema(name = "第一象限 ID")
+    @NotNull(message = "第一象限 ID 不能为空")
     private Long id;
 
-    @SchemaProperty(name = "目标")
+    @Schema(name = "目标")
+    @NotBlank(message = "目标不能为空")
     private String objective;
 
-    @SchemaProperty(name = "截止时间")
+    @Schema(name = "截止时间")
+    @NotNull(message = "截止时间不能为空")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deadline;
 
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(id)) {
-            messageBuilder.append("\n-> 第一象限 ID 为 null");
-        }
-        if(!StringUtils.hasText(objective)) {
-            messageBuilder.append("\n-> 没有目标");
-        }
-        if(Objects.isNull(deadline) || deadline.getTime() < System.currentTimeMillis()) {
-            messageBuilder.append("\n-> 截止时间非法");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 }

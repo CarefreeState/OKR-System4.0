@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.filter;
 
-import cn.lbcmmszdntnt.aop.config.VisitConfig;
+import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ public class CorsFilter implements Filter {
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
         httpResponse.setHeader("Access-Control-Allow-Headers",
-                String.format("Content-Type, Accept, X-Requested-With, %s, %s", JwtUtil.JWT_HEADER, VisitConfig.HEADER));
+                String.format("Content-Type, Accept, X-Requested-With, %s, %s", JwtUtil.JWT_HEADER, PreInterceptConfig.HEADER));
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         chain.doFilter(request, response);
     }

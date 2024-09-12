@@ -17,6 +17,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,12 +46,10 @@ public class FirstQuadrantController {
 
     @PostMapping("/init")
     @Operation(summary = "初始化第一项象限")
-    public SystemJsonResponse initFirstQuadrant(@RequestBody OkrFirstQuadrantDTO okrFirstQuadrantDTO) {
+    public SystemJsonResponse initFirstQuadrant(@Valid @RequestBody OkrFirstQuadrantDTO okrFirstQuadrantDTO) {
         // 校验
-        okrFirstQuadrantDTO.validate();
         User user = UserRecordUtil.getUserRecord();
         FirstQuadrantDTO firstQuadrantDTO = okrFirstQuadrantDTO.getFirstQuadrantDTO();
-        firstQuadrantDTO.validate();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrFirstQuadrantDTO.getScene());
         FirstQuadrant firstQuadrant = BeanUtil.copyProperties(firstQuadrantDTO, FirstQuadrant.class);
         Long firstQuadrantId = firstQuadrant.getId();

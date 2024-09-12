@@ -1,13 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.model.po.inner.dto;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -20,23 +16,12 @@ import java.util.Objects;
 @Data
 public class TaskDTO {
 
-    @SchemaProperty(name = "象限 ID")
+    @Schema(name = "象限 ID")
+    @NotNull(message = "缺少象限 ID")
     private Long quadrantId;
 
-    @SchemaProperty(name = "任务内容")
+    @Schema(name = "任务内容")
+    @NotBlank(message = "缺少任务内容")
     private String content;
 
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(quadrantId)) {
-            messageBuilder.append("\n-> 象限 ID 为 null");
-        }
-        if(!StringUtils.hasText(content)) {
-            messageBuilder.append("\n-> 没有内容");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 }

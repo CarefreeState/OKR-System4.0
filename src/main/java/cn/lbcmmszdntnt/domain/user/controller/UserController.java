@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.lbcmmszdntnt.aop.config.VisitConfig;
+import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.domain.email.factory.EmailServiceFactory;
@@ -28,7 +28,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,16 +59,11 @@ public class UserController {
 
     private final OkrQRCodeService okrQRCodeService;
 
-    public static void main(String[] args) {
-        System.out.println(Math.pow(10, -3));
-        System.out.println(1e-3);
-    }
-
     @PostMapping("/login")
     @Operation(summary = "用户登录")
     public SystemJsonResponse<Map<String, Object>> login(HttpServletRequest request,
                                                          @RequestBody LoginDTO loginDTO) {
-        String type = request.getHeader(VisitConfig.HEADER);
+        String type = request.getHeader(PreInterceptConfig.HEADER);
         // 检查
         loginDTO.validate();
         // 选取服务
@@ -78,7 +75,7 @@ public class UserController {
     @PostMapping("/logout")
     @Operation(summary = "用户登出")
     public SystemJsonResponse logout(HttpServletRequest request) {
-        String type = request.getHeader(VisitConfig.HEADER);
+        String type = request.getHeader(PreInterceptConfig.HEADER);
         // 选取服务
         LoginService loginService = loginServiceFactory.getService(type);
         loginService.logout(request);
@@ -87,8 +84,7 @@ public class UserController {
 
     @PostMapping("/check/email")
     @Operation(summary = "验证邮箱用户")
-    public SystemJsonResponse emailIdentityCheck(@RequestBody EmailCheckDTO emailCheckDTO) {
-        emailCheckDTO.validate();
+    public SystemJsonResponse emailIdentityCheck(@Valid EmailCheckDTO emailCheckDTO) {
         // 获得随机验证码
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         String type = emailCheckDTO.getType();

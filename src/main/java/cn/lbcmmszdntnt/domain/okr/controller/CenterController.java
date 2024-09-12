@@ -48,10 +48,11 @@ public class CenterController {
     }
 
     @RequestMapping(AuthFailHandler.REDIRECT_URL)
-    public SystemJsonResponse getUserInfo(@RequestParam(value = AuthFailHandler.EXCEPTION_MESSAGE, required = false) String exceptionMessage) {
-        throw new GlobalServiceException(Optional.ofNullable(exceptionMessage)
-                .orElseGet(GlobalServiceStatusCode.USER_NOT_LOGIN::getMessage),
-                GlobalServiceStatusCode.USER_NOT_LOGIN);
+    public SystemJsonResponse unlisted(@RequestParam(value = AuthFailHandler.EXCEPTION_MESSAGE, required = false) String exceptionMessage) {
+        throw new GlobalServiceException(
+                Optional.ofNullable(exceptionMessage).orElseGet(GlobalServiceStatusCode.USER_NOT_LOGIN::getMessage),
+                GlobalServiceStatusCode.USER_NOT_LOGIN
+        );
     }
 
     @GetMapping("/jwt/{openid}")

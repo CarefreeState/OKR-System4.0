@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.security.config;
 
-import cn.lbcmmszdntnt.aop.config.VisitConfig;
+import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.security.filter.JwtAuthenticationTokenFilter;
 import cn.lbcmmszdntnt.security.handler.AuthFailHandler;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/jwt/**").permitAll()
                 .requestMatchers("/media/**").permitAll()
                 .requestMatchers(AuthFailHandler.REDIRECT_URL).permitAll()
-                .requestMatchers(VisitConfig.swaggers).permitAll()
+                .requestMatchers(PreInterceptConfig.swaggers).permitAll()
                 .anyRequest().authenticated()
         ).rememberMe(Customizer.withDefaults());
         // 添加过滤器

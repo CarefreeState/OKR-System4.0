@@ -1,13 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.model.po.inner.dto;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -20,30 +16,16 @@ import java.util.Objects;
 @Data
 public class TaskUpdateDTO {
 
-    @SchemaProperty(name = "任务 ID")
+    @Schema(name = "任务 ID")
+    @NotNull(message = "缺少任务 ID")
     private Long id;
 
-    @SchemaProperty(name = "任务内容")
+    @Schema(name = "任务内容")
+    @NotBlank(message = "缺少任务内容")
     private String content;
 
-    @SchemaProperty(name = "是否完成")
+    @Schema(name = "是否完成")
+    @NotNull(message = "任务状态未知")
     private Boolean isCompleted;
-
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(id)) {
-            messageBuilder.append("\n-> 任务 ID 为 null");
-        }
-        if(!StringUtils.hasText(content)) {
-            messageBuilder.append("\n-> 没有内容");
-        }
-        if(Objects.isNull(isCompleted)) {
-            messageBuilder.append("\n-> 任务状态未知");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 
 }

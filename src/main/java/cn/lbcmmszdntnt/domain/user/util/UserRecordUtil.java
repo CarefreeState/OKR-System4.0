@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.util;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.aop.config.VisitConfig;
+import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.user.factory.UserRecordServiceFactory;
 import cn.lbcmmszdntnt.domain.user.model.dto.detail.LoginUser;
@@ -31,7 +31,7 @@ public class UserRecordUtil {
     private final static UserRecordServiceFactory USER_RECORD_SERVICE_FACTORY = SpringUtil.getBean(UserRecordServiceFactory.class);
 
     public static UserRecordService selectService(HttpServletRequest request) {
-        String type = request.getHeader(VisitConfig.HEADER);
+        String type = request.getHeader(PreInterceptConfig.HEADER);
         if(!StringUtils.hasText(type)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_TOKEN_NOT_VALID);
         }

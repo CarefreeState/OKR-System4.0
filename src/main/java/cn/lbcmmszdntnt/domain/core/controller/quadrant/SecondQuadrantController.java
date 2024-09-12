@@ -15,6 +15,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,12 +48,9 @@ public class SecondQuadrantController {
 
     @PostMapping("/init")
     @Operation(summary = "初始化第二象限")
-    public SystemJsonResponse initSecondQuadrant(@RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
-        // 校验
-        okrInitQuadrantDTO.validate();
+    public SystemJsonResponse initSecondQuadrant(@Valid @RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
         // 初始化
         InitQuadrantDTO initQuadrantDTO = okrInitQuadrantDTO.getInitQuadrantDTO();
-        initQuadrantDTO.validate();
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();
         // 判断周期长度合理性
         if(secondQuadrantCycle.compareTo(quadrantCycle) > 0) {

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class VisitConfig implements WebMvcConfigurer {
+public class PreInterceptConfig implements WebMvcConfigurer {
 
     public final static String HEADER = "Login-Type";
 

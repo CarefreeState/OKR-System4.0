@@ -5,6 +5,8 @@ import cn.lbcmmszdntnt.domain.email.util.EmailValidator;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -20,22 +22,12 @@ import org.springframework.util.StringUtils;
 public class EmailCheckDTO {
 
     @SchemaProperty(name = "验证类型")
+    @NotBlank(message = "验证类型不能为空")
     private String type;
 
     @SchemaProperty(name = "email")
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不合法")
     private String email;
 
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(!StringUtils.hasText(type)) {
-            messageBuilder.append("\n-> 验证类型 为 空");
-        }
-        if(!StringUtils.hasText(email) || !EmailValidator.isEmailAccessible(email)) {
-            messageBuilder.append("\n-> email 非法");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 }

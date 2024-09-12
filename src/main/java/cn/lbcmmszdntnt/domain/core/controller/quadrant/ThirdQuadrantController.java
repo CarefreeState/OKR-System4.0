@@ -48,10 +48,8 @@ public class ThirdQuadrantController {
     @Operation(summary = "初始化第三象限")
     public SystemJsonResponse initThirdQuadrant(@RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
         // 校验
-        okrInitQuadrantDTO.validate();
         // 初始化
         InitQuadrantDTO initQuadrantDTO = okrInitQuadrantDTO.getInitQuadrantDTO();
-        initQuadrantDTO.validate();
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();
         Long quadrantId = initQuadrantDTO.getId();
         Long coreId = thirdQuadrantService.getThirdQuadrantCoreId(quadrantId);
