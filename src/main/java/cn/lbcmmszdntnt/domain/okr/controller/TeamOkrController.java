@@ -64,7 +64,6 @@ public class TeamOkrController {
         User user = UserRecordUtil.getUserRecord();
         // 判断是不是管理员
         Long managerId = user.getId();
-        teamUpdateDTO.validate();
         Long teamId = teamUpdateDTO.getId();
         String teamName = teamUpdateDTO.getTeamName();
         // 检测管理者身份
@@ -121,8 +120,6 @@ public class TeamOkrController {
     @PostMapping("/grant")
     @Operation(summary = "给成员授权，使其可以扩展一个子团队")
     public SystemJsonResponse<Map<String, Object>> grantTeamForMember(@RequestBody GrantDTO grantDTO) {
-        // 检测
-        grantDTO.validate();
         // 获取当前管理员 ID
         User user = UserRecordUtil.getUserRecord();
         Long managerId = user.getId();

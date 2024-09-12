@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.user.model.po;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,39 +17,39 @@ import java.util.Date;
 @Data
 public class User implements Serializable {
 
-    @SchemaProperty(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @SchemaProperty(name = "openid")
+    @Schema(description = "openid")
     private String openid;
 
-    @SchemaProperty(name = "unionid")
+    @Schema(description = "unionid")
     private String unionid;
 
-    @SchemaProperty(name = "昵称")
+    @Schema(description = "昵称")
     private String nickname;
 
-    @SchemaProperty(name = "头像")
+    @Schema(description = "头像")
     private String photo;
 
-    @SchemaProperty(name = "邮箱")
+    @Schema(description = "邮箱")
     private String email;
 
-    @SchemaProperty(name = "手机号")
+    @Schema(description = "手机号")
     private String phone;
 
-    @SchemaProperty(name = "乐观锁")
+    @Schema(description = "乐观锁")
     @JsonIgnore
     private Integer version;
 
-    @SchemaProperty(name = "是否删除")
+    @Schema(description = "是否删除")
     @JsonIgnore
     private Boolean isDeleted;
 
-    @SchemaProperty(name = "创建时间")
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @SchemaProperty(name = "更新时间")
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

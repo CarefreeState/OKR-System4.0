@@ -47,7 +47,7 @@ public class TeamPersonalOkrVO {
     @Schema(description = "更新时间")
     private Date updateTime;
 
-    @Schema(description = "管理员")
+    @Schema
     private UserVO manager;
 
 }

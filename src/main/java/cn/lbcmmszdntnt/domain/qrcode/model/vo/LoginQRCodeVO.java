@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.qrcode.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,10 +17,10 @@ import lombok.Data;
 @Data
 public class LoginQRCodeVO {
 
-    @SchemaProperty(name = "小程序码地址")
+    @Schema(description = "小程序码地址")
     private String path;
 
-    @SchemaProperty(name = "场景值")
+    @Schema(description = "场景值")
     private String secret;
 
 }

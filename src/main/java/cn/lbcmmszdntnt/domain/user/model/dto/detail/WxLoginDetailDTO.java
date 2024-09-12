@@ -8,7 +8,6 @@ import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.util.StringUtils;
@@ -26,19 +25,19 @@ import java.util.Map;
 @Data
 public class WxLoginDetailDTO {
 
-    @SchemaProperty(name = "code")
+    @Schema(description = "code")
     private String code;
 
-    @SchemaProperty(name = "encryptedData")
+    @Schema(description = "encryptedData")
     private String encryptedData;
 
-    @SchemaProperty(name = "iv")
+    @Schema(description = "iv")
     private String iv;
 
-    @SchemaProperty(name = "rawData")
+    @Schema(description = "rawData")
     private String rawData;
 
-    @SchemaProperty(name = "signature")
+    @Schema(description = "signature")
     private String signature;
 
     public void validate() {
@@ -67,7 +66,7 @@ public class WxLoginDetailDTO {
     public User transToUser() {
         User user = new User();
         Map<String, Object> data = JsonUtil.analyzeJson(this.rawData, Map.class);
-        user.setNickname((String) data.get("nickname"));
+        user.setNickname((String) data.get("nickdescription"));
         user.setPhoto((String) data.get("avatarUrl"));
         return user;
     }

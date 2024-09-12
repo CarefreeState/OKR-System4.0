@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,24 +17,24 @@ import java.util.Date;
 @Data
 public class UserMedalVO {
 
-    @SchemaProperty(name = "勋章 ID")
+    @Schema(description = "勋章 ID")
     private Long medalId;
 
-    @SchemaProperty(name = "勋章名称")
+    @Schema(description = "勋章名称")
     private String name;
 
-    @SchemaProperty(name = "勋章描述")
+    @Schema(description = "勋章描述")
     private String description;
 
-    @SchemaProperty(name = "勋章 URL")
+    @Schema(description = "勋章 URL")
     private String url;
 
-    @SchemaProperty(name = "勋章等级")
+    @Schema(description = "勋章等级")
     private Integer level;
 
-    @SchemaProperty(name = "勋章是否已读")
+    @Schema(description = "勋章是否已读")
     private Boolean isRead;
 
-    @SchemaProperty(name = "勋章颁布时间")
+    @Schema(description = "勋章颁布时间")
     private Date issueTime;
 }

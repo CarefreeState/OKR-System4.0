@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -15,25 +15,25 @@ import lombok.Data;
 @Data
 public class UserVO {
 
-    @SchemaProperty(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @SchemaProperty(name = "openid")
+    @Schema(description = "openid")
     private String openid;
 
-    @SchemaProperty(name = "unionid")
+    @Schema(description = "unionid")
     private String unionid;
 
-    @SchemaProperty(name = "昵称")
+    @Schema(description = "昵称")
     private String nickname;
 
-    @SchemaProperty(name = "头像")
+    @Schema(description = "头像")
     private String photo;
 
-    @SchemaProperty(name = "邮箱")
+    @Schema(description = "邮箱")
     private String email;
 
-    @SchemaProperty(name = "手机号")
+    @Schema(description = "手机号")
     private String phone;
 
 }

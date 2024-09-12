@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.user.model.dto;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -20,13 +20,13 @@ import java.util.Objects;
 @Data
 public class WxBindingDTO {
 
-    @SchemaProperty(name = "userId")
+    @Schema(description = "userId")
     private Long userId;
 
-    @SchemaProperty(name = "code")
+    @Schema(description = "code")
     private String code;
 
-    @SchemaProperty(name = "随机码")
+    @Schema(description = "随机码")
     private String randomCode;
 
     public void validate() {

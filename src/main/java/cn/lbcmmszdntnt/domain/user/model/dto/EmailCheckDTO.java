@@ -4,7 +4,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.util.EmailValidator;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -21,11 +21,11 @@ import org.springframework.util.StringUtils;
 @Data
 public class EmailCheckDTO {
 
-    @SchemaProperty(name = "验证类型")
+    @Schema(description = "验证类型")
     @NotBlank(message = "验证类型不能为空")
     private String type;
 
-    @SchemaProperty(name = "email")
+    @Schema(description = "email")
     @NotBlank(message = "邮箱不能为空")
     @Email(message = "邮箱格式不合法")
     private String email;

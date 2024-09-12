@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.model.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,22 +17,22 @@ import java.util.Date;
 @Data
 public class DayRecordVO {
 
-    @SchemaProperty(name = "ID")
+    @Schema(description = "ID")
     private Long id;
 
-    @SchemaProperty(name = "日期")
+    @Schema(description = "日期")
     private Date recordDate;
 
-    @SchemaProperty(name = "信心指数平均值")
+    @Schema(description = "信心指数平均值")
     private Double credit1;
 
-    @SchemaProperty(name = "第二象限任务完成数")
+    @Schema(description = "第二象限任务完成数")
     private Integer credit2;
 
-    @SchemaProperty(name = "第三象限任务完成数")
+    @Schema(description = "第三象限任务完成数")
     private Integer credit3;
 
-    @SchemaProperty(name = "状态指标评估值")
+    @Schema(description = "状态指标评估值")
     private Integer credit4;
 
 }

@@ -26,18 +26,4 @@ public class TeamUpdateDTO {
     @Schema(description = "团队名")
     private String teamName;
 
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(id)) {
-            messageBuilder.append("\n-> 团队 OKR ID 为 null");
-        }
-        if(!StringUtils.hasText(teamName)) {
-            messageBuilder.append("\n-> teamName没有内容");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
-
 }

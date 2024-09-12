@@ -4,8 +4,9 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.util.convert.ObjectUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.lang.reflect.Field;
@@ -22,27 +23,18 @@ import java.util.Objects;
 @Data
 public class LoginDTO {
 
-    @SchemaProperty(name = "邮箱登录数据")
+    @Schema
     private EmailLoginDTO emailLoginDTO;
 
-    @SchemaProperty(name = "微信小程序登录数据")
+    @Schema
     private WxLoginDTO wxLoginDTO;
 
     public void validate() {
-        try {
-            Field[] fields = LoginDTO.class.getDeclaredFields();
-            for(Field field : fields) {
-                field.setAccessible(true);
-                Object o = field.get(this);
-                field.setAccessible(false);
-                if(Objects.nonNull(o)) {
-                    return;
-                }
-            }
-            throw new GlobalServiceException("没有携带登录数据", GlobalServiceStatusCode.PARAM_IS_BLANK);
-        } catch (IllegalAccessException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        ObjectUtil.stream(this, Object.class)
+                .map(Objects::nonNull)
+                .findAny()
+                .orElseThrow(() ->
+                        new GlobalServiceException("没有携带登录数据", GlobalServiceStatusCode.PARAM_IS_BLANK));
     }
 
     public EmailLoginDTO createEmailLoginDTO() {

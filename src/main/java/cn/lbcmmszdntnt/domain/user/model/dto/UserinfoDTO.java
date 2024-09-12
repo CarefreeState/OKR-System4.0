@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.user.model.dto;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +18,7 @@ import org.springframework.util.StringUtils;
 @Data
 public class UserinfoDTO {
 
-    @SchemaProperty(name = "昵称")
+    @Schema(description = "昵称")
     private String nickname;
 
     public void validate() {
