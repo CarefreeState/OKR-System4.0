@@ -8,6 +8,7 @@ import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.util.StringUtils;
@@ -26,42 +27,24 @@ import java.util.Map;
 public class WxLoginDetailDTO {
 
     @Schema(description = "code")
+    @NotBlank(message = "code 不能为空")
     private String code;
 
     @Schema(description = "encryptedData")
+    @NotBlank(message = "encryptedData 不能为空")
     private String encryptedData;
 
     @Schema(description = "iv")
+    @NotBlank(message = "iv 不能为空")
     private String iv;
 
     @Schema(description = "rawData")
+    @NotBlank(message = "rawData 不能为空")
     private String rawData;
 
     @Schema(description = "signature")
+    @NotBlank(message = "signature 不能为空")
     private String signature;
-
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> code 为 空");
-        }
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> encryptedData 为 空");
-        }
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> iv 为 空");
-        }
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> rawData 为 空");
-        }
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> signature 为 空");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 
     public User transToUser() {
         User user = new User();

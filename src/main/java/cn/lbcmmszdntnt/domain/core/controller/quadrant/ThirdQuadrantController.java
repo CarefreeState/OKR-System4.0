@@ -16,6 +16,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,8 +47,7 @@ public class ThirdQuadrantController {
 
     @PostMapping("/init")
     @Operation(summary = "初始化第三象限")
-    public SystemJsonResponse initThirdQuadrant(@RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
-        // 校验
+    public SystemJsonResponse initThirdQuadrant(@Valid @RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
         // 初始化
         InitQuadrantDTO initQuadrantDTO = okrInitQuadrantDTO.getInitQuadrantDTO();
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();

@@ -15,6 +15,7 @@ import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +46,7 @@ public class CoreRecordController {
 
     @PostMapping("/search/dayrecord")
     @Operation(summary = "查看一个 OKR 的日记录")
-    public SystemJsonResponse<List<DayRecordVO>> searchOkrCoreDayRecord(@RequestBody OkrCoreDTO okrCoreDTO) {
+    public SystemJsonResponse<List<DayRecordVO>> searchOkrCoreDayRecord(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
         User user = UserRecordUtil.getUserRecord();
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());

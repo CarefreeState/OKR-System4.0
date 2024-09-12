@@ -4,6 +4,8 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -21,28 +23,15 @@ import java.util.Objects;
 public class WxBindingDTO {
 
     @Schema(description = "userId")
+    @NotNull(message = "userId 不能为空")
     private Long userId;
 
     @Schema(description = "code")
+    @NotBlank(message = "code 不能为空")
     private String code;
 
     @Schema(description = "随机码")
+    @NotBlank(message = "随机码不能为空")
     private String randomCode;
 
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(Objects.isNull(userId)) {
-            messageBuilder.append("\n-> userId 为空");
-        }
-        if(!StringUtils.hasText(code)) {
-            messageBuilder.append("\n-> code 为空");
-        }
-        if(!StringUtils.hasText(randomCode)) {
-            messageBuilder.append("\n-> randomCode 为空");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 }

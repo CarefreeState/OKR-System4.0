@@ -62,7 +62,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "用户登录")
     public SystemJsonResponse<Map<String, Object>> login(HttpServletRequest request,
-                                                         @RequestBody LoginDTO loginDTO) {
+                                                         @Valid @RequestBody LoginDTO loginDTO) {
         String type = request.getHeader(PreInterceptConfig.HEADER);
         // 检查
         loginDTO.validate();
@@ -114,16 +114,6 @@ public class UserController {
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
 
-//    @PostMapping("/wx/confirm/{secret}")
-//    @Operation(summary = "微信登录确认")
-//    public SystemJsonResponse wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-//        User user = UserRecordUtil.getUserRecord();
-//        String openid = user.getOpenid();
-//        String unionid = user.getUnionid();
-//        userService.onLoginState(secret, openid, unionid);//如果不是微信用户，token 的数据没意义，对不上
-//        return SystemJsonResponse.SYSTEM_SUCCESS();
-//    }
-
     @PostMapping("/wx/confirm/{secret}")
     @Operation(summary = "微信登录确认")
     public SystemJsonResponse wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
@@ -149,8 +139,7 @@ public class UserController {
     @PostMapping("/binding/email")
     @Operation(summary = "绑定用户邮箱")
     public SystemJsonResponse emailBinding(HttpServletRequest request,
-                                           @RequestBody EmailBindingDTO emailBindingDTO) {
-        emailBindingDTO.validate();
+                                           @Valid @RequestBody EmailBindingDTO emailBindingDTO) {
         String email = emailBindingDTO.getEmail();
         String code = emailBindingDTO.getCode();
         // 获取当前登录的用户
@@ -166,8 +155,7 @@ public class UserController {
     @PostMapping("/binding/wx")
     @Operation(summary = "绑定用户微信")
     public SystemJsonResponse wxBinding(HttpServletRequest request,
-                                           @RequestBody WxBindingDTO wxBindingDTO) {
-        wxBindingDTO.validate();
+                                        @Valid @RequestBody WxBindingDTO wxBindingDTO) {
         Long userId = wxBindingDTO.getUserId();
         String randomCode = wxBindingDTO.getRandomCode();
         String code = wxBindingDTO.getCode();
@@ -193,7 +181,7 @@ public class UserController {
     @PostMapping("/improve")
     @Operation(summary = "完善用户信息")
     public SystemJsonResponse improveUserinfo(HttpServletRequest request,
-                                              @RequestBody UserinfoDTO userinfoDTO) {
+                                              @Valid @RequestBody UserinfoDTO userinfoDTO) {
         // 获取当前用户 ID
         Long userId = UserRecordUtil.getUserRecord().getId();
         // 完善信息

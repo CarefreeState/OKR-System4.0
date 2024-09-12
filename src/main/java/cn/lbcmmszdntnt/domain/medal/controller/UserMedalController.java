@@ -36,7 +36,6 @@ public class UserMedalController {
 
     @GetMapping("/list/all")
     @Operation(description = "获得用户的所有勋章")
-    @ApiResponse(content = {@Content(array = @ArraySchema(schema = @Schema(oneOf = {UserMedalVO.class})))})
     public SystemJsonResponse<List<UserMedalVO>> getAll() {
         Long userId = UserRecordUtil.getUserRecord().getId();
         List<UserMedalVO> result = userMedalService.getUserMedalListAll(userId);

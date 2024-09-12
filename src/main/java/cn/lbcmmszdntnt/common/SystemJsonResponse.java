@@ -27,7 +27,7 @@ public class SystemJsonResponse<T> implements Serializable {
     private String message;
 
     @JsonInclude
-    @Schema
+    @Schema(nullable = true)
     private T data;
 
     private SystemJsonResponse(int code, String msg, T data) {

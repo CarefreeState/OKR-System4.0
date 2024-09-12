@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -19,17 +20,7 @@ import org.springframework.util.StringUtils;
 public class UserinfoDTO {
 
     @Schema(description = "昵称")
+    @NotBlank(message = "昵称不能为空")
     private String nickname;
-
-    public void validate() {
-        StringBuilder messageBuilder = new StringBuilder();
-        if(!StringUtils.hasText(nickname)) {
-            messageBuilder.append("\n-> 昵称 为 空");
-        }
-        String message = messageBuilder.toString();
-        if(StringUtils.hasLength(message)) {
-            throw new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
-    }
 
 }

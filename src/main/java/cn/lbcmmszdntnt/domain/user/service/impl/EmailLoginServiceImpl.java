@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
+import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.factory.EmailServiceFactory;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
@@ -30,6 +31,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings(value = {SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION})
 public class EmailLoginServiceImpl implements LoginService {
 
     private final static String DEFAULT_NICKNAME = "邮箱用户";
@@ -42,11 +44,10 @@ public class EmailLoginServiceImpl implements LoginService {
 
     @Override
     public Map<String, Object> login(LoginDTO loginDTO) {
-        EmailLoginDTO emailLoginDTO = loginDTO.createEmailLoginDTO();
+        EmailLoginDTO emailLoginDTO = loginDTO.getEmailLoginDTO();
         if(Objects.isNull(emailLoginDTO)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
-        emailLoginDTO.validate();
         String email = emailLoginDTO.getEmail();
         String code = emailLoginDTO.getCode();
         // 验证码验证

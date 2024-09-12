@@ -39,11 +39,10 @@ public class WxLoginServiceImpl implements LoginService {
 
     @Override
     public Map<String, Object> login(LoginDTO loginDTO) {
-        WxLoginDTO wxLoginDTO = loginDTO.createWxLoginDTO();
+        WxLoginDTO wxLoginDTO = loginDTO.getWxLoginDTO();
         if(Objects.isNull(wxLoginDTO)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
-        wxLoginDTO.validate();
         // 1. 构造请求 + 发起请求 -> code2Session
         String code = wxLoginDTO.getCode();
         String resultJson = userService.getUserFlag(code);

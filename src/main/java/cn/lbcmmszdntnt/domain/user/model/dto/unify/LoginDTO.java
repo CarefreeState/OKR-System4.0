@@ -7,6 +7,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.convert.ObjectUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.lang.reflect.Field;
@@ -23,10 +24,12 @@ import java.util.Objects;
 @Data
 public class LoginDTO {
 
-    @Schema
+    @Schema(nullable = true)
+    @Valid
     private EmailLoginDTO emailLoginDTO;
 
-    @Schema
+    @Schema(nullable = true)
+    @Valid
     private WxLoginDTO wxLoginDTO;
 
     public void validate() {
@@ -35,14 +38,6 @@ public class LoginDTO {
                 .findAny()
                 .orElseThrow(() ->
                         new GlobalServiceException("没有携带登录数据", GlobalServiceStatusCode.PARAM_IS_BLANK));
-    }
-
-    public EmailLoginDTO createEmailLoginDTO() {
-        return this.emailLoginDTO;
-    }
-
-    public WxLoginDTO createWxLoginDTO() {
-        return this.wxLoginDTO;
     }
 
 }

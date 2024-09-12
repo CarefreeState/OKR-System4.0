@@ -19,6 +19,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +60,7 @@ public class TeamOkrController {
 
     @PostMapping("/rename")
     @Operation(summary = "修改团队的名字")
-    public SystemJsonResponse updateName(@RequestBody TeamUpdateDTO teamUpdateDTO) {
+    public SystemJsonResponse updateName(@Valid @RequestBody TeamUpdateDTO teamUpdateDTO) {
         // 获取当前登录用户
         User user = UserRecordUtil.getUserRecord();
         // 判断是不是管理员
@@ -119,7 +120,7 @@ public class TeamOkrController {
 
     @PostMapping("/grant")
     @Operation(summary = "给成员授权，使其可以扩展一个子团队")
-    public SystemJsonResponse<Map<String, Object>> grantTeamForMember(@RequestBody GrantDTO grantDTO) {
+    public SystemJsonResponse<Map<String, Object>> grantTeamForMember(@Valid @RequestBody GrantDTO grantDTO) {
         // 获取当前管理员 ID
         User user = UserRecordUtil.getUserRecord();
         Long managerId = user.getId();
