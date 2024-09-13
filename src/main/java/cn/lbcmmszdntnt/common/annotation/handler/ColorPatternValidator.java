@@ -18,6 +18,7 @@ public class ColorPatternValidator implements ConstraintValidator<ColorPattern, 
 
     @Override
     public boolean isValid(String color, ConstraintValidatorContext constraintValidatorContext) {
+        // NotBlank + Pattern 的效果
         return StringUtils.hasText(color) && color.matches(COLOR_PATTERN);
     }
 }

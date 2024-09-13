@@ -40,6 +40,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+        log.error("数据校验出现问题，异常类型:{}", e.getMessage());
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .filter(Objects::nonNull)
@@ -57,11 +58,15 @@ public class GlobalExceptionHandler {
                 .map(FieldError::getDefaultMessage)
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining("\n"));
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE, message);
+        return getGlobalServiceExceptionResult(
+                new GlobalServiceException(message, GlobalServiceStatusCode.PARAM_FAILED_VALIDATE),
+                request
+        );
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public SystemJsonResponse handleExpiredJwtException(ExpiredJwtException e, HttpServletRequest request) {
+        System.out.println(ExpiredJwtException.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -71,6 +76,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignatureException.class)
     public SystemJsonResponse handleSignatureException(SignatureException e, HttpServletRequest request) {
+        System.out.println(SignatureException.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -80,6 +86,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public SystemJsonResponse handleException(Exception e, HttpServletRequest request) {
+        System.out.println(Exception.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
