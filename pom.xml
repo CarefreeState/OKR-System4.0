@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cn.lbcmmszdn</groupId>
 	<artifactId>OKR-System</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>4.0</version>
 	<name>OKR-System</name>
 	<description>OKR-System</description>
 

@@ -35,9 +35,7 @@ public class TimerUtil {
     }
 
     public static void schedule(TimerTask timerTask, long delay, TimeUnit timeUnit) {
-        long deadline = timeUnit.toMillis(delay) + System.currentTimeMillis();
-        log.warn("计时开始，将于 “ {} ” {} 后执行，即于 {} 执行！", delay, timeUnit.name(),
-                getDateFormat(new Date(deadline)));
+        log(delay, timeUnit);
         TIMER.schedule(timerTask, timeUnit.toMillis(delay));
     }
 
@@ -48,16 +46,6 @@ public class TimerUtil {
                 task.run();
             }
         }, delay, timeUnit);
-    }
-
-    public static void main(String[] args) {
-        schedule(() -> {
-            System.out.println("666");
-        }, 1000, TimeUnit.MILLISECONDS);
-
-        schedule(() -> {
-            System.out.println("666");
-        }, 2500, TimeUnit.MILLISECONDS);
     }
 
 }
