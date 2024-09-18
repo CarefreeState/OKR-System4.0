@@ -5,8 +5,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.springframework.util.StringUtils;
 
-import java.util.Map;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -29,10 +27,6 @@ public class JsonUtil {
     }
 
     public static <T> String analyzeData(T data) {
-        return JSONUtil.parse(data).toString();
-    }
-
-    public static <T> String analyzeDataPretty(T data) {
         return JSONUtil.parse(data).toStringPretty();
     }
 
@@ -41,12 +35,6 @@ public class JsonUtil {
     }
 
     public static <T> String addJsonField(String json, String key, T value) {
-        JSON jsonObject = JSONUtil.parse(json);
-        jsonObject.putByPath(key, value);
-        return jsonObject.toString();
-    }
-
-    public static <T> String addJsonFieldPretty(String json, String key, T value) {
         JSON jsonObject = JSONUtil.parse(json);
         jsonObject.putByPath(key, value);
         return jsonObject.toStringPretty();
@@ -72,11 +60,7 @@ public class JsonUtil {
             return this;
         }
 
-        public String buildJson() {
-            return this.json.toString();
-        }
-
-        public String buildJsonPretty() {
+        public String build() {
             return this.json.toStringPretty();
         }
 

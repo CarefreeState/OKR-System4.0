@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.redis;
 
+import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.redis.component.RedisBloomFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-@SuppressWarnings(value = { "all" })
+@SuppressWarnings(value = {SuppressWarningsValue.ALL})
 public class RedisCache {
 
     private final RedisTemplate redisTemplate;

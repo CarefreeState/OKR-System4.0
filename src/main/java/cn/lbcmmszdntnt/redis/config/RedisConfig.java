@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.redis.config;
 
+import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.redis.component.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
  
     @Bean
-    @SuppressWarnings(value = { "unchecked", "rawtypes" })
+    @SuppressWarnings(value = {SuppressWarningsValue.UNCHECKED, SuppressWarningsValue.RAWTYPES})
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory)
     {
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();

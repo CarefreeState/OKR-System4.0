@@ -35,7 +35,7 @@ public class TokenUtil {
                 .put("grant_type", "client_credential")
                 .put("appid", APP_ID)
                 .put("secret", APP_SECRET)
-                .buildJson();
+                .build();
         // 发起get请求
         String response = HttpUtil.doPostJsonString(URL, json);
         // 解析json
