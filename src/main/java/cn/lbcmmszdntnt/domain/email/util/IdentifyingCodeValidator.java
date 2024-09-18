@@ -12,9 +12,11 @@ public class IdentifyingCodeValidator {
 
     public static final String IDENTIFYING_OPPORTUNITIES = "IdentifyingOpportunities"; // 剩余验证验证机会
 
-    public static final String REDIS_EMAIL_IDENTIFYING_CODE = "redisEmailIdentifyingCode:";
+    public static final String REDIS_EMAIL_CODE = "redisEmailCode:%s:%s";
 
-    public static final String REDIS_EMAIL_IDENTIFYING_BINDING_CODE = "redisEmailIdentifyingBindingCode:";
+    public static final String EMAIL_LOGIN = "email-login";
+
+    public static final String EMAIL_BINDING = "email-binding";
 
     public static String getIdentifyingCode() {
         return RandomUtil.randomNumbers(IDENTIFYING_CODE_SIZE);

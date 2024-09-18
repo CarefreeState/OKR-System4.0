@@ -2,7 +2,8 @@ package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.email.factory.EmailServiceFactory;
+import cn.lbcmmszdntnt.domain.email.service.EmailService;
+import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.unify.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
@@ -40,7 +41,7 @@ public class EmailLoginServiceImpl implements LoginService {
 
     private final UserService userService;
 
-    private final EmailServiceFactory emailServiceFactory;
+    private final EmailService emailService;
 
     @Override
     public Map<String, Object> login(LoginDTO loginDTO) {
@@ -51,9 +52,7 @@ public class EmailLoginServiceImpl implements LoginService {
         String email = emailLoginDTO.getEmail();
         String code = emailLoginDTO.getCode();
         // 验证码验证
-        emailServiceFactory
-                .getService(EmailServiceFactory.EMAIL_LOGIN)
-                .checkIdentifyingCode(email, code);
+        emailService.checkIdentifyingCode(IdentifyingCodeValidator.EMAIL_LOGIN, email, code);
         User user = emailLoginDTO.transToUser();
         // 如果用户未不存在（邮箱未注册），则注册
         User dbUser = userService.lambdaQuery().eq(User::getEmail, email).one();

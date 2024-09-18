@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
-import cn.lbcmmszdntnt.domain.email.factory.EmailServiceFactory;
+import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
@@ -52,11 +52,11 @@ public class UserController {
 
     private final LoginServiceFactory loginServiceFactory;
 
-    private final EmailServiceFactory emailServiceFactory;
-
     private final UserService userService;
 
     private final OkrQRCodeService okrQRCodeService;
+
+    private final EmailService emailService;
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
@@ -83,14 +83,12 @@ public class UserController {
 
     @PostMapping("/check/email")
     @Operation(summary = "验证邮箱用户")
-    public SystemJsonResponse emailIdentityCheck(@Valid EmailCheckDTO emailCheckDTO) {
+    public SystemJsonResponse emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
         // 获得随机验证码
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         String type = emailCheckDTO.getType();
         String email = emailCheckDTO.getEmail();
-        emailServiceFactory
-                .getService(type)
-                .sendIdentifyingCode(email, code);
+        emailService.sendIdentifyingCode(type, email, code);
         // 能到这一步就成功了
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.config.StaticMapperConfig;
-import cn.lbcmmszdntnt.domain.email.factory.EmailServiceFactory;
+import cn.lbcmmszdntnt.domain.email.service.EmailService;
+import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings(value = {SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION})
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
@@ -70,9 +69,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final RedisLock redisLock;
 
-    private final EmailServiceFactory emailServiceFactory;
-
     private final WxBindingQRCodeService wxBindingQRCodeService;
+
+    private final EmailService emailService;
 
     @Override
     public String getUserFlag(String code) {
@@ -149,9 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void bindingEmail(Long userId, String email, String code, String recordEmail) {
         // 检查验证码
-        emailServiceFactory
-                .getService(EmailServiceFactory.EMAIL_BINDING)
-                .checkIdentifyingCode(email, code);
+        emailService.checkIdentifyingCode(IdentifyingCodeValidator.EMAIL_BINDING, email, code);
         // 判断邮箱用户是否存在
         User userByEmail = getUserByEmail(email);
         if (Objects.nonNull(userByEmail)) {

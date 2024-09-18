@@ -58,9 +58,6 @@ okr:
       0: longTermAchievementServiceImpl
       1: shortTermAchievementServiceImpl
       2: shortTermAchievementServiceImpl
-    emailServiceMap:
-      email-login: EmailServiceLoginImpl
-      email-binding: EmailServiceBindingImpl
     taskServiceMap:
       0: actionServiceImpl
       1: priorityNumberOneServiceImpl
