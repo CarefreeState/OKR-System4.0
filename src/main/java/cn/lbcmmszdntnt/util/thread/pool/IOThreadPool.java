@@ -1,8 +1,11 @@
 package cn.lbcmmszdntnt.util.thread.pool;
 
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.util.thread.local.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -59,9 +62,7 @@ public class IOThreadPool {
 
     public static void submit(Runnable... tasks) {
         // 提交任务
-        for (int i = 0; i < tasks.length; i++) {
-            THREAD_POOL.submit(tasks[i]);
-        }
+        Arrays.stream(tasks).forEach(IOThreadPool::submit);
     }
 
     public static void submit(Runnable runnable) {
@@ -69,43 +70,7 @@ public class IOThreadPool {
     }
 
     public static <T> void operateBatch(List<T> dataList, Consumer<T> consumer) {
-        if(Objects.isNull(dataList)) {
-            return;
-        }
-        int size = dataList.size();
-        if(size == 0) {
-            return;
-        }
-        // 计算多少个线程，每个线程多少个任务
-        int taskNumber = DEFAULT_TASK_NUMBER;
-        int threadNumber = size / taskNumber;
-        while (taskNumber * threadNumber < size) {
-            threadNumber++;
-        }
-        if(threadNumber > CORE_POOL_SIZE) {
-            threadNumber = CORE_POOL_SIZE;
-            taskNumber = size / threadNumber;
-        }
-        while (taskNumber * threadNumber < size) {
-            taskNumber++;
-        }
-        log.info("启动 {} 个线程，每个线程处理 {} 个任务", threadNumber, taskNumber);
-        CountDownLatch latch = new CountDownLatch(threadNumber);
-        for (int i = 0; i < size; i += taskNumber) {
-            final int from = i;
-            final int to = Math.min(i + taskNumber, size);
-            submit(() -> {
-                log.info("分段操作 [{}, {})", from, to);
-                dataList.subList(from, to).forEach(consumer);
-                latch.countDown();
-            });
-        }
-        try {
-            latch.await();
-            log.info("分段批量操作执行完毕");
-        } catch (InterruptedException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+        ThreadPoolUtil.operateBatch(dataList, consumer, DEFAULT_TASK_NUMBER, CORE_POOL_SIZE, THREAD_POOL);
     }
 
     public static void shutdown() {

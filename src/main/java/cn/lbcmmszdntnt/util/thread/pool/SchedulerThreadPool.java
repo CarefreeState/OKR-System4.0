@@ -126,18 +126,6 @@ public class SchedulerThreadPool {
         }, initialDelay, unit);
     }
 
-    public static void main(String[] args) {
-        AtomicInteger atomicInteger = new AtomicInteger(1);
-        scheduleCircle(() -> {
-            if(atomicInteger.get() < 5) {
-                atomicInteger.incrementAndGet();
-                return Boolean.TRUE;
-            }else {
-                return Boolean.FALSE;
-            }
-        }, 2, TimeUnit.SECONDS);
-    }
-
     // 关闭线程池
     public static void shutdown() {
         THREAD_POOL.shutdown();
