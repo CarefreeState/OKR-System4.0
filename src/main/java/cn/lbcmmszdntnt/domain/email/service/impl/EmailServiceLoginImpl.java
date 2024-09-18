@@ -10,7 +10,6 @@ import cn.lbcmmszdntnt.email.EmailSender;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.template.engine.HtmlEngine;
-import cn.lbcmmszdntnt.util.thread.pool.CPUThreadPool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,28 +73,27 @@ public class EmailServiceLoginImpl implements EmailService {
             throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
         }
         // 封装 Email
-        CPUThreadPool.submit(() -> {
-            EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setContent(code);
-            emailMessage.setCreateTime(new Date());
-            emailMessage.setTitle(IdentifyingCodeValidator.IDENTIFYING_CODE_PURPOSE);
-            emailMessage.setRecipient(email);
-            emailMessage.setCarbonCopy();
-            emailMessage.setSender(systemEmail);
-            // 存到 redis 中
-            emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_CODE_INTERVAL_LIMIT);
-            // 构造模板消息
-            VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
-                    .code(code)
-                    .timeout((int) TimeUnit.MILLISECONDS.toMinutes(IDENTIFYING_CODE_TIMEOUT))
-                    .build();
-            // 发送模板消息
-            String html = htmlEngine.builder()
-                    .append(EMAIL_MODEL_HTML, verificationCodeTemplate)
-                    .build();
-            emailSender.sendModelMail(emailMessage, html);
-            log.info("发送验证码:{} -> email:{}", code, email);
-        });
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setContent(code);
+        emailMessage.setCreateTime(new Date());
+        emailMessage.setTitle(IdentifyingCodeValidator.IDENTIFYING_CODE_PURPOSE);
+        emailMessage.setRecipient(email);
+        emailMessage.setCarbonCopy();
+        emailMessage.setSender(systemEmail);
+        // 存到 redis 中
+        emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_CODE_INTERVAL_LIMIT);
+        // 构造模板消息
+        VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
+                .code(code)
+                .timeout((int) TimeUnit.MILLISECONDS.toMinutes(IDENTIFYING_CODE_TIMEOUT))
+                .build();
+        // 发送模板消息
+        String html = htmlEngine.builder()
+                .append(EMAIL_MODEL_HTML, verificationCodeTemplate)
+                .build();
+        emailMessage.setContent(html);
+        emailSender.send(emailMessage);
+        log.info("发送验证码:{} -> email:{}", code, email);
     }
 
     @Override
