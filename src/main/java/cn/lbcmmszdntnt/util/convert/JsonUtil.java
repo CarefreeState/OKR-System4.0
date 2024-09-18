@@ -5,6 +5,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -14,7 +16,10 @@ import org.springframework.util.StringUtils;
  */
 public class JsonUtil {
 
-    // 这个转化不知道之前是什么类型的，因为 1 和 1L 在json中就是 1，默认被认定为 integer 的 1！
+    // 这个转化不能准确转换范型（因为传入泛型类对象无法指定泛型），之前是什么类型的不能准确判断
+    // 因为 1 和 1L 若 json 中是 1，默认被认定为 Integer 的 1
+    // 而 Integer 不能直接强制类型转换为 Long，就会报错
+    // 对于具体的 path 对应的字段的类型，可以使用 analyzeJsonField 携带具体字段类型，即可解析出来
     public static <T> T analyzeJson(String json, Class<T> clazz) {
         return JSONUtil.toBean(json, clazz);
     }

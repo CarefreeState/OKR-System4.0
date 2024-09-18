@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,10 +36,7 @@ public class ExtractUtil {
 
     public static String getJWTRawDataOnRequest(HttpServletRequest request) {
         final String token = request.getHeader(JwtUtil.JWT_HEADER);
-        if(Objects.isNull(token)) {
-            return null;
-        }
-        return JwtUtil.parseJWTRawData(token);
+        return Optional.ofNullable(token).map(JwtUtil::parseJWTRawData).orElse(null);
     }
 
     public static void joinTheTokenBlacklist(HttpServletRequest request) {
