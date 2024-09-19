@@ -28,6 +28,8 @@ public class SecurityConfig {
 
     public final static String USER_SECURITY_RECORD = "userSecurityRecord";
 
+    public final static String EXCEPTION_MESSAGE = "exceptionMessage";
+
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     private final AuthFailHandler authFailHandler;
@@ -50,7 +52,6 @@ public class SecurityConfig {
                 .requestMatchers("/team/describe/**").permitAll()
                 .requestMatchers("/jwt/**").permitAll()
                 .requestMatchers("/media/**").permitAll()
-                .requestMatchers(AuthFailHandler.REDIRECT_URL).permitAll()
                 .requestMatchers(PreInterceptConfig.swaggers).permitAll()
                 .anyRequest().authenticated()
         ).rememberMe(Customizer.withDefaults());

@@ -6,7 +6,9 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import cn.lbcmmszdntnt.security.handler.AuthFailHandler;
+import cn.lbcmmszdntnt.security.handler.AuthFailRedirectHandler;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,8 +49,8 @@ public class CenterController {
         return new RedirectView(htmlUrl);
     }
 
-    @RequestMapping(AuthFailHandler.REDIRECT_URL)
-    public SystemJsonResponse unlisted(@RequestParam(value = AuthFailHandler.EXCEPTION_MESSAGE, required = false) String exceptionMessage) {
+    @RequestMapping(AuthFailRedirectHandler.REDIRECT_URL)
+    public SystemJsonResponse unlisted(@RequestParam(value = SecurityConfig.EXCEPTION_MESSAGE, required = false) String exceptionMessage) {
         throw new GlobalServiceException(
                 Optional.ofNullable(exceptionMessage).orElseGet(GlobalServiceStatusCode.USER_NOT_LOGIN::getMessage),
                 GlobalServiceStatusCode.USER_NOT_LOGIN

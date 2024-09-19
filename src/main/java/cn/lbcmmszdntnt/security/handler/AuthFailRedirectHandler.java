@@ -1,40 +1,47 @@
 package cn.lbcmmszdntnt.security.handler;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.util.web.HttpUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-02-22
- * Time: 2:42
+ * Date: 2024-09-19
+ * Time: 11:52
  */
 @Component
 @Slf4j
-@RequiredArgsConstructor
-public class AuthFailHandler implements AuthenticationEntryPoint {
+public class AuthFailRedirectHandler implements AuthenticationEntryPoint {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    public final static String REDIRECT_URL = "/unlisted";
+
+    @Value("${spring.domain}")
+    private String domain;
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         String message = String.format("%s    (%s)",
                 e.getMessage(), ThreadLocalMapUtil.get(SecurityConfig.EXCEPTION_MESSAGE, String.class));
-        handlerExceptionResolver.resolveException(httpServletRequest, httpServletResponse, null,
-                new GlobalServiceException(message, GlobalServiceStatusCode.USER_NOT_LOGIN));
+        String requestURI = httpServletRequest.getRequestURI();
+        String redirect = domain + REDIRECT_URL + HttpUtil.getQueryString(new HashMap<>(){{
+            this.put(SecurityConfig.EXCEPTION_MESSAGE, message);
+        }});
+        log.warn("'{}' 重定向 --> '{}'", requestURI, redirect);
+        httpServletResponse.setStatus(HttpStatus.FOUND.value());
+        httpServletResponse.setHeader("Location", redirect);
     }
 }
