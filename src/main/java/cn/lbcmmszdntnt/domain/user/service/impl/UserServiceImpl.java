@@ -46,6 +46,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static String WX_USER_MAP = "wxUserMap:";
 
+    private final static String ID_USER_MAP = "idUserMap:";
+
     private final static String USERID_OPENID_MAP = "useridOpenidMap:";
 
     private final static String USER_PHOTO_LOCK = "userPhotoLock:";
@@ -54,11 +56,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static Long WX_USER_TTL = 2L;
 
+    private final static Long ID_USER_TTL = 2L;
+
     private final static Long USERID_OPENID_TTL = 2L;
 
     private final static TimeUnit EMAIL_USER_UNIT = TimeUnit.HOURS;
 
     private final static TimeUnit WX_USER_UNIT = TimeUnit.HOURS;
+
+    private final static TimeUnit ID_USER_UNIT = TimeUnit.HOURS;
 
     private final static TimeUnit USERID_OPENID_UNIT = TimeUnit.HOURS;
 
@@ -99,23 +105,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        String redisKey = EMAIL_USER_MAP + email;
-        return (User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
-            User user = this.lambdaQuery().eq(User::getEmail, email).one();
-            redisCache.setCacheObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
+    public Optional<User> getUserById(Long id) {
+        String redisKey = ID_USER_MAP + id;
+        return Optional.ofNullable((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+            User user = this.lambdaQuery().eq(User::getId, id).one();
+            redisCache.setCacheObject(redisKey, user, ID_USER_TTL, ID_USER_UNIT);
             return user;
-        });
+        }));
     }
 
     @Override
-    public User getUserByOpenid(String openid) {
+    public Optional<User> getUserByEmail(String email) {
+        String redisKey = EMAIL_USER_MAP + email;
+        return Optional.ofNullable((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+            User user = this.lambdaQuery().eq(User::getEmail, email).one();
+            redisCache.setCacheObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
+            return user;
+        }));
+    }
+
+    @Override
+    public Optional<User> getUserByOpenid(String openid) {
         String redisKey = WX_USER_MAP + openid;
-        return (User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return Optional.of((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
             User user = this.lambdaQuery().eq(User::getOpenid, openid).one();
             redisCache.setCacheObject(redisKey, user, WX_USER_TTL, WX_USER_UNIT);
             return user;
-        });
+        }));
     }
 
     @Override
@@ -150,10 +166,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 检查验证码
         emailService.checkIdentifyingCode(IdentifyingCodeValidator.EMAIL_BINDING, email, code);
         // 判断邮箱用户是否存在
-        User userByEmail = getUserByEmail(email);
-        if (Objects.nonNull(userByEmail)) {
+        getUserByEmail(email).ifPresent(user -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_USER_BE_BOUND);
-        }
+        });
         this.lambdaUpdate()
                 .eq(User::getId, userId)
                 .set(User::getEmail, email)
@@ -177,10 +192,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new GlobalServiceException(GlobalServiceStatusCode.WX_CODE_NOT_VALID);
         }
         // 查询 openid 是否被注册过
-        User userByOpenid = getUserByOpenid(openid);
-        if (Objects.nonNull(userByOpenid)) {
+        getUserByOpenid(openid).ifPresent(user -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.WX_USER_BE_BOUND);
-        }
+        });
         // 判断当前用户是否绑定了微信
         // todo: 避免混乱所以现在暂且不支持微信重新绑定，之后需要再说
         String openidByUserId = getOpenidByUserId(userId);

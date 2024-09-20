@@ -1,19 +1,16 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.detail.LoginUser;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.domain.user.service.UserRecordService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
 import cn.lbcmmszdntnt.redis.RedisCache;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
-import com.baomidou.mybatisplus.extension.toolkit.Db;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,22 +31,20 @@ public class EmailUserRecordServiceImpl implements UserRecordService {
 
     @Override
     public Optional<LoginUser> getRecord(HttpServletRequest request) {
-        if(ExtractUtil.isInTheTokenBlacklist(request)) {
+        if (ExtractUtil.isInTheTokenBlacklist(request)) {
             return Optional.empty();
         }
         Long id = ExtractUtil.getUserIdFromJWT(request);
         String redisKey = JwtUtil.JWT_LOGIN_EMAIL_USER + id;
         return Optional.ofNullable((LoginUser) redisCache.getCacheObject(redisKey)
-                .orElseGet(() -> {
-                    User dbUser = Db.lambdaQuery(User.class).eq(User::getId, id).one();
-                    if (Objects.isNull(dbUser)) {
-                        return null;
-                    } else {
-                        LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(id));
-                        redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
-                        return loginUser;
-                    }
-                }));
+                .orElseGet(() -> userService
+                        .getUserById(id)
+                        .map(dbUser -> {
+                            LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(id));
+                            redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
+                            return loginUser;
+                        }).orElse(null)
+                ));
     }
 
     @Override

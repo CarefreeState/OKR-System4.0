@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -20,9 +21,11 @@ public interface UserService extends IService<User> {
 
     List<String> getPermissions(Long userId);
 
-    User getUserByEmail(String email);
+    Optional<User> getUserById(Long id);
 
-    User getUserByOpenid(String openid);
+    Optional<User> getUserByEmail(String email);
+
+    Optional<User> getUserByOpenid(String openid);
 
     String getOpenidByUserId(Long userId);
 

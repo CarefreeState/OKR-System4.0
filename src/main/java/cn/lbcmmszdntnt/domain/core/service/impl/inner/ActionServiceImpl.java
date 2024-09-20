@@ -67,7 +67,7 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
 
     @Override
     public Boolean updateTask(Long id, String content, Boolean isCompleted) {
-        Boolean oldCompleted = Optional.ofNullable(actionMapper.selectById(id)).orElse(new Action()).getIsCompleted();
+        Boolean oldCompleted = Optional.ofNullable(actionMapper.selectById(id)).orElseGet(Action::new).getIsCompleted();
         Action updateAction = new Action();
         updateAction.setId(id);
         updateAction.setContent(content);
