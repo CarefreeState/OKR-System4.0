@@ -46,6 +46,7 @@ public class ShortCodeUtil {
     }
 
     public static String getShortCode(String str, String version) {
+        // 不能加盐哈希，会导致一个 str 对应多个短码，会导致一些功能出错
         return subCodeByString(EncryptUtil.md5(str + SHORT_LINK_KEY + version));
     }
 
