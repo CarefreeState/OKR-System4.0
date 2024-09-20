@@ -1,9 +1,6 @@
 package cn.lbcmmszdntnt.security.filter;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.user.model.dto.detail.LoginUser;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
 import jakarta.servlet.FilterChain;
@@ -12,13 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -33,22 +27,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        ThreadLocalMapUtil.set(SecurityConfig.HTTP_SERVLET_REQUEST, httpServletRequest);
         try {
-            LoginUser userRecord = Optional.ofNullable(UserRecordUtil.getUserRecord(httpServletRequest))
-                    .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_TOKEN_NOT_VALID));
-            PreAuthenticatedAuthenticationToken authenticationToken =
-                    new PreAuthenticatedAuthenticationToken(userRecord, null, userRecord.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            ThreadLocalMapUtil.set(SecurityConfig.USER_SECURITY_RECORD, authenticationToken);
-            ThreadLocalMapUtil.set(SecurityConfig.HTTP_SERVLET_REQUEST, httpServletRequest);
+            SecurityContextHolder.getContext().setAuthentication(UserRecordUtil.getAuthenticationToken(httpServletRequest));
         } catch (Exception e) {
-            String message = Optional.ofNullable(ThreadLocalMapUtil.get(SecurityConfig.EXCEPTION_MESSAGE, String.class))
-                    .filter(StringUtils::hasText)
-                    .map(s -> s + e.getMessage())
-                    .orElseGet(e::getMessage)
-            ;
-            ThreadLocalMapUtil.set(SecurityConfig.EXCEPTION_MESSAGE, message);
+            ThreadLocalMapUtil.append(SecurityConfig.EXCEPTION_MESSAGE, e.getMessage());
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);//放行
+        //放行（放行两次会导致，另一次是另一个线程，并且请求参数之类的全空，也不会再走 SpringSecurity 的逻辑，doFilter 内部几乎干完了我们的 SpringMVC 的请求，再调用一次没意义）
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }

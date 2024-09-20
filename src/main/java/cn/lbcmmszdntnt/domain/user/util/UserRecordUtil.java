@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Created With Intellij IDEA
@@ -38,20 +40,30 @@ public class UserRecordUtil {
         return USER_RECORD_SERVICE_FACTORY.getService(type);
     }
 
-    public static LoginUser getUserRecord(HttpServletRequest request) {
-        return selectService(request).getRecord(request).orElse(null);
+    public static PreAuthenticatedAuthenticationToken getAuthenticationToken() {
+        return ThreadLocalMapUtil.get(SecurityConfig.USER_SECURITY_RECORD, PreAuthenticatedAuthenticationToken.class);
+    }
+
+    public static PreAuthenticatedAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
+        // 若存在记录了就用之前的，
+        return Optional.ofNullable(getAuthenticationToken()).orElseGet(() -> {
+            LoginUser userRecord = selectService(request).getRecord(request).orElseThrow(() ->
+                    new GlobalServiceException(GlobalServiceStatusCode.USER_TOKEN_NOT_VALID));
+            PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(userRecord, null, userRecord.getAuthorities());
+            ThreadLocalMapUtil.set(SecurityConfig.USER_SECURITY_RECORD, authenticationToken);
+            return authenticationToken;
+        });
     }
 
     public static User getUserRecord() {
-        LoginUser loginUser = (LoginUser) ThreadLocalMapUtil.get(SecurityConfig.USER_SECURITY_RECORD,
-                PreAuthenticatedAuthenticationToken.class).getPrincipal();
+        LoginUser loginUser = (LoginUser) getAuthenticationToken().getPrincipal();
         return loginUser.getUser();
     }
 
     public static void deleteUserRecord() {
 //        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 //        if (Objects.nonNull(attributes)) {
-//            HttpServletRequest request = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes().getRequest();
+//            HttpServletRequest request = attributes.getRequest();
 //            selectService(request).deleteRecord(request);
 //        }
         HttpServletRequest request = ThreadLocalMapUtil.get(SecurityConfig.HTTP_SERVLET_REQUEST, HttpServletRequest.class);

@@ -1,10 +1,13 @@
 package cn.lbcmmszdntnt.util.thread.local;
 
+import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -48,16 +51,27 @@ public class ThreadLocalMapUtil {
         Map<String, Object> map = getMap();
         Object value = map.get(key);
         log.info("{} 获取本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
+        remove(key);
         return value;
     }
 
     public static <T> T get(String key, Class<T> clazz) {
-        return (T) get(key);
+        return clazz.cast(get(key));
     }
 
-    public static <T> T get(String key, Function<Object, T> function) {
+    // 一次性的获取
+    public static <T> T get(String key, Function<Object, T> mapper) {
         Object value = get(key);
-        return Objects.isNull(value) ? null : function.apply(value);
+        return Objects.isNull(value) ? null : mapper.apply(value);
+    }
+
+    public static void append(String key, String str) {
+        String newStr = Optional.ofNullable(get(key, String.class))
+                .filter(StringUtils::hasText)
+                .map(s -> s + str)
+                .orElse(str)
+        ;
+        set(SecurityConfig.EXCEPTION_MESSAGE, newStr);
     }
 
 }
