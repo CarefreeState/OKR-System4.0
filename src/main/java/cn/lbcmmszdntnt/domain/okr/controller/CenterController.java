@@ -7,7 +7,6 @@ import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
-import cn.lbcmmszdntnt.security.handler.AuthFailHandler;
 import cn.lbcmmszdntnt.security.handler.AuthFailRedirectHandler;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;

@@ -15,11 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.Objects;
-import java.util.Optional;
 
 
 /**

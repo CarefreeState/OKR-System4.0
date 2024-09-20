@@ -4,7 +4,6 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.model.vo.VerificationCodeTemplate;
 import cn.lbcmmszdntnt.domain.email.repository.EmailRepository;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
-import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.email.EmailSender;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;

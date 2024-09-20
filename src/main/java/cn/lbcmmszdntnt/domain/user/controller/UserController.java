@@ -26,7 +26,6 @@ import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.websocket.util.MessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
