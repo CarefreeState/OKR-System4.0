@@ -249,7 +249,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 //                this.put(ExtractUtil.SESSION_KEY, sessionKey);
             }};
             String jsonData = JsonUtil.analyzeData(tokenData);
-            String token = JwtUtil.createJWT(jsonData);
+            String token = JwtUtil.createJwt(jsonData);
             redisCache.setCacheObject(redisKey, token,
                     QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         }

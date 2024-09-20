@@ -8,7 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.util.thread.pool.CPUThreadPool;
+import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.xxljob.config.Admin;
 import cn.lbcmmszdntnt.xxljob.config.Executor;
 import cn.lbcmmszdntnt.xxljob.config.XxlUrl;
@@ -100,7 +100,7 @@ public class JobInfoServiceImpl implements JobInfoService {
     private void remove(List<Object> ids) {
         String url = admin.getAddresses() + xxlUrl.getInfoRemove();
         String cookie = CookieUtil.getCookie();
-        CPUThreadPool.operateBatch(ids, object -> {
+        IOThreadPool.operateBatch(ids, object -> {
             HttpRequest.post(url)
                     .form("id", object)
                     .cookie(cookie)

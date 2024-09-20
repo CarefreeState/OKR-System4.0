@@ -5,7 +5,10 @@ import cn.lbcmmszdntnt.redis.RedisCache;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -34,19 +37,22 @@ public class ExtractUtil {
 
 
     public static String getJWTRawDataOnRequest(HttpServletRequest request) {
-        final String token = request.getHeader(JwtUtil.JWT_HEADER);
-        return Optional.ofNullable(token).map(JwtUtil::parseJWTRawData).orElse(null);
+        HttpServletResponse response = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .map(ServletRequestAttributes::getResponse)
+                .orElse(null);
+        String token = request.getHeader(JwtUtil.JWT_HEADER);
+        return Optional.ofNullable(token).map(jwt -> JwtUtil.parseJwtRawData(jwt, response)).orElse(null);
     }
 
     public static void joinTheTokenBlacklist(HttpServletRequest request) {
-        final String token = request.getHeader(JwtUtil.JWT_HEADER);
+        String token = request.getHeader(JwtUtil.JWT_HEADER);
         String redisKey = TOKEN_BLACKLIST + token;
-        long keyTTL = JwtUtil.getExpiredDate(token).getTime() - System.currentTimeMillis();
-        REDIS_CACHE.setCacheObject(redisKey, Boolean.TRUE, keyTTL, TimeUnit.MILLISECONDS);
+        long ttl = JwtUtil.getJwtTTL(token);
+        REDIS_CACHE.setCacheObject(redisKey, Boolean.TRUE, ttl, TimeUnit.MILLISECONDS);
     }
 
-    public static Boolean isInTheTokenBlacklist(HttpServletRequest request) {
-        final String token = request.getHeader(JwtUtil.JWT_HEADER);
+        public static Boolean isInTheTokenBlacklist(HttpServletRequest request) {
+        String token = request.getHeader(JwtUtil.JWT_HEADER);
         String redisKey = TOKEN_BLACKLIST + token;
         return (Boolean) REDIS_CACHE.getCacheObject(redisKey).orElse(Boolean.FALSE);
     }

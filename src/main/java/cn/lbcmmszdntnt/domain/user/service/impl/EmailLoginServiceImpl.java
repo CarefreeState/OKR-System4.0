@@ -70,7 +70,7 @@ public class EmailLoginServiceImpl implements LoginService {
             this.put(ExtractUtil.ID, user.getId());
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
-        String token = JwtUtil.createJWT(jsonData);
+        String token = JwtUtil.createJwt(jsonData);
         return new HashMap<>(){{
             this.put(JwtUtil.JWT_HEADER, token);
         }};

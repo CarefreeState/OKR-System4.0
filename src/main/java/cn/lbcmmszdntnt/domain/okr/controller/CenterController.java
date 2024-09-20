@@ -67,7 +67,7 @@ public class CenterController {
             this.put(ExtractUtil.OPENID, openid);
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
-        String token = JwtUtil.createJWT(jsonData);
+        String token = JwtUtil.createJwt(jsonData);
         return SystemJsonResponse.SYSTEM_SUCCESS(token);
     }
 

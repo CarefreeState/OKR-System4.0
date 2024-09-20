@@ -79,7 +79,7 @@ public class WxLoginServiceImpl implements LoginService {
 //            this.put(ExtractUtil.SESSION_KEY, sessionKey);
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
-        String token = JwtUtil.createJWT(jsonData);
+        String token = JwtUtil.createJwt(jsonData);
         return new HashMap<>(){{
             this.put(JwtUtil.JWT_HEADER, token);
         }};

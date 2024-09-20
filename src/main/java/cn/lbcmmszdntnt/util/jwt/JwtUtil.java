@@ -2,14 +2,12 @@ package cn.lbcmmszdntnt.util.jwt;
 
 import cn.hutool.extra.spring.SpringUtil;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,17 +25,15 @@ public class JwtUtil {
 
     public static final Long JWT_TTL = 1L; // 一天有效期
 
-    public static final Long JWT_MAP_TTL = 6L; // 六小时
+    public static final Long JWT_REFRESH_TIME = 3L; // 结束前三小时就无感刷新
 
     public static final TimeUnit JWT_TTL_UNIT = TimeUnit.DAYS;
 
-    public  static final TimeUnit JWT_MAP_TTL_UNIT = TimeUnit.HOURS;
+    public static final TimeUnit JWT_REFRESH_TIME_UNIT = TimeUnit.HOURS;
 
     public static final String JWT_LOGIN_WX_USER = "jwtLoginWxUser:";
 
     public static final String JWT_LOGIN_EMAIL_USER = "jwtLoginEmailUser:";
-
-    public static final String JWT_RAW_DATA_MAP = "jwtRawDataMap:";
 
     public static String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -49,7 +45,7 @@ public class JwtUtil {
      * @param subject token中要存放的数据（json格式）
      * @return
      */
-    public static String createJWT(String subject) {
+    public static String createJwt(String subject) {
         JwtBuilder builder = getJwtBuilder(subject, null, getUUID(), null);// 设置过期时间
         return builder.compact();
     }
@@ -60,7 +56,7 @@ public class JwtUtil {
      * @param ttlMillis token超时时间
      * @return
      */
-    public static String createJWT(String subject, Long ttlMillis, TimeUnit timeUnit) {
+    public static String createJwt(String subject, Long ttlMillis, TimeUnit timeUnit) {
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, getUUID(), timeUnit);// 设置过期时间
         return builder.compact();
     }
@@ -94,7 +90,7 @@ public class JwtUtil {
      * @param ttlMillis
      * @return
      */
-    public static String createJWT(String id, String subject, Long ttlMillis, TimeUnit timeUnit) {
+    public static String createJwt(String id, String subject, Long ttlMillis, TimeUnit timeUnit) {
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id, timeUnit);// 设置过期时间
         return builder.compact();
     }
@@ -115,50 +111,68 @@ public class JwtUtil {
      * @return
      * @throws Exception
      */
-    public static Claims parseJWT(String jwt) {
+    public static Claims parseJwt(String jwt) {
         SecretKey secretKey = generalKey();
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(jwt)
                 .getBody(); // 获得载荷
     }
-    /**
-     * 解析
-     *
-     * @param jwt
-     * @return
-     * @throws Exception
-     */
-    public static String parseJWTRawData(String jwt) {
-        return parseJWT(jwt).getSubject();
+
+    public static long getJwtTTL(Claims claims) {
+        return claims.getExpiration().getTime() - System.currentTimeMillis();
+    }
+
+    public static long getJwtTTL(String jwt) {
+        return getJwtTTL(parseJwt(jwt));
+    }
+
+    public static boolean judgeApproachExpiration(Claims claims) {
+        return getJwtTTL(claims) < JWT_REFRESH_TIME_UNIT.toMillis(JWT_REFRESH_TIME);
+    }
+
+    public static boolean judgeApproachExpiration(String jwt) {
+        return judgeApproachExpiration(parseJwt(jwt));
+    }
+
+    // 解析
+    public static String parseJwtRawData(String jwt) {
+        return parseJwt(jwt).getSubject();
+    }
+
+    // 解析并无感刷新
+    public static String parseJwtRawData(String jwt, HttpServletResponse response) {
+        Claims claims = parseJwt(jwt);
+        String subject = claims.getSubject();
+        if(Objects.nonNull(response) && Boolean.TRUE.equals(judgeApproachExpiration(claims))) {
+            String newJwt = createJwt(subject);
+            response.setHeader(JWT_HEADER, newJwt);
+        }
+        return subject;
     }
 
     public static <T> T getJwtKeyValue(String jwt, String key, Class<T> clazz) {
-        return parseJWT(jwt).get(key, clazz);
+        return parseJwt(jwt).get(key, clazz);
     }
 
     public static Date getExpiredDate(String jwt) {
         Date result = null;
         try {
-            result = parseJWT(jwt).getExpiration();
+            result = parseJwt(jwt).getExpiration();
         } catch (ExpiredJwtException e) {
             result = e.getClaims().getExpiration();
         }
         return result;
     }
 
-    public static String refreshToken(String jwt) {
-        return createJWT(parseJWTRawData(jwt));
-    }
-
-    // 过期的话 parseJWT(jwt)会抛异常，也就是 “没抛异常能解析成功就是校验成功”,但是异常 ExpiredJwtException 的 getClaims 方法能获取到 payload
+    // 过期的话 parseJwt(jwt)会抛异常，也就是 “没抛异常能解析成功就是校验成功”,但是异常 ExpiredJwtException 的 getClaims 方法能获取到 payload
     public static boolean isTokenExpired(String jwt) {
         return getExpiredDate(jwt).before(new Date());
     }
 
     public static boolean validateToken(String jwt) {
         try {
-            parseJWT(jwt);
+            parseJwt(jwt);
         } catch (ExpiredJwtException e) {
             return Boolean.FALSE;
         }

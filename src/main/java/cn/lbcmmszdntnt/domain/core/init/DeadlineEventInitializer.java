@@ -5,7 +5,7 @@ import cn.lbcmmszdntnt.domain.core.handler.chain.DeadlineDeadlineEventHandlerCha
 import cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper;
 import cn.lbcmmszdntnt.domain.core.model.po.event.DeadlineEvent;
 import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
-import cn.lbcmmszdntnt.util.thread.pool.CPUThreadPool;
+import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ public class DeadlineEventInitializer implements ApplicationListener<Application
         // 获取定时任务
         List<DeadlineEvent> deadlineEvents = okrCoreMapper.getDeadlineEvents();
         // 处理定时任务
-        CPUThreadPool.operateBatch(deadlineEvents, this::handleEvent);
+        IOThreadPool.operateBatch(deadlineEvents, this::handleEvent);
     }
 
     @XxlJob(value = "initDeadlineJob")

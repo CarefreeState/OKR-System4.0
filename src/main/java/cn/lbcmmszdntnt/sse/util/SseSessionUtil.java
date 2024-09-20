@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.sse.util;
 
 import cn.lbcmmszdntnt.sse.session.SseSessionMapper;
-import cn.lbcmmszdntnt.util.thread.pool.CPUThreadPool;
+import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.util.thread.timer.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -36,7 +36,7 @@ public class SseSessionUtil {
     public static void replyMessage(String sessionKey, Supplier<String> messageSupplier) {
         SseMessageSender.sendMessage(sessionKey, DEFAULT_MESSAGE);
         if(Objects.nonNull(messageSupplier)) {
-            CPUThreadPool.submit(() -> {
+            IOThreadPool.submit(() -> {
                 String message = messageSupplier.get();
                 SseMessageSender.sendMessage(sessionKey, message);
             });
