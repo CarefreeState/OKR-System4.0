@@ -138,11 +138,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public void deleteUserAllCache(Long id) {
-        getUserById(id).ifPresent(user -> {
-            deleteUserEmailCache(user.getEmail());
-            deleteUserOpenidCache(user.getOpenid());
+        redisCache.execute(() -> {
+            getUserById(id).ifPresent(user -> {
+                deleteUserEmailCache(user.getEmail());
+                deleteUserOpenidCache(user.getOpenid());
+            });
+            deleteUserIdCache(id);
         });
-        deleteUserIdCache(id);
     }
 
     @Override
