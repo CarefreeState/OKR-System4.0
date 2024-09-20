@@ -60,26 +60,27 @@ public class WxLoginServiceImpl implements LoginService {
         user.setUnionid(unionid);
         // 4. 尝试插入数据库
         // todo: 多个 openid 用 unionid 去判断是否是同一个用户（需要的时候再去写）
-        User dbUser = userService.lambdaQuery().eq(User::getOpenid, openid).one();
-        if(Objects.isNull(dbUser)) {
-            user.setNickname(DEFAULT_NICKNAME);
-            user.setPhoto(DEFAULT_PHOTO);
-            userService.save(user);
-            log.info("新用户注册 -> {}", user);
-        }else {
-            user.setId(dbUser.getId());
-            // 更新一下数据
-            userService.lambdaUpdate().eq(User::getOpenid, openid).update(user);
-        }
+        userService.getUserByOpenid(openid)
+                .ifPresentOrElse(dbUser -> {
+                    user.setId(dbUser.getId());
+                    // 更新一下数据
+                    userService.lambdaUpdate().eq(User::getOpenid, openid).update(user);
+                }, () -> {
+                    user.setNickname(DEFAULT_NICKNAME);
+                    user.setPhoto(DEFAULT_PHOTO);
+                    userService.save(user);
+                    log.info("新用户注册 -> {}", user);
+                });
+        userService.deleteUserAllCache(user.getId());
         // 5. 构造 token
-        Map<String, Object> tokenData = new HashMap<String, Object>(){{
+        Map<String, Object> tokenData = new HashMap<>(){{
             this.put(ExtractUtil.OPENID, openid);
             this.put(ExtractUtil.UNIONID, unionid);
 //            this.put(ExtractUtil.SESSION_KEY, sessionKey);
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
         String token = JwtUtil.createJWT(jsonData);
-        return new HashMap<String, Object>(){{
+        return new HashMap<>(){{
             this.put(JwtUtil.JWT_HEADER, token);
         }};
     }

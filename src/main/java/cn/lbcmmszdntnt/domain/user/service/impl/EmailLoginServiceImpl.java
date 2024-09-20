@@ -55,22 +55,23 @@ public class EmailLoginServiceImpl implements LoginService {
         emailService.checkIdentifyingCode(IdentifyingCodeValidator.EMAIL_LOGIN, email, code);
         User user = emailLoginDTO.transToUser();
         // 如果用户未不存在（邮箱未注册），则注册
-        User dbUser = userService.lambdaQuery().eq(User::getEmail, email).one();
-        if(Objects.isNull(dbUser)) {
-            user.setNickname(DEFAULT_NICKNAME);
-            user.setPhoto(DEFAULT_PHOTO);
-            userService.save(user);
-            log.info("新用户注册 -> {}", user);
-        }else {
-            user.setId(dbUser.getId());
-        }
+        userService.getUserByEmail(email)
+                .ifPresentOrElse(dbUser -> {
+                    user.setId(dbUser.getId());
+                }, () -> {
+                    user.setNickname(DEFAULT_NICKNAME);
+                    user.setPhoto(DEFAULT_PHOTO);
+                    userService.save(user);
+                    log.info("新用户注册 -> {}", user);
+                });
+        userService.deleteUserAllCache(user.getId());
         // 构造 token
-        Map<String, Object> tokenData = new HashMap<String, Object>(){{
+        Map<String, Object> tokenData = new HashMap<>(){{
             this.put(ExtractUtil.ID, user.getId());
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
         String token = JwtUtil.createJWT(jsonData);
-        return new HashMap<String, Object>(){{
+        return new HashMap<>(){{
             this.put(JwtUtil.JWT_HEADER, token);
         }};
     }

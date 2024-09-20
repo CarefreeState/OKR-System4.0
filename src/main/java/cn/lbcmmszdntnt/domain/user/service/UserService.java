@@ -17,8 +17,6 @@ public interface UserService extends IService<User> {
 
     String getUserFlag(String code);
 
-    void improveUserinfo(UserinfoDTO userinfoDTO, Long userId);
-
     List<String> getPermissions(Long userId);
 
     Optional<User> getUserById(Long id);
@@ -27,13 +25,15 @@ public interface UserService extends IService<User> {
 
     Optional<User> getUserByOpenid(String openid);
 
-    String getOpenidByUserId(Long userId);
+    void deleteUserIdCache(Long id);
 
     void deleteUserEmailCache(String email);
 
     void deleteUserOpenidCache(String openid);
 
-    void deleteUserIdOpenIdCache(Long userId);
+    void deleteUserAllCache(Long id);
+
+    void improveUserinfo(UserinfoDTO userinfoDTO, Long userId);
 
     void bindingEmail(Long userId, String email, String code, String recordEmail);
 

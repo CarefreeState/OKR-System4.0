@@ -48,8 +48,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static String ID_USER_MAP = "idUserMap:";
 
-    private final static String USERID_OPENID_MAP = "useridOpenidMap:";
-
     private final static String USER_PHOTO_LOCK = "userPhotoLock:";
 
     private final static Long EMAIL_USER_TTL = 2L;
@@ -58,15 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static Long ID_USER_TTL = 2L;
 
-    private final static Long USERID_OPENID_TTL = 2L;
-
     private final static TimeUnit EMAIL_USER_UNIT = TimeUnit.HOURS;
 
     private final static TimeUnit WX_USER_UNIT = TimeUnit.HOURS;
 
     private final static TimeUnit ID_USER_UNIT = TimeUnit.HOURS;
-
-    private final static TimeUnit USERID_OPENID_UNIT = TimeUnit.HOURS;
 
     @Value("${spring.redisson.timeout}")
     private Long timeout; // 秒
@@ -82,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String getUserFlag(String code) {
         String code2SessionUrl = "https://api.weixin.qq.com/sns/jscode2session";
-        Map<String, Object> param = new HashMap<String, Object>() {{
+        Map<String, Object> param = new HashMap<>() {{
             this.put("appid", TokenUtil.APP_ID);
             this.put("secret", TokenUtil.APP_SECRET);
             this.put("js_code", code);
@@ -92,15 +86,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public void improveUserinfo(UserinfoDTO userinfoDTO, Long userId) {
-        User user = BeanUtil.copyProperties(userinfoDTO, User.class);
-        user.setId(userId);
-        // 修改
-        this.lambdaUpdate().eq(User::getId, userId).update(user);
-    }
-
-    @Override
     public List<String> getPermissions(Long userId) {
+        // todo: 权限获取的业务
         return Collections.emptyList();
     }
 
@@ -135,14 +122,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public String getOpenidByUserId(Long userId) {
-        String redisKey = USERID_OPENID_MAP + userId;
-        return (String) redisCache.getCacheObject(redisKey).orElseGet(() -> {
-            User user = this.lambdaQuery().eq(User::getId, userId).one();
-            String openid = Objects.isNull(user) ? null : user.getOpenid();
-            redisCache.setCacheObject(redisKey, openid, USERID_OPENID_TTL, USERID_OPENID_UNIT);
-            return openid;
-        });
+    public void deleteUserIdCache(Long id) {
+        redisCache.deleteObject(ID_USER_MAP + id);
     }
 
     @Override
@@ -153,12 +134,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void deleteUserOpenidCache(String openid) {
         redisCache.deleteObject(WX_USER_MAP + openid);
-
     }
 
     @Override
-    public void deleteUserIdOpenIdCache(Long userId) {
-        redisCache.deleteObject(USERID_OPENID_MAP + userId);
+    public void deleteUserAllCache(Long id) {
+        getUserById(id).ifPresent(user -> {
+            deleteUserEmailCache(user.getEmail());
+            deleteUserOpenidCache(user.getOpenid());
+        });
+        deleteUserIdCache(id);
+    }
+
+    @Override
+    public void improveUserinfo(UserinfoDTO userinfoDTO, Long userId) {
+        User updateUser = BeanUtil.copyProperties(userinfoDTO, User.class);
+        // 修改
+        this.lambdaUpdate().eq(User::getId, userId).update(updateUser);
+        deleteUserAllCache(userId);
     }
 
     @Override
@@ -173,11 +165,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .eq(User::getId, userId)
                 .set(User::getEmail, email)
                 .update();
-        deleteUserEmailCache(email);
+        deleteUserAllCache(userId);
         if (StringUtils.hasText(recordEmail)) {
             deleteUserEmailCache(recordEmail);
         }
         log.info("用户 {} 成功绑定 邮箱 {}", userId, email);
+    }
+
+    private Optional<String> getOpenidByUserId(Long id) {
+        return getUserById(id).map(User::getOpenid);
     }
 
     @Override
@@ -197,16 +193,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         });
         // 判断当前用户是否绑定了微信
         // todo: 避免混乱所以现在暂且不支持微信重新绑定，之后需要再说
-        String openidByUserId = getOpenidByUserId(userId);
-        if (Objects.nonNull(openidByUserId)) {
+        getOpenidByUserId(userId).ifPresent(openidByUserId -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_BOUND_WX);
-        }
+        });
         this.lambdaUpdate()
                 .eq(User::getId, userId)
                 .set(User::getOpenid, openid)
                 .update();
-        deleteUserIdOpenIdCache(userId);
-        deleteUserOpenidCache(openid);
+        deleteUserAllCache(userId);
         log.info("用户 {} 成功绑定 微信 {}", userId, openid);
     }
 
@@ -223,6 +217,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .set(User::getPhoto, mapPath)
                 .eq(User::getId, userId)
                 .update();
+        deleteUserAllCache(userId);
         return mapPath;
     }
 
@@ -233,9 +228,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new GlobalServiceException(String.format("用户 %d 上传非法文件", userId), GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
         String lock = USER_PHOTO_LOCK + userId;
-        return redisLock.tryLockGetSomething(lock, 0L, timeout, TimeUnit.SECONDS, () -> uploadPhoto(photoData, userId, originPhoto), () -> {
-            throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
-        });
+        return redisLock.tryLockGetSomething(lock, 0L, timeout, TimeUnit.SECONDS,
+                () -> uploadPhoto(photoData, userId, originPhoto),
+                () -> {
+                    throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
+                });
     }
 
     @Override

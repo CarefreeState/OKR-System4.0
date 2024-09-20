@@ -34,22 +34,20 @@ public class WxUserRecordServiceImpl implements UserRecordService {
 
     @Override
     public Optional<LoginUser> getRecord(HttpServletRequest request) {
-        if(ExtractUtil.isInTheTokenBlacklist(request)) {
+        if (ExtractUtil.isInTheTokenBlacklist(request)) {
             return Optional.empty();
         }
         String openid = ExtractUtil.getOpenIDFromJWT(request);
         String redisKey = JwtUtil.JWT_LOGIN_WX_USER + openid;
         return Optional.ofNullable((LoginUser) redisCache.getCacheObject(redisKey)
-                .orElseGet(() -> {
-                    User dbUser = Db.lambdaQuery(User.class).eq(User::getOpenid, openid).one();
-                    if(Objects.isNull(dbUser)) {
-                        return null;
-                    }else {
-                        LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(dbUser.getId()));
-                        redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
-                        return loginUser;
-                    }
-                }));
+                .orElseGet(() -> userService
+                        .getUserByOpenid(openid)
+                        .map(dbUser -> {
+                            LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(dbUser.getId()));
+                            redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
+                            return loginUser;
+                        }).orElse(null)
+                ));
     }
 
     @Override
