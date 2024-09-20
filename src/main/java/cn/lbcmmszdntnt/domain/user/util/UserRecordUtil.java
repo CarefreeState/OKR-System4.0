@@ -15,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -61,12 +64,10 @@ public class UserRecordUtil {
     }
 
     public static void deleteUserRecord() {
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        if (Objects.nonNull(attributes)) {
-//            HttpServletRequest request = attributes.getRequest();
-//            selectService(request).deleteRecord(request);
-//        }
-        HttpServletRequest request = ThreadLocalMapUtil.get(SecurityConfig.HTTP_SERVLET_REQUEST, HttpServletRequest.class);
-        selectService(request).deleteRecord(request);
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (Objects.nonNull(attributes)) {
+            HttpServletRequest request = attributes.getRequest();
+            selectService(request).deleteRecord(request);
+        }
     }
 }
