@@ -45,7 +45,7 @@ public class UserRecordUtil {
     }
 
     public static PreAuthenticatedAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        // 若存在记录了就用之前的，
+        // 若存在记录了就用之前的，避免重复进行业务
         return Optional.ofNullable(getAuthenticationToken()).orElseGet(() -> {
             LoginUser userRecord = selectService(request).getRecord(request).orElseThrow(() ->
                     new GlobalServiceException(GlobalServiceStatusCode.USER_TOKEN_NOT_VALID));
