@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.util.thread.pool;
 
-import cn.lbcmmszdntnt.util.thread.local.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;

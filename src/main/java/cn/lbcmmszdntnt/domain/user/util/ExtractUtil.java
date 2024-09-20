@@ -37,6 +37,7 @@ public class ExtractUtil {
 
 
     public static String getJWTRawDataOnRequest(HttpServletRequest request) {
+        // 获取本次请求的响应对象
         HttpServletResponse response = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .map(ServletRequestAttributes::getResponse)
                 .orElse(null);

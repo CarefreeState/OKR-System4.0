@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.thread.local;
+package cn.lbcmmszdntnt.util.thread.pool;
 
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
