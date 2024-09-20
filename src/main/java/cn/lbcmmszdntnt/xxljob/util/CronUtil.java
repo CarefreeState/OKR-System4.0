@@ -42,8 +42,4 @@ public class CronUtil {
         return String.format("59 23 23 ? * %d *", week);
     }
 
-    public static void main(String[] args) {
-        System.out.println(getCorn(LocalDateTime.now(), 1, TimeUnit.DAYS));
-    }
-
 }

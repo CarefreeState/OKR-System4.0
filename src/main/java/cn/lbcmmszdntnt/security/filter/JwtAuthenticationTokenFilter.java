@@ -40,7 +40,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     new PreAuthenticatedAuthenticationToken(userRecord, null, userRecord.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             ThreadLocalMapUtil.set(SecurityConfig.USER_SECURITY_RECORD, authenticationToken);
-            filterChain.doFilter(httpServletRequest, httpServletResponse);//放行
+            ThreadLocalMapUtil.set(SecurityConfig.HTTP_SERVLET_REQUEST, httpServletRequest);
         } catch (Exception e) {
             String message = Optional.ofNullable(ThreadLocalMapUtil.get(SecurityConfig.EXCEPTION_MESSAGE, String.class))
                     .filter(StringUtils::hasText)

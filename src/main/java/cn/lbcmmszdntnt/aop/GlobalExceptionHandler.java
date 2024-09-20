@@ -66,7 +66,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExpiredJwtException.class)
     public SystemJsonResponse handleExpiredJwtException(ExpiredJwtException e, HttpServletRequest request) {
-        System.out.println(ExpiredJwtException.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -76,7 +75,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignatureException.class)
     public SystemJsonResponse handleSignatureException(SignatureException e, HttpServletRequest request) {
-        System.out.println(SignatureException.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -86,7 +84,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public SystemJsonResponse handleException(Exception e, HttpServletRequest request) {
-        System.out.println(Exception.class);
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);

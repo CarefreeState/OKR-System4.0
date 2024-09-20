@@ -43,7 +43,7 @@ public class TeamPersonalOkrController {
 
     @GetMapping("/list")
     @Operation(summary = "获取团队个人 OKR 列表")
-    public SystemJsonResponse<List<TeamPersonalOkrVO>> getTeamOkrs(HttpServletRequest request) {
+    public SystemJsonResponse<List<TeamPersonalOkrVO>> getTeamOkrs() {
         // 获取当前登录的用户
         User user = UserRecordUtil.getUserRecord();
         // 调用方法

@@ -26,6 +26,7 @@ import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.websocket.util.MessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -60,9 +61,8 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    public SystemJsonResponse<Map<String, Object>> login(HttpServletRequest request,
+    public SystemJsonResponse<Map<String, Object>> login(@RequestHeader(PreInterceptConfig.HEADER) @Parameter(description = "type") String type,
                                                          @Valid @RequestBody LoginDTO loginDTO) {
-        String type = request.getHeader(PreInterceptConfig.HEADER);
         // 检查
         loginDTO.validate();
         // 选取服务
@@ -135,8 +135,7 @@ public class UserController {
 
     @PostMapping("/binding/email")
     @Operation(summary = "绑定用户邮箱")
-    public SystemJsonResponse emailBinding(HttpServletRequest request,
-                                           @Valid @RequestBody EmailBindingDTO emailBindingDTO) {
+    public SystemJsonResponse emailBinding(@Valid @RequestBody EmailBindingDTO emailBindingDTO) {
         String email = emailBindingDTO.getEmail();
         String code = emailBindingDTO.getCode();
         // 获取当前登录的用户
@@ -145,46 +144,43 @@ public class UserController {
         Long userId = userRecord.getId();
         String recordEmail = userRecord.getEmail();
         userService.bindingEmail(userId, email, code, recordEmail);
-        UserRecordUtil.deleteUserRecord(request);
+        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/binding/wx")
     @Operation(summary = "绑定用户微信")
-    public SystemJsonResponse wxBinding(HttpServletRequest request,
-                                        @Valid @RequestBody WxBindingDTO wxBindingDTO) {
+    public SystemJsonResponse wxBinding(@Valid @RequestBody WxBindingDTO wxBindingDTO) {
         Long userId = wxBindingDTO.getUserId();
         String randomCode = wxBindingDTO.getRandomCode();
         String code = wxBindingDTO.getCode();
         userService.bindingWx(userId, randomCode, code);
-        UserRecordUtil.deleteUserRecord(request);
+        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/photo/upload")
     @Operation(summary = "上传用户头像")
-    public SystemJsonResponse<String> uploadPhoto(HttpServletRequest request,
-            @Parameter(description = "用户头像（只能上传图片，最大 1MB）") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
+    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片，最大 1MB）") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
         byte[] photoData = multipartFile.getBytes();
         User user = UserRecordUtil.getUserRecord();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
         String mapPath = userService.tryUploadPhoto(photoData, userId, originPhoto);
         // 删除记录
-        UserRecordUtil.deleteUserRecord(request);
+        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
 
     @PostMapping("/improve")
     @Operation(summary = "完善用户信息")
-    public SystemJsonResponse improveUserinfo(HttpServletRequest request,
-                                              @Valid @RequestBody UserinfoDTO userinfoDTO) {
+    public SystemJsonResponse improveUserinfo(@Valid @RequestBody UserinfoDTO userinfoDTO) {
         // 获取当前用户 ID
         Long userId = UserRecordUtil.getUserRecord().getId();
         // 完善信息
         userService.improveUserinfo(userinfoDTO, userId);
         // 删除记录
-        UserRecordUtil.deleteUserRecord(request);
+        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 

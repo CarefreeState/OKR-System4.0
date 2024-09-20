@@ -30,6 +30,8 @@ public class SecurityConfig {
 
     public final static String EXCEPTION_MESSAGE = "exceptionMessage";
 
+    public final static String HTTP_SERVLET_REQUEST = "httpServletRequest";
+
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     private final AuthFailHandler authFailHandler;

@@ -64,7 +64,7 @@ public class CenterController {
             // 无法访问 swagger，代表这个接口无法访问
             throw new GlobalServiceException(GlobalServiceStatusCode.SYSTEM_API_VISIT_FAIL);
         }
-        Map<String, Object> tokenData = new HashMap<String, Object>(){{
+        Map<String, Object> tokenData = new HashMap<>(){{
             this.put(ExtractUtil.OPENID, openid);
         }};
         String jsonData = JsonUtil.analyzeData(tokenData);
