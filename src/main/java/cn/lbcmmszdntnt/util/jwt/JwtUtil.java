@@ -38,31 +38,13 @@ public class JwtUtil {
 
     public static final String JWT_LOGIN_EMAIL_USER = "jwtLoginEmailUser:";
 
-    public static String getUUID(){
-        return UUID.randomUUID().toString().replace("-", "");
+    // 生成加密后的秘钥 secretKey
+    public static SecretKey generalKey() {
+        byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);
+        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        return key;
     }
 
-    /**
-     * 生成jwt
-     * @param subject token中要存放的数据（json格式）
-     * @return
-     */
-    public static String createJwt(String subject) {
-        JwtBuilder builder = getJwtBuilder(subject, null, getUUID(), null);// 设置过期时间
-        return builder.compact();
-    }
- 
-    /**
-     * 生成jwt
-     * @param subject token中要存放的数据（json格式）
-     * @param ttlMillis token超时时间
-     * @return
-     */
-    public static String createJwt(String subject, Long ttlMillis, TimeUnit timeUnit) {
-        JwtBuilder builder = getJwtBuilder(subject, ttlMillis, getUUID(), timeUnit);// 设置过期时间
-        return builder.compact();
-    }
- 
     private static JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid, TimeUnit timeUnit) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         SecretKey secretKey = generalKey();
@@ -81,38 +63,27 @@ public class JwtUtil {
                 .setSubject(subject)   // 主题  可以是JSON数据
                 .setIssuer(applicationName)     // 签发者
                 .setIssuedAt(now)      // 签发时间
-                .signWith(signatureAlgorithm, secretKey) //使用HS256对称加密算法签名, 第二个参数为秘钥
+                .signWith(signatureAlgorithm, secretKey) //使用 HS256 对称加密算法签名, 第二个参数为秘钥
                 .setExpiration(expDate); // 失效时间
     }
- 
-    /**
-     * 创建token
-     * @param id
-     * @param subject
-     * @param ttlMillis
-     * @return
-     */
-    public static String createJwt(String id, String subject, Long ttlMillis, TimeUnit timeUnit) {
+
+    public static String getUUID(){
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public static String createJwt(String subject, Long ttlMillis, String id, TimeUnit timeUnit) {
         JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id, timeUnit);// 设置过期时间
         return builder.compact();
     }
- 
-    /**
-     * 生成加密后的秘钥 secretKey
-     * @return
-     */
-    public static SecretKey generalKey() {
-        byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);
-        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
-        return key;
+
+    public static String createJwt(String subject, Long ttlMillis, TimeUnit timeUnit) {
+        return createJwt(subject, ttlMillis, getUUID(), timeUnit);
     }
-    /**
-     * 解析
-     *
-     * @param jwt
-     * @return
-     * @throws Exception
-     */
+
+    public static String createJwt(String subject) {
+        return createJwt(subject, null, null);
+    }
+
     public static Claims parseJwt(String jwt) {
         SecretKey secretKey = generalKey();
         return Jwts.parser()
