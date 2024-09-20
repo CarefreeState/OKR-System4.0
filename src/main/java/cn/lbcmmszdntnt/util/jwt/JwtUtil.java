@@ -36,8 +36,7 @@ public class JwtUtil {
     public static final String JWT_LOGIN_EMAIL_USER = "jwtLoginEmailUser:";
 
     public static String getUUID(){
-        String token = UUID.randomUUID().toString().replaceAll("-", "");
-        return token;
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /**
