@@ -10,15 +10,13 @@ import cn.lbcmmszdntnt.domain.user.service.UserRecordService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.util.web.HttpUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -64,10 +62,8 @@ public class UserRecordUtil {
     }
 
     public static void deleteUserRecord() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (Objects.nonNull(attributes)) {
-            HttpServletRequest request = attributes.getRequest();
+        Optional.ofNullable(HttpUtil.getRequest()).ifPresent(request -> {
             selectService(request).deleteRecord(request);
-        }
+        });
     }
 }

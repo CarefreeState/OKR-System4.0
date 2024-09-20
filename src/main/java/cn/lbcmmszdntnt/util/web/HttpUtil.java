@@ -3,8 +3,13 @@ package cn.lbcmmszdntnt.util.web;
 
 import cn.hutool.http.HttpRequest;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class HttpUtil {
 
@@ -89,6 +95,46 @@ public class HttpUtil {
         return HttpRequest.get(fileUrl)
                 .execute()
                 .bodyStream();
+    }
+
+    public static boolean isInvalidIpAddress(String ipAddress) {
+        return !StringUtils.hasText(ipAddress) || "unknown".equalsIgnoreCase(ipAddress);
+    }
+
+    @Nullable
+    public static ServletRequestAttributes getAttributes() {
+        return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    }
+
+    @Nullable
+    public static HttpServletRequest getRequest() {
+        return Optional.ofNullable(getAttributes()).map(ServletRequestAttributes::getRequest).orElse(null);
+    }
+
+    @Nullable
+    public static HttpServletResponse getResponse() {
+        return Optional.ofNullable(getAttributes()).map(ServletRequestAttributes::getResponse).orElse(null);
+    }
+
+    public static String getIPAddress() {
+        return Optional.ofNullable(getRequest())
+                .map(request -> {
+                    String ipAddress = request.getHeader("X-Forwarded-For");
+                    if (isInvalidIpAddress(ipAddress)) {
+                        ipAddress = request.getHeader("Proxy-Client-IP");
+                    }
+                    if (isInvalidIpAddress(ipAddress)) {
+                        ipAddress = request.getHeader("WL-Proxy-Client-IP");
+                    }
+                    if (isInvalidIpAddress(ipAddress)) {
+                        ipAddress = request.getRemoteAddr();
+                    }
+                    return ipAddress;
+                }).orElse("");
+    }
+
+    public static String getDigitIP() {
+        return getIPAddress().replaceAll("[^0-9]+", "");
     }
 
 }

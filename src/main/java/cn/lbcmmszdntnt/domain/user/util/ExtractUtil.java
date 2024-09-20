@@ -4,11 +4,10 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.redis.RedisCache;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
+import cn.lbcmmszdntnt.util.web.HttpUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -38,9 +37,7 @@ public class ExtractUtil {
 
     public static String getJWTRawDataOnRequest(HttpServletRequest request) {
         // 获取本次请求的响应对象
-        HttpServletResponse response = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .map(ServletRequestAttributes::getResponse)
-                .orElse(null);
+        HttpServletResponse response = HttpUtil.getResponse();
         String token = request.getHeader(JwtUtil.JWT_HEADER);
         return Optional.ofNullable(token).map(jwt -> JwtUtil.parseJwtRawData(jwt, response)).orElse(null);
     }
