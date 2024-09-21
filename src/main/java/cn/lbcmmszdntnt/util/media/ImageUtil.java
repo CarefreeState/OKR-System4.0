@@ -5,6 +5,8 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.freewayso.image.combiner.ImageCombiner;
 import com.freewayso.image.combiner.enums.OutputFormat;
 import com.freewayso.image.combiner.enums.ZoomMode;
+import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -18,9 +20,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Slf4j
 public class ImageUtil {
 
     public final static String RED = "r";
@@ -174,26 +177,32 @@ public class ImageUtil {
         }
     }
 
-    public static Image getImage(String url) {
-        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
-            return ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static Image getImage(byte[] bytes) {
-        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
-            return ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
+    @Nullable
     public static Image getImage(InputStream inputStream) {
         try {
-            return ImageIO.read(inputStream);
+            return Objects.nonNull(inputStream) ? ImageIO.read(inputStream) : null;
         } catch (IOException e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Image getImage(String url) {
+        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
+            return getImage(inputStream);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
+        }
+    }
+
+    @Nullable
+    public static Image getImage(byte[] bytes) {
+        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
+            return getImage(inputStream);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }

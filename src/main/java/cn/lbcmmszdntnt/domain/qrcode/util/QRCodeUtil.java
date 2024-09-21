@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.qrcode.util;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.util.media.ImageUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
@@ -27,7 +28,7 @@ public class QRCodeUtil {
         }});
         log.info("请求微信（json） -> {}", json);
         byte[] data = HttpUtil.doPostJsonBytes(url, json);
-        if(!MediaUtil.isImage(data)) {
+        if(!ImageUtil.isImage(data)) {
             throw new GlobalServiceException(new String(data), GlobalServiceStatusCode.QR_CODE_GENERATE_FAIL);
         }
         // 保存一下

@@ -17,6 +17,7 @@ import cn.lbcmmszdntnt.redis.RedisCache;
 import cn.lbcmmszdntnt.redis.RedisLock;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
+import cn.lbcmmszdntnt.util.media.ImageUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
@@ -226,7 +227,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String tryUploadPhoto(byte[] photoData, Long userId, String originPhoto) {
         // 检查是否是图片
-        if (!MediaUtil.isImage(photoData)) {
+        if (!ImageUtil.isImage(photoData)) {
             throw new GlobalServiceException(String.format("用户 %d 上传非法文件", userId), GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
         String lock = USER_PHOTO_LOCK + userId;

@@ -18,10 +18,13 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+
+    private static final String NOT_DIGIT_PATTERN = "[^0-9]+";
 
     public static String getFormBody(Map<String, Object> map) {
         if (Objects.isNull(map)) {
@@ -134,7 +137,7 @@ public class HttpUtil {
     }
 
     public static String getDigitIP() {
-        return getIPAddress().replaceAll("[^0-9]+", "");
+        return getIPAddress().replaceAll(NOT_DIGIT_PATTERN, "");
     }
 
 }
