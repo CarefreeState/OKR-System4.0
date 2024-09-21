@@ -10,7 +10,6 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;

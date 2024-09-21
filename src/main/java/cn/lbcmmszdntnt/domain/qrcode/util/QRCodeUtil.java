@@ -4,7 +4,6 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.media.ImageUtil;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import lombok.extern.slf4j.Slf4j;

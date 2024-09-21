@@ -18,7 +18,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 public class HttpUtil {
 
