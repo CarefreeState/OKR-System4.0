@@ -1,12 +1,12 @@
 package cn.lbcmmszdntnt.domain.record.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.record.model.converter.DayRecordConverter;
 import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
@@ -52,7 +52,8 @@ public class CoreRecordController {
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         if(Boolean.TRUE.equals(okrOperateService.canVisit(user, coreId))) {
             List<Record> dayRecords = dayRecordService.getRecords(coreId);
-            return SystemJsonResponse.SYSTEM_SUCCESS(BeanUtil.copyToList(dayRecords, DayRecordVO.class));
+            List<DayRecordVO> dayRecordVOS = DayRecordConverter.INSTANCE.recordListToDayRecordVOList(dayRecords);
+            return SystemJsonResponse.SYSTEM_SUCCESS(dayRecordVOS);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

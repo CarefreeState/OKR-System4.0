@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.service.impl;
 
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.config.OkrCoreConfig;
+import cn.lbcmmszdntnt.domain.core.model.converter.OkrCoreConverter;
 import cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper;
 import cn.lbcmmszdntnt.domain.core.model.po.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.FirstQuadrant;
@@ -117,7 +117,7 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
     public OkrCoreVO searchOkrCore(Long id) {
         // 查询基本的 OKR 内核
         OkrCore okrCore = getOkrCore(id);
-        OkrCoreVO okrCoreVO = BeanUtil.copyProperties(okrCore, OkrCoreVO.class);
+        OkrCoreVO okrCoreVO = OkrCoreConverter.INSTANCE.okrCoreToOkrCoreVO(okrCore);
         // 查询四象限
         FutureTask<FirstQuadrantVO> task1 = new FutureTask<>(() ->
             firstQuadrantService.searchFirstQuadrant(id)

@@ -1,12 +1,12 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.config.StaticMapperConfig;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
+import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
@@ -150,7 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public void improveUserinfo(UserinfoDTO userinfoDTO, Long userId) {
-        User updateUser = BeanUtil.copyProperties(userinfoDTO, User.class);
+        User updateUser = UserConverter.INSTANCE.userinfoDTOToUser(userinfoDTO);
         // 修改
         this.lambdaUpdate().eq(User::getId, userId).update(updateUser);
         deleteUserAllCache(userId);

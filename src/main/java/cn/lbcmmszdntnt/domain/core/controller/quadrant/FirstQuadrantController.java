@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.aop.config.AfterInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.model.converter.FirstQuadrantConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrFirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.FirstQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto.FirstQuadrantDTO;
@@ -51,7 +51,7 @@ public class FirstQuadrantController {
         User user = UserRecordUtil.getUserRecord();
         FirstQuadrantDTO firstQuadrantDTO = okrFirstQuadrantDTO.getFirstQuadrantDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrFirstQuadrantDTO.getScene());
-        FirstQuadrant firstQuadrant = BeanUtil.copyProperties(firstQuadrantDTO, FirstQuadrant.class);
+        FirstQuadrant firstQuadrant = FirstQuadrantConverter.INSTANCE.firstQuadrantDTOToFirstQuadrant(firstQuadrantDTO);
         Long firstQuadrantId = firstQuadrant.getId();
         // 检测身份
         Long coreId = firstQuadrantService.getFirstQuadrantCoreId(firstQuadrantId);

@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.medal.service.impl;
 
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.medal.config.properties.MedalList;
 import cn.lbcmmszdntnt.domain.medal.config.properties.MedalMap;
+import cn.lbcmmszdntnt.domain.medal.model.converter.UserMalConverter;
 import cn.lbcmmszdntnt.domain.medal.model.mapper.UserMedalMapper;
 import cn.lbcmmszdntnt.domain.medal.model.po.Medal;
 import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
@@ -65,9 +65,9 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
     }
 
     private UserMedalVO userMedalMap(UserMedal userMedal) {
-        UserMedalVO userMedalVO = BeanUtil.copyProperties(userMedal, UserMedalVO.class);
+        UserMedalVO userMedalVO = UserMalConverter.INSTANCE.userMedalToUserMedalVO(userMedal);
         Medal medal = medalMap.get(userMedal.getMedalId());
-        BeanUtil.copyProperties(medal, userMedalVO);
+        UserMalConverter.INSTANCE.medalMapToUserMedalVO(medal, userMedalVO);
         return userMedalVO;
     }
 
@@ -77,12 +77,12 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
         List<UserMedalVO> grepList = medalList.getGrepList();
         this.lambdaQuery().eq(UserMedal::getUserId, userId)
                 .ne(UserMedal::getLevel, 0).isNotNull(UserMedal::getIssueTime)
-                .list().stream()
+                .list()
                 .forEach(userMedal -> {
                     Long medalId = userMedal.getMedalId();
                     int index = (int) (medalId - 1);
                     UserMedalVO userMedalVO = grepList.get(index);
-                    BeanUtil.copyProperties(userMedal, userMedalVO);
+                    UserMalConverter.INSTANCE.userMedalMapToUserMedalVO(userMedal, userMedalVO);
                     userMedalVO.setUrl(medalMap.get(medalId).getUrl());
                 });
         return grepList;

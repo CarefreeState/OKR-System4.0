@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.core.controller.inner;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagConfig;
+import cn.lbcmmszdntnt.domain.core.model.converter.StatusFlagConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrStatusFlagDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrStatusFlagRemoveDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrStatusFlagUpdateDTO;
@@ -60,7 +60,7 @@ public class StatusFlagController {
         User user = UserRecordUtil.getUserRecord();
         StatusFlagDTO statusFlagDTO = okrStatusFlagDTO.getStatusFlagDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagDTO.getScene());
-        StatusFlag statusFlag = BeanUtil.copyProperties(statusFlagDTO, StatusFlag.class);
+        StatusFlag statusFlag = StatusFlagConverter.INSTANCE.statusFlagDTOToStatusFlag(statusFlagDTO);
         // 检测身份
         Long fourthQuadrantId = statusFlagDTO.getFourthQuadrantId();
         Long coreId = fourthQuadrantService.getFourthQuadrantCoreId(fourthQuadrantId);
@@ -105,7 +105,7 @@ public class StatusFlagController {
         User user = UserRecordUtil.getUserRecord();
         StatusFlagUpdateDTO statusFlagUpdateDTO = okrStatusFlagUpdateDTO.getStatusFlagUpdateDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagUpdateDTO.getScene());
-        StatusFlag statusFlag = BeanUtil.copyProperties(statusFlagUpdateDTO, StatusFlag.class);
+        StatusFlag statusFlag = StatusFlagConverter.INSTANCE.statusFlagUpdateDTOToStatusFlag(statusFlagUpdateDTO);
         Long statusFlagId = statusFlagUpdateDTO.getId();
         // 检测身份
         Long flagFourthQuadrantId = statusFlagService.getFlagFourthQuadrantId(statusFlagId);

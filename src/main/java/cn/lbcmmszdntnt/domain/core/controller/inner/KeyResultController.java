@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.controller.inner;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.model.converter.KeyResultConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult;
@@ -66,7 +66,7 @@ public class KeyResultController {
         User user = UserRecordUtil.getUserRecord();
         KeyResultDTO keyResultDTO = okrKeyResultDTO.getKeyResultDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultDTO.getScene());
-        KeyResult keyResult = BeanUtil.copyProperties(keyResultDTO, KeyResult.class);
+        KeyResult keyResult = KeyResultConverter.INSTANCE.keyResultDTOToKeyResult(keyResultDTO);
         // 检测身份
         Long firstQuadrantId = keyResultDTO.getFirstQuadrantId();
         Long coreId = firstQuadrantService.getFirstQuadrantCoreId(firstQuadrantId);
@@ -100,7 +100,7 @@ public class KeyResultController {
         User user = UserRecordUtil.getUserRecord();
         KeyResultUpdateDTO keyResultUpdateDTO = okrKeyResultUpdateDTO.getKeyResultUpdateDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultUpdateDTO.getScene());
-        KeyResult keyResult = BeanUtil.copyProperties(keyResultUpdateDTO, KeyResult.class);
+        KeyResult keyResult = KeyResultConverter.INSTANCE.keyResultUpdateDTOToKeyResult(keyResultUpdateDTO);
         Long keyResultId = keyResult.getId();
         // 校验身份
         Long firstQuadrantId = keyResultService.getFirstQuadrantId(keyResultId);

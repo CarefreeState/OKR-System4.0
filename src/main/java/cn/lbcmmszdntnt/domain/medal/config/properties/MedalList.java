@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.config.properties;
 
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.lbcmmszdntnt.domain.medal.model.converter.MedalConverter;
 import cn.lbcmmszdntnt.domain.medal.model.po.Medal;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import cn.lbcmmszdntnt.domain.medal.service.MedalService;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created With Intellij IDEA
@@ -73,14 +72,11 @@ public class MedalList {
         // clone 的一份
         List<UserMedalVO> userMedalVOS = null;
         synchronized (medalList) {
-            userMedalVOS = medalList.stream().map(medal -> {
-                UserMedalVO userMedalVO = BeanUtil.copyProperties(medal, UserMedalVO.class);
-                userMedalVO.setMedalId(medal.getId());
-                userMedalVO.setUrl(medal.getGreyUrl());
-                return userMedalVO;
-            }).sorted(Comparator.comparing(UserMedalVO::getMedalId)).collect(Collectors.toList());
+            userMedalVOS = medalList.stream()
+                    .map(MedalConverter.INSTANCE::medalToUserMedalVO)
+                    .sorted(Comparator.comparing(UserMedalVO::getMedalId))
+                    .toList();
+            return userMedalVOS;
         }
-        return userMedalVOS;
     }
-
 }

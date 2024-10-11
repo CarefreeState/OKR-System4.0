@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
@@ -9,6 +8,7 @@ import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.factory.LoginServiceFactory;
+import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
@@ -189,7 +189,7 @@ public class UserController {
         // 获取当前登录用户
         User user = UserRecordUtil.getUserRecord();
         // 提取信息
-        UserVO userVO = BeanUtil.copyProperties(user, UserVO.class);
+        UserVO userVO = UserConverter.INSTANCE.userToUserVO(user);
         // 返回
         return SystemJsonResponse.SYSTEM_SUCCESS(userVO);
     }
