@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
  */
 public class ColorPatternValidator implements ConstraintValidator<ColorPattern, String> {
 
-    public final static String COLOR_PATTERN = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$";
+    private final static String COLOR_PATTERN = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$";
 
     @Override
     public boolean isValid(String color, ConstraintValidatorContext constraintValidatorContext) {

@@ -7,7 +7,7 @@ import cn.lbcmmszdntnt.domain.qrcode.config.properties.WxBindingQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
 import cn.lbcmmszdntnt.domain.qrcode.util.QRCodeUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import lombok.RequiredArgsConstructor;

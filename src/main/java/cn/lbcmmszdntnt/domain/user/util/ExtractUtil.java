@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.util;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import cn.lbcmmszdntnt.util.web.HttpUtil;

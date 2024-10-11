@@ -4,7 +4,7 @@ import cn.lbcmmszdntnt.domain.user.model.dto.detail.LoginUser;
 import cn.lbcmmszdntnt.domain.user.service.UserRecordService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

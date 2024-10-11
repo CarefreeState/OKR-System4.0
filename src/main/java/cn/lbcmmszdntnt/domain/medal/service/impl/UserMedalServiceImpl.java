@@ -11,7 +11,7 @@ import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

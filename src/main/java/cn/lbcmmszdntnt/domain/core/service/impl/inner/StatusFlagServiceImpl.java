@@ -6,7 +6,7 @@ import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.service.inner.StatusFlagService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -8,7 +8,7 @@ import cn.lbcmmszdntnt.domain.core.model.po.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.ThirdQuadrant;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisLock;
+import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.thread.timer.TimerUtil;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.email.repository;
 
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

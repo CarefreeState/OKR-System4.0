@@ -1,9 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.loader;
 
 
-import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.service.QuadrantDeadlineService;
-import cn.lbcmmszdntnt.domain.core.service.impl.QuadrantDeadlineServiceXxlJobImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -24,7 +22,7 @@ public class QuadrantDeadlineServiceLoader {
     public QuadrantDeadlineService load() {
         // 选取服务
         Iterator<QuadrantDeadlineService> iterator = quadrantDeadlineServices.iterator();
-        return iterator.hasNext() ? iterator.next() : SpringUtil.getBean(QuadrantDeadlineServiceXxlJobImpl.class);
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
 }

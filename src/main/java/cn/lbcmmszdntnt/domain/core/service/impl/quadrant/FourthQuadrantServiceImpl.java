@@ -7,7 +7,7 @@ import cn.lbcmmszdntnt.domain.core.model.po.quadrant.FourthQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.FourthQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FourthQuadrantService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

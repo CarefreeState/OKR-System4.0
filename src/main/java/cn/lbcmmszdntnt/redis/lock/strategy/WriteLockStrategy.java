@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.redis.strategy;
+package cn.lbcmmszdntnt.redis.lock.strategy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

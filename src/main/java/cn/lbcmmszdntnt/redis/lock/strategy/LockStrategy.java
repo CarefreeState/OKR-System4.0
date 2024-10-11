@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.redis.strategy;
+package cn.lbcmmszdntnt.redis.lock.strategy;
 
 import org.redisson.api.RLock;
 

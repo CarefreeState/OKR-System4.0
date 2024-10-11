@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.redis.strategy;
+package cn.lbcmmszdntnt.redis.lock.strategy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
  * Description:
  * User: 马拉圈
  * Date: 2024-07-11
- * Time: 23:31
+ * Time: 23:25
  */
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ReadLockStrategy implements LockStrategy {
+public class SimpleLockStrategy implements LockStrategy {
 
     private final RedissonClient redisClient;
 
     @Override
     public RLock apply(String key) {
-        log.info("读锁 RLock {}", key);
-        return redisClient.getReadWriteLock(key).readLock();
+        log.info("普通锁 RLock {}", key);
+        return redisClient.getLock(key);
     }
 }

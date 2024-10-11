@@ -41,7 +41,7 @@ public class QuadrantInitialInterceptor implements HandlerInterceptor {
 
     private final MedalHandlerChain medalHandlerChain;
 
-    // 这里【抛异常】不会影响响应，但是会被异常处理器捕获（但是这个方法会影响响应速度）
+    // 这里【抛异常】不会影响响应，（但是这个方法会影响响应速度）
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         // 初心启航

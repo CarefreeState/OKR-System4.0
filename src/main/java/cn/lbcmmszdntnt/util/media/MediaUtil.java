@@ -9,8 +9,10 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -20,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -40,9 +43,11 @@ public class MediaUtil {
 
     public static final String SUFFIX = "png";
 
-    public static final String UTF_8 = "UTF-8";
+    public static final String UTF_8 = StandardCharsets.UTF_8.toString();
 
     private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
+
+    private final static Tika TIKA = new Tika();
 
     // 获取UUID
     public static String getUUID_32() {
@@ -220,4 +225,31 @@ public class MediaUtil {
         return new ByteArrayInputStream(bytes);
     }
 
+    public static byte[] getBytes(MultipartFile file) {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    public static String getContentType(InputStream inputStream) throws IOException {
+        return TIKA.detect(inputStream);
+    }
+
+    public static String getContentType(MultipartFile file) {
+        try(InputStream inputStream = file.getInputStream()) {
+            return getContentType(inputStream);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    public static String getContentType(byte[] data) {
+        try(InputStream inputStream = MediaUtil.getInputStream(data)) {
+            return getContentType(inputStream);
+        } catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
 }

@@ -17,7 +17,7 @@ import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
 import cn.lbcmmszdntnt.domain.record.service.CoreRecorderService;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisLock;
+import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;

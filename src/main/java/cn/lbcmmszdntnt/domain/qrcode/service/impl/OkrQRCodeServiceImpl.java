@@ -2,15 +2,15 @@ package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.qrcode.config.BloomFilterConfig;
+import cn.lbcmmszdntnt.domain.qrcode.bloomfilter.SecretCodeBloomFilter;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.OkrQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.factory.InviteQRCodeServiceFactory;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.*;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.RedisCache;
-import cn.lbcmmszdntnt.redis.RedisLock;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
+import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.util.convert.ShortCodeUtil;
 import cn.lbcmmszdntnt.util.media.ImageUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
@@ -44,6 +44,8 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     private final RedisCache redisCache;
 
     private final RedisLock redisLock;
+
+    private final SecretCodeBloomFilter secretCodeBloomFilter;
 
     private final InviteQRCodeServiceFactory inviteQRCodeServiceFactory;
 
@@ -111,11 +113,10 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     @Override
     public String getSecretCode() {
         String secret;
-        String bloomFilterName = BloomFilterConfig.BLOOM_FILTER_NAME;
         do {
             secret = ShortCodeUtil.getShortCode(ShortCodeUtil.getSalt());
-        } while (redisCache.containsInBloomFilter(bloomFilterName, secret));
-        redisCache.addToBloomFilter(bloomFilterName, secret);
+        } while (secretCodeBloomFilter.contains(secret));
+        secretCodeBloomFilter.add(secret);
         return secret;
     }
 

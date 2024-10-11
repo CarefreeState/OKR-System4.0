@@ -4,8 +4,8 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.model.vo.VerificationCodeTemplate;
 import cn.lbcmmszdntnt.domain.email.repository.EmailRepository;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
-import cn.lbcmmszdntnt.email.EmailSender;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
+import cn.lbcmmszdntnt.email.sender.EmailSender;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.template.engine.HtmlEngine;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +107,7 @@ public class EmailServiceImpl implements EmailService {
         Map<String, Object> map = emailRepository.getIdentifyingCode(redisKey)
                 .map(value -> (Map<String, Object>)value)
                 .orElseThrow(() -> {
-                    String message = String.format("Redis 中不存在邮箱[%s]的相关记录", email);
+                    String message = String.format("不存在邮箱[%s]的相关记录", email);
                     return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
                 });
         // 取出验证码和过期时间点
