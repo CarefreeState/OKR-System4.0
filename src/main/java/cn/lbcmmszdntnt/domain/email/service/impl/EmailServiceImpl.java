@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.model.vo.VerificationCodeTemplate;
 import cn.lbcmmszdntnt.domain.email.repository.EmailRepository;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
+import cn.lbcmmszdntnt.email.enums.EmailTemplateEnum;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.email.sender.EmailSender;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -45,12 +46,6 @@ public class EmailServiceImpl implements EmailService {
 
     private static final int IDENTIFYING_CODE_INTERVAL_LIMIT = 5; // 只有五次验证机会
 
-    @Value("${email.template}")
-    private String emailModelHtml; // Email 验证码通知 -模板
-
-    @Value("${spring.mail.username}")
-    private String systemEmail;
-
     private final EmailSender emailSender;
 
     private final EmailRepository emailRepository;
@@ -79,13 +74,10 @@ public class EmailServiceImpl implements EmailService {
             throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
         }
         // 封装 Email
+        EmailTemplateEnum captcha = EmailTemplateEnum.CAPTCHA;
         EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setContent(code);
-        emailMessage.setCreateTime(new Date());
-        emailMessage.setTitle(IDENTIFYING_CODE_PURPOSE);
+        emailMessage.setTitle(captcha.getTitle());
         emailMessage.setRecipient(email);
-        emailMessage.setCarbonCopy();
-        emailMessage.setSender(systemEmail);
         // 存到 redis 中
         emailRepository.setIdentifyingCode(redisKey, code, IDENTIFYING_CODE_TIMEOUT, IDENTIFYING_CODE_INTERVAL_LIMIT);
         VerificationCodeTemplate verificationCodeTemplate = VerificationCodeTemplate.builder()
@@ -94,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
                 .build();
         // 发送模板消息
         String html = htmlEngine.builder()
-                .append(emailModelHtml, verificationCodeTemplate)
+                .append(captcha.getTemplate(), verificationCodeTemplate)
                 .build();
         emailMessage.setContent(html);
         emailSender.send(emailMessage);
