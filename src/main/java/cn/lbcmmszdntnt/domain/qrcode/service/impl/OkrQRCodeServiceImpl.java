@@ -65,7 +65,6 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
             String savePath = MediaUtil.getLocalFilePath(mapPath);
             ImageUtil.mergeSignatureWrite(savePath, teamName,
                     okrQRCode.getInvite(), okrQRCode.getTextColor(), inviteQRCodeService.getQRCodeColor());
-            // todo： 缓存小程序码
             redisCache.setCacheObject(redisKey, mapPath, QRCodeConfig.TEAM_QR_MAP_TTL, QRCodeConfig.TEAM_QR_MAP_UNIT);
             return mapPath;
         });
