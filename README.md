@@ -9,4 +9,4 @@ https://lbcmmszdntnt.cn
 
 ![二维码](https://lbcmmszdntnt.cn/media/common/f1f4620d86bf45908789be9fdc9f8667.png)
 
-联系方式：bitter-macaron
+联系方式（微信）：bitter-macaron
