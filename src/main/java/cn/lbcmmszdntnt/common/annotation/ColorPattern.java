@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.common.annotation;
 
+import cn.lbcmmszdntnt.common.annotation.handler.ColorPatternValidator;
 import cn.lbcmmszdntnt.common.annotation.handler.IntRangeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -14,7 +15,7 @@ import java.lang.annotation.*;
  * Time: 19:32
  */
 @Documented
-@Constraint(validatedBy = {IntRangeValidator.class})
+@Constraint(validatedBy = {ColorPatternValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColorPattern {

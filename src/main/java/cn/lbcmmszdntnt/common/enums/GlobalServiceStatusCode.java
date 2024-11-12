@@ -1,8 +1,10 @@
 package cn.lbcmmszdntnt.common.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum GlobalServiceStatusCode {
     /* 成功, 默认200 */
     SYSTEM_SUCCESS(200, "操作成功"),
@@ -135,18 +137,13 @@ public enum GlobalServiceStatusCode {
     private final Integer code;
     private final String message;
 
-    GlobalServiceStatusCode(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
     /**
      * 根据code获取message
      *
      * @param code 状态码的code
      * @return 状态码的状态信息
      */
-    public static String GetStatusMsgByCode(Integer code) {
+    public static String getStatusMsgByCode(Integer code) {
         for (GlobalServiceStatusCode ele : values()) {
             if (ele.getCode().equals(code)) {
                 return ele.getMessage();

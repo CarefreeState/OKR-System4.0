@@ -59,7 +59,6 @@ public class ThreadLocalMapUtil {
         return clazz.cast(get(key));
     }
 
-    // 一次性的获取
     public static <T> T get(String key, Function<Object, T> mapper) {
         Object value = get(key);
         return Objects.isNull(value) ? null : mapper.apply(value);
@@ -71,7 +70,7 @@ public class ThreadLocalMapUtil {
                 .map(s -> s + str)
                 .orElse(str)
         ;
-        set(SecurityConfig.EXCEPTION_MESSAGE, newStr);
+        set(key, newStr);
     }
 
 }

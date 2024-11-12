@@ -27,6 +27,7 @@ import cn.lbcmmszdntnt.websocket.util.MessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ import java.util.Map;
  * Time: 0:07
  */
 @RestController
-@Schema(name = "用户测试接口")
+@Tag(name = "用户测试接口")
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
