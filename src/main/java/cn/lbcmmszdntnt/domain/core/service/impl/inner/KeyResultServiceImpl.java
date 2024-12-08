@@ -65,14 +65,14 @@ public class KeyResultServiceImpl extends ServiceImpl<KeyResultMapper, KeyResult
     @Override
     public Long getFirstQuadrantId(Long id) {
         String redisKey = KR_FIRST_QUADRANT_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询数据库
             Long firstQuadrantId = this.lambdaQuery()
                     .eq(KeyResult::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.KEY_RESULT_NOT_EXISTS)
                     ).getFirstQuadrantId();
-            redisCache.setCacheObject(redisKey, firstQuadrantId, KR_FIRST_QUADRANT_TTL, KR_FIRST_QUADRANT_UNIT);
+            redisCache.setObject(redisKey, firstQuadrantId, KR_FIRST_QUADRANT_TTL, KR_FIRST_QUADRANT_UNIT);
             return firstQuadrantId;
         });
     }

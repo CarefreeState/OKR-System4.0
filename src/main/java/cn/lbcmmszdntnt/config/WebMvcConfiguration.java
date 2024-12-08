@@ -1,12 +1,19 @@
 package cn.lbcmmszdntnt.config;
 
+import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
-public class StaticMapperConfig implements WebMvcConfigurer {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
     public static String MAP_ROOT;
 
@@ -36,6 +43,13 @@ public class StaticMapperConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + MAP_ROOT + "**")
                 .addResourceLocations("file:" + ROOT + MAP_ROOT);
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new StringHttpMessageConverter());
+        converters.add(new ByteArrayHttpMessageConverter()); // 避免 api-docs 编写为 base64 码
+        converters.add(new MappingJackson2HttpMessageConverter(JsonUtil.OBJECT_MAPPER));
     }
 
     @Value("${media.map}")

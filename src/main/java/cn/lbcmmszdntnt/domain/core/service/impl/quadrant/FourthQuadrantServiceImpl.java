@@ -44,14 +44,14 @@ public class FourthQuadrantServiceImpl extends ServiceImpl<FourthQuadrantMapper,
     @Override
     public Long getFourthQuadrantCoreId(Long id) {
         String redisKey = FOURTH_QUADRANT_CORE_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询
             Long coreId = this.lambdaQuery()
                     .eq(FourthQuadrant::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.FOURTH_QUADRANT_NOT_EXISTS)
                     ).getCoreId();
-            redisCache.setCacheObject(redisKey, coreId, FOURTH_CORE_MAP_TTL, FOURTH_CORE_MAP_UNIT);
+            redisCache.setObject(redisKey, coreId, FOURTH_CORE_MAP_TTL, FOURTH_CORE_MAP_UNIT);
             return coreId;
         });
     }

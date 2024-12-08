@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.WxLoginQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxLoginQRCodeService;
 import cn.lbcmmszdntnt.domain.qrcode.util.QRCodeUtil;
@@ -38,7 +38,7 @@ public class WxLoginQRCodeServiceImpl implements WxLoginQRCodeService {
         String scene = String.format("%s=%s", wxLoginQRCode.getSecret(), secret);
         params.put("scene", scene);
         String json = JsonUtil.analyzeData(params);
-        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), StaticMapperConfig.LOGIN_PATH);
+        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), WebMvcConfiguration.LOGIN_PATH);
     }
 
 }

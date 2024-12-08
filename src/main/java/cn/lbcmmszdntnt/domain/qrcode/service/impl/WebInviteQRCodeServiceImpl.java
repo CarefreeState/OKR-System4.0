@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.WebInviteQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.InviteQRCodeService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -54,7 +54,7 @@ public class WebInviteQRCodeServiceImpl implements InviteQRCodeService {
         String url = page + "?" + sceneBuilder;
         log.info("生成二维码 -> {}  {}  {} ", url, width, width);
         byte[] codeBytes = MediaUtil.getCustomColorQRCodeByteArray(url, width, width);
-        return MediaUtil.saveImage(codeBytes, StaticMapperConfig.INVITE_PATH);
+        return MediaUtil.saveImage(codeBytes, WebMvcConfiguration.INVITE_PATH);
     }
 
     @Override

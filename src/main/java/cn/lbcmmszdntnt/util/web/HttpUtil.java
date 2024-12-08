@@ -23,8 +23,6 @@ public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
-    private static final String NOT_DIGIT_PATTERN = "[^0-9]+";
-
     public static String getFormBody(Map<String, Object> map) {
         if (Objects.isNull(map)) {
             return "";
@@ -92,15 +90,10 @@ public class HttpUtil {
         return Base64.encodeBase64String(doPostJsonBytes(url, json));
     }
 
-
     public static InputStream getFileInputStream(String fileUrl) throws IOException {
         return HttpRequest.get(fileUrl)
                 .execute()
                 .bodyStream();
-    }
-
-    public static boolean isInvalidIpAddress(String ipAddress) {
-        return !StringUtils.hasText(ipAddress) || "unknown".equalsIgnoreCase(ipAddress);
     }
 
     @Nullable
@@ -116,27 +109,6 @@ public class HttpUtil {
     @Nullable
     public static HttpServletResponse getResponse() {
         return Optional.ofNullable(getAttributes()).map(ServletRequestAttributes::getResponse).orElse(null);
-    }
-
-    public static String getIPAddress() {
-        return Optional.ofNullable(getRequest())
-                .map(request -> {
-                    String ipAddress = request.getHeader("X-Forwarded-For");
-                    if (isInvalidIpAddress(ipAddress)) {
-                        ipAddress = request.getHeader("Proxy-Client-IP");
-                    }
-                    if (isInvalidIpAddress(ipAddress)) {
-                        ipAddress = request.getHeader("WL-Proxy-Client-IP");
-                    }
-                    if (isInvalidIpAddress(ipAddress)) {
-                        ipAddress = request.getRemoteAddr();
-                    }
-                    return ipAddress;
-                }).orElse("");
-    }
-
-    public static String getDigitIP() {
-        return getIPAddress().replaceAll(NOT_DIGIT_PATTERN, "");
     }
 
 }

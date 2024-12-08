@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.util.thread.local;
 
-import cn.lbcmmszdntnt.security.config.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

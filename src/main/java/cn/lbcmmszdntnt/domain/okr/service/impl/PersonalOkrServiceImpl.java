@@ -85,13 +85,13 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
     @Override
     public Long getCoreUser(Long coreId) {
         String redisKey = CoreUserMapConfig.USER_CORE_MAP + coreId;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             Long userId = Db.lambdaQuery(PersonalOkr.class)
                     .eq(PersonalOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getUserId();
-            redisCache.setCacheObject(redisKey, userId, CoreUserMapConfig.USER_CORE_MAP_TTL, CoreUserMapConfig.USER_CORE_MAP_TTL_UNIT);
+            redisCache.setObject(redisKey, userId, CoreUserMapConfig.USER_CORE_MAP_TTL, CoreUserMapConfig.USER_CORE_MAP_TTL_UNIT);
             return userId;
         });
     }

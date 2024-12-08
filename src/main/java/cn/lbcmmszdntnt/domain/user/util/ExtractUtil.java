@@ -46,13 +46,13 @@ public class ExtractUtil {
         String token = request.getHeader(JwtUtil.JWT_HEADER);
         String redisKey = TOKEN_BLACKLIST + token;
         long ttl = JwtUtil.getJwtTTL(token);
-        REDIS_CACHE.setCacheObject(redisKey, Boolean.TRUE, ttl, TimeUnit.MILLISECONDS);
+        REDIS_CACHE.setObject(redisKey, Boolean.TRUE, ttl, TimeUnit.MILLISECONDS);
     }
 
         public static Boolean isInTheTokenBlacklist(HttpServletRequest request) {
         String token = request.getHeader(JwtUtil.JWT_HEADER);
         String redisKey = TOKEN_BLACKLIST + token;
-        return (Boolean) REDIS_CACHE.getCacheObject(redisKey).orElse(Boolean.FALSE);
+        return REDIS_CACHE.getObject(redisKey, Boolean.class).orElse(Boolean.FALSE);
     }
 
     public static <T> T getValueFromJWT(HttpServletRequest request, String key, Class<T> clazz) {

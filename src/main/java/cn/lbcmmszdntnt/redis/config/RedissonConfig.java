@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.redis.config;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -7,6 +8,9 @@ import org.redisson.config.Config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -17,7 +21,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @Setter
-@ConfigurationProperties(prefix = "spring.redisson")
+@Getter
+@ConfigurationProperties(prefix = "spring.data.redisson")
 public class RedissonConfig {
 
     private String url;
@@ -32,7 +37,7 @@ public class RedissonConfig {
         // 配置 Redisson 连接信息
         config.useSingleServer()
                 .setAddress(url)
-                .setPassword(password) // 设置密码（如果需要）
+                .setPassword(Optional.ofNullable(password).filter(StringUtils::hasText).orElse(null)) // 设置密码
                 .setDatabase(database) // 设置数据库索引
         ;
         return Redisson.create(config);

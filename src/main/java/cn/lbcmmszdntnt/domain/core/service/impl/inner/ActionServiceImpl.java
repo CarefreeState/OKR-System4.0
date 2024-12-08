@@ -80,14 +80,14 @@ public class ActionServiceImpl extends ServiceImpl<ActionMapper, Action>
     @Override
     public Long getTaskQuadrantId(Long id) {
         String redisKey = ACTION_QUADRANT_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询数据库
             Long thirdQuadrantId = this.lambdaQuery()
                     .eq(Action::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.TASK_NOT_EXISTS)
                     ).getThirdQuadrantId();
-            redisCache.setCacheObject(redisKey, thirdQuadrantId, ACTION_QUADRANT_TTL, ACTION_QUADRANT_UNIT);
+            redisCache.setObject(redisKey, thirdQuadrantId, ACTION_QUADRANT_TTL, ACTION_QUADRANT_UNIT);
             return thirdQuadrantId;
         });
     }

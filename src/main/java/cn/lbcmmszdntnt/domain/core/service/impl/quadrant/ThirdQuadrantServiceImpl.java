@@ -95,14 +95,14 @@ public class ThirdQuadrantServiceImpl extends ServiceImpl<ThirdQuadrantMapper, T
     @Override
     public Long getThirdQuadrantCoreId(Long id) {
         String redisKey = THIRD_QUADRANT_CORE_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询
             Long coreId = this.lambdaQuery()
                     .eq(ThirdQuadrant::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.SECOND_QUADRANT_NOT_EXISTS)
                     ).getCoreId();
-            redisCache.setCacheObject(redisKey, coreId, THIRD_CORE_MAP_TTL, THIRD_CORE_MAP_UNIT);
+            redisCache.setObject(redisKey, coreId, THIRD_CORE_MAP_TTL, THIRD_CORE_MAP_UNIT);
             return coreId;
         });
     }

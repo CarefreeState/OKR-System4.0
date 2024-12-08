@@ -36,12 +36,12 @@ public class WxUserRecordServiceImpl implements UserRecordService {
         }
         String openid = ExtractUtil.getOpenIDFromJWT(request);
         String redisKey = JwtUtil.JWT_LOGIN_WX_USER + openid;
-        return Optional.ofNullable((LoginUser) redisCache.getCacheObject(redisKey)
+        return Optional.ofNullable(redisCache.getObject(redisKey, LoginUser.class)
                 .orElseGet(() -> userService
                         .getUserByOpenid(openid)
                         .map(dbUser -> {
                             LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(dbUser.getId()));
-                            redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
+                            redisCache.setObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
                             return loginUser;
                         }).orElse(null)
                 ));

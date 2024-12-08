@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.init;
 
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.util.thread.pool.SchedulerThreadPool;
@@ -45,9 +45,10 @@ public class QRCodeCacheClearInitializer  {
         // 如果文件没有缓存在
         Arrays.stream(files).parallel().forEach(file -> {
             String fileName = file.getName();
-            redisCache.getCacheObject(QRCodeConfig.WX_CHECK_QR_CODE_CACHE + fileName).orElseGet(() -> {
+            redisCache.getObject(QRCodeConfig.WX_CHECK_QR_CODE_CACHE + fileName, Integer.class).orElseGet(() -> {
                 log.warn("文件 {} 逻辑失效，删除！", fileName);
-                return file.delete();
+                file.delete();
+                return 0;
             });
         });
         log.warn("clearQRCodeCache 本轮清除任务结束，启动下一次清除任务...");
@@ -58,9 +59,10 @@ public class QRCodeCacheClearInitializer  {
         // 如果文件没有缓存在
         Arrays.stream(files).parallel().forEach(file -> {
             String fileName = file.getName();
-            redisCache.getCacheObject(QRCodeConfig.WX_LOGIN_QR_CODE_CACHE + fileName).orElseGet(() -> {
+            redisCache.getObject(QRCodeConfig.WX_LOGIN_QR_CODE_CACHE + fileName, Integer.class).orElseGet(() -> {
                 log.warn("文件 {} 逻辑失效，删除！", fileName);
-                return file.delete();
+                file.delete();
+                return 0;
             });
         });
         log.warn("clearLoginQRCodeCache 本轮清除任务结束，启动下一次清除任务...");
@@ -89,7 +91,7 @@ public class QRCodeCacheClearInitializer  {
             author = AUTHOR, triggerStatus = LOGIN_CLEAR_TRIGGER_STATUS, jobDesc = "【固定任务】清除登录码的缓存")
     private void clearLoginQRCodeCache() {
         // 查看 media/login/ 下的文件
-        String path = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT + StaticMapperConfig.LOGIN_PATH;
+        String path = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT + WebMvcConfiguration.LOGIN_PATH;
         File directory = new File(path);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -103,7 +105,7 @@ public class QRCodeCacheClearInitializer  {
             author = AUTHOR, triggerStatus = BINDING_CLEAR_TRIGGER_STATUS, jobDesc = "【固定任务】清除绑定码的缓存")
     private void clearQRCodeCache() {
         // 查看 media/binding/ 下的文件
-        String path = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT + StaticMapperConfig.BINDING_PATH;
+        String path = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT + WebMvcConfiguration.BINDING_PATH;
         File directory = new File(path);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -114,12 +116,12 @@ public class QRCodeCacheClearInitializer  {
     public void onApplicationEvent(ApplicationStartedEvent event) {
         log.warn("--> --> --> 应用启动成功 --> 开始清除微信小程序码的缓存 --> --> -->");
         // 查看 media/binding/ 下的文件
-        String path = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT + StaticMapperConfig.BINDING_PATH;
+        String path = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT + WebMvcConfiguration.BINDING_PATH;
         File directory = new File(path);
         // 循环检查是否清除缓存
         clearQRCodeCacheCycle(directory);
         // 查看 media/login/ 下的文件
-        path = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT + StaticMapperConfig.LOGIN_PATH;
+        path = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT + WebMvcConfiguration.LOGIN_PATH;
         directory = new File(path);
         // 循环检查是否清除缓存
         clearLoginQRCodeCacheCycle(directory);

@@ -78,14 +78,14 @@ public class FirstQuadrantServiceImpl extends ServiceImpl<FirstQuadrantMapper, F
     @Override
     public Long getFirstQuadrantCoreId(Long id) {
         String redisKey = FIRST_QUADRANT_CORE_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询
             Long coreId = this.lambdaQuery()
                     .eq(FirstQuadrant::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.FIRST_QUADRANT_NOT_EXISTS)
                     ).getCoreId();
-            redisCache.setCacheObject(redisKey, coreId, FIRST_CORE_MAP_TTL, FIRST_CORE_MAP_UNIT);
+            redisCache.setObject(redisKey, coreId, FIRST_CORE_MAP_TTL, FIRST_CORE_MAP_UNIT);
             return coreId;
         });
     }

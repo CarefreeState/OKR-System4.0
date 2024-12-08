@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.WxBindingQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
@@ -46,13 +46,13 @@ public class WxBindingQRCodeServiceImpl implements WxBindingQRCodeService {
         String scene = String.format("%s=%d&%s=%s", userKey, userId, secret, randomCode);
         params.put("scene", scene);
         String json = JsonUtil.analyzeData(params);
-        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), StaticMapperConfig.BINDING_PATH);
+        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), WebMvcConfiguration.BINDING_PATH);
     }
 
     @Override
     public void checkParams(Long userId, String randomCode) {
         String redisKey = QRCodeConfig.WX_CHECK_QR_CODE_MAP + userId;
-        String code = (String) redisCache.getCacheObject(redisKey).orElseThrow(() ->
+        String code = (String) redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.WX_NOT_EXIST_RECORD));
         redisCache.deleteObject(redisKey);
         if(!randomCode.equals(code)) {

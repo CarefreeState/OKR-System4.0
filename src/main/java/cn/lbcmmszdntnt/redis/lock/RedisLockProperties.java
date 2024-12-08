@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.bloomfilter;
+package cn.lbcmmszdntnt.redis.lock;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,20 +11,16 @@ import java.util.concurrent.TimeUnit;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-10-11
- * Time: 19:48
+ * Date: 2024-10-13
+ * Time: 0:34
  */
 @Configuration
 @Setter
 @Getter
-@ConfigurationProperties(prefix = "bloom-filter.secretcode")
-public class SecretCodeBloomFilterProperties {
+@ConfigurationProperties(prefix = "spring.data.redisson.lock")
+public class RedisLockProperties {
 
-    private String name;
-
-    private Long preSize;
-
-    private Double rate;
+    private Long wait;
 
     private Long timeout;
 

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.WxInviteQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.InviteQRCodeService;
 import cn.lbcmmszdntnt.domain.qrcode.util.QRCodeUtil;
@@ -71,7 +71,7 @@ public class WxInviteQRCodeServiceImpl implements InviteQRCodeService {
                 .append(inviteSecret);
         params.put("scene", sceneBuilder.toString());
         String json = JsonUtil.analyzeData(params);
-        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), StaticMapperConfig.INVITE_PATH);
+        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), WebMvcConfiguration.INVITE_PATH);
     }
 
 }

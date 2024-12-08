@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.util.media;
 
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
 import com.google.zxing.BarcodeFormat;
@@ -60,7 +60,7 @@ public class MediaUtil {
     }
 
     public static String getLocalFilePath(String mapPath) {
-        return StaticMapperConfig.ROOT + mapPath;
+        return WebMvcConfiguration.ROOT + mapPath;
     }
 
     public static String getLocalFileName(String mapPath) {
@@ -98,10 +98,10 @@ public class MediaUtil {
     }
 
     public static String saveImage(byte[] imageData) {
-        String savePath = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT;
+        String savePath = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT;
         String fileName = getUniqueImageName();
         String filePath = savePath + fileName;
-        String mapPath = StaticMapperConfig.MAP_ROOT + fileName;
+        String mapPath = WebMvcConfiguration.MAP_ROOT + fileName;
         saveFile(savePath, filePath, imageData);
         log.info("图片保存成功 {}", filePath);
         return mapPath;
@@ -111,8 +111,8 @@ public class MediaUtil {
         if(!StringUtils.hasText(extraPath)) {
             return saveImage(imageData);
         }
-        String mapBasePath = StaticMapperConfig.MAP_ROOT + extraPath;
-        String savePath = StaticMapperConfig.ROOT + mapBasePath;
+        String mapBasePath = WebMvcConfiguration.MAP_ROOT + extraPath;
+        String savePath = WebMvcConfiguration.ROOT + mapBasePath;
         String fileName = getUniqueImageName();
         String filePath = savePath + fileName;
         String mapPath = mapBasePath + fileName;

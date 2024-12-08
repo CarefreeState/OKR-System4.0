@@ -49,10 +49,10 @@ public class CoreRecorderServiceImpl extends ServiceImpl<CoreRecorderMapper, Cor
     @Override
     public CoreRecorder getCoreRecorder(Long coreId) {
         String redisKey = CORE_RECORDER_MAP + coreId;
-        return (CoreRecorder) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, CoreRecorder.class).orElseGet(() -> {
             CoreRecorder coreRecorder = this.lambdaQuery().eq(CoreRecorder::getCoreId, coreId)
                     .oneOpt().orElseGet(() -> initCoreRecorder(coreId));
-            redisCache.setCacheObject(redisKey, coreRecorder, CORE_RECORD_MAP_TTL, CORE_RECORDER_MAP_UNIT);
+            redisCache.setObject(redisKey, coreRecorder, CORE_RECORD_MAP_TTL, CORE_RECORDER_MAP_UNIT);
             return coreRecorder;
         });
     }

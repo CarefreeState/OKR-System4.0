@@ -80,14 +80,14 @@ public class PriorityNumberTwoServiceImpl extends ServiceImpl<PriorityNumberTwoM
     @Override
     public Long getTaskQuadrantId(Long id) {
         String redisKey = P2_QUADRANT_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询数据库
             Long secondQuadrantId = this.lambdaQuery()
                     .eq(PriorityNumberTwo::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.TASK_NOT_EXISTS)
                     ).getSecondQuadrantId();
-            redisCache.setCacheObject(redisKey, secondQuadrantId, P2_QUADRANT_TTL, P2_QUADRANT_UNIT);
+            redisCache.setObject(redisKey, secondQuadrantId, P2_QUADRANT_TTL, P2_QUADRANT_UNIT);
             return secondQuadrantId;
         });
     }

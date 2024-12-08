@@ -86,10 +86,10 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
     @Override
     public OkrCore getOkrCore(Long coreId) {
         String redisKey = OkrCoreConfig.OKR_CORE_ID_MAP + coreId;
-        return (OkrCore) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, OkrCore.class).orElseGet(() -> {
             OkrCore okrCore = this.lambdaQuery().eq(OkrCore::getId, coreId).oneOpt().orElseThrow(() ->
                     new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS));
-            redisCache.setCacheObject(redisKey, okrCore, OkrCoreConfig.OKR_CORE_MAP_TTL, OkrCoreConfig.OKR_CORE_MAP_UNIT);
+            redisCache.setObject(redisKey, okrCore, OkrCoreConfig.OKR_CORE_MAP_TTL, OkrCoreConfig.OKR_CORE_MAP_UNIT);
             return okrCore;
         });
     }

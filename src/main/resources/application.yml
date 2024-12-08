@@ -58,10 +58,10 @@ okr:
       scene-tp: teamPersonalOkrServiceImpl
     loginServiceMap:
       WX_JWT: wxLoginServiceImpl
-      EMAIL_JW: emailLoginServiceImpl
+      EMAIL_JWT: emailLoginServiceImpl
     userRecordServiceMap:
       WX_JWT: wxUserRecordServiceImpl
-      EMAIL_JW: emailUserRecordServiceImpl
+      EMAIL_JWT: emailUserRecordServiceImpl
     inviteQRCodeServiceMap:
       wx: wxInviteQRCodeServiceImpl
       web: webInviteQRCodeServiceImpl

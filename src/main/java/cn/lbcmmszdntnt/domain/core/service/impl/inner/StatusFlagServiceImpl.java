@@ -71,14 +71,14 @@ public class StatusFlagServiceImpl extends ServiceImpl<StatusFlagMapper, StatusF
     @Override
     public Long getFlagFourthQuadrantId(Long id) {
         String redisKey = FLAG_FOURTH_QUADRANT_MAP + id;
-        return (Long) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             // 查询数据库
             Long fourthQuadrant = this.lambdaQuery()
                     .eq(StatusFlag::getId, id)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.STATUS_FLAG_NOT_EXISTS)
                     ).getFourthQuadrantId();
-            redisCache.setCacheObject(redisKey, fourthQuadrant, FLAG_FOURTH_QUADRANT_TTL, FLAG_FOURTH_QUADRANT_UNIT);
+            redisCache.setObject(redisKey, fourthQuadrant, FLAG_FOURTH_QUADRANT_TTL, FLAG_FOURTH_QUADRANT_UNIT);
             return fourthQuadrant;
         });
     }

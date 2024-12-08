@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.WxCommonQRCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxCommonQRCodeService;
 import cn.lbcmmszdntnt.domain.qrcode.util.QRCodeUtil;
@@ -39,6 +39,6 @@ public class WxCommonQRCodeServiceImpl implements WxCommonQRCodeService {
         Map<String, Object> params = wxCommonQRCode.getQRCodeParams();
         params.put("scene", SCENE);
         String json = JsonUtil.analyzeData(params);
-        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), StaticMapperConfig.COMMON_PATH);
+        return MediaUtil.saveImage(QRCodeUtil.doPostGetQRCodeData(json), WebMvcConfiguration.COMMON_PATH);
     }
 }

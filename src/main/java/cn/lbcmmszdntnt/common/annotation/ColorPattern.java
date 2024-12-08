@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.common.annotation;
 
 import cn.lbcmmszdntnt.common.annotation.handler.ColorPatternValidator;
-import cn.lbcmmszdntnt.common.annotation.handler.IntRangeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

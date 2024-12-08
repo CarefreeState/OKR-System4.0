@@ -55,8 +55,6 @@ public enum GlobalServiceStatusCode {
 
     DATA_NOT_SECURITY(3000, "数据不安全"),
 
-
-
     // -------- 象限相关：
     FIRST_QUADRANT_UPDATE_ERROR(4001, "第一象限更新失败"),
     SECOND_QUADRANT_UPDATE_ERROR(4002, "第二象限更新失败"),
@@ -127,28 +125,13 @@ public enum GlobalServiceStatusCode {
     /*SSE想关*/
     SSE_CONNECTION_NOT_EXIST(11000, "连接不存在或者超时"),
 
-
-
-
-
+    /*文件资源想关*/
+    FILE_RESOURCE_NOT_VALID(12000, "资源非法"),
+    FILE_RESOURCE_TYPE_NOT_MATCH(12001, "资源类型不匹配"),
 
     /* -------------- */;
 
     private final Integer code;
     private final String message;
 
-    /**
-     * 根据code获取message
-     *
-     * @param code 状态码的code
-     * @return 状态码的状态信息
-     */
-    public static String getStatusMsgByCode(Integer code) {
-        for (GlobalServiceStatusCode ele : values()) {
-            if (ele.getCode().equals(code)) {
-                return ele.getMessage();
-            }
-        }
-        return null;
-    }
 }

@@ -18,7 +18,7 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mybatis-plus.version>3.5.5</mybatis-plus.version>
+		<mybatis-plus.version>3.5.9</mybatis-plus.version>
 		<lombok.version>1.18.30</lombok.version>
 		<com.google.guava.version>31.1-jre</com.google.guava.version>
 		<org.redisson.version>3.27.2</org.redisson.version>
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.11</version>
+			<version>8.0.33</version>
 		</dependency>
 		<!-- lombok -->
 		<dependency>
@@ -133,12 +133,6 @@
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
 			<version>5.8.26</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.31</version>
 		</dependency>
 
 		<dependency>

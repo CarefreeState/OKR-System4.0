@@ -1,32 +1,21 @@
 package cn.lbcmmszdntnt.redis.bloomfilter;
 
+import cn.hutool.core.bean.BeanUtil;
+import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisException;
 
-import java.util.concurrent.TimeUnit;
-
+@RequiredArgsConstructor
 public class RedisBloomFilter<T> {
 
-    private String name;
+    private final BloomFilterProperties properties;
 
-    private Long preSize;
+    private final RBloomFilter<T> rBloomFilter;
 
-    private Double rate;
-
-    private Long timeout;
-
-    private TimeUnit unit;
-
-    private RBloomFilter<T> rBloomFilter;
-
-    protected final synchronized void initFilter(RedissonClient redissonClient, BloomFilterProperties properties) {
-        this.name = properties.getName();
-        this.preSize = properties.getPreSize();
-        this.rate = properties.getRate();
-        this.timeout = properties.getTimeout();
-        this.unit = properties.getUnit();
-        this.rBloomFilter = redissonClient.getBloomFilter(this.name);
+    public <P> RedisBloomFilter(final RedissonClient redissonClient, final P initialData) {
+        this.properties = BeanUtil.copyProperties(initialData, BloomFilterProperties.class);
+        this.rBloomFilter = redissonClient.getBloomFilter(this.properties.getName());
         tryInit();
     }
 
@@ -37,11 +26,11 @@ public class RedisBloomFilter<T> {
     }
 
     public void expire() {
-        rBloomFilter.expire(timeout, unit);
+        rBloomFilter.expire(properties.getTimeout(), properties.getUnit());
     }
 
     public void tryInit() {
-        rBloomFilter.tryInit(preSize, rate);
+        rBloomFilter.tryInit(properties.getPreSize(), properties.getRate());
         expire();
     }
 

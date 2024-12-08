@@ -58,14 +58,14 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     public String getInviteQRCode(Long teamId, String teamName, String type) {
         InviteQRCodeService inviteQRCodeService = inviteQRCodeServiceFactory.getService(type);
         String redisKey = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, type, teamId);
-        return (String)redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, String.class).orElseGet(() -> {
             // 获取 QRCode
             String mapPath = inviteQRCodeService.getQRCode(teamId);
             // 获取到团队名字
             String savePath = MediaUtil.getLocalFilePath(mapPath);
             ImageUtil.mergeSignatureWrite(savePath, teamName,
                     okrQRCode.getInvite(), okrQRCode.getTextColor(), inviteQRCodeService.getQRCodeColor());
-            redisCache.setCacheObject(redisKey, mapPath, QRCodeConfig.TEAM_QR_MAP_TTL, QRCodeConfig.TEAM_QR_MAP_UNIT);
+            redisCache.setObject(redisKey, mapPath, QRCodeConfig.TEAM_QR_MAP_TTL, QRCodeConfig.TEAM_QR_MAP_UNIT);
             return mapPath;
         });
     }
@@ -82,14 +82,14 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     public void deleteTeamNameCache(Long teamId) {
         String redisKey1 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, InviteQRCodeServiceFactory.WEB_TYPE, teamId);
         String redisKey2 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, InviteQRCodeServiceFactory.WX_TYPE, teamId);
-        redisCache.getCacheObject(redisKey1).ifPresent(mapPath -> {
+        redisCache.getObject(redisKey1, String.class).ifPresent(mapPath -> {
             redisCache.deleteObject(redisKey1);
-            String originPath = MediaUtil.getLocalFilePath((String) mapPath);
+            String originPath = MediaUtil.getLocalFilePath(mapPath);
             MediaUtil.deleteFile(originPath);
         });
-        redisCache.getCacheObject(redisKey2).ifPresent(mapPath -> {
+        redisCache.getObject(redisKey2, String.class).ifPresent(mapPath -> {
             redisCache.deleteObject(redisKey2);
-            String originPath = MediaUtil.getLocalFilePath((String) mapPath);
+            String originPath = MediaUtil.getLocalFilePath(mapPath);
             MediaUtil.deleteFile(originPath);
         });
     }
@@ -98,13 +98,13 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     public String getBindingQRCode(Long userId, String randomCode) {
         String redisKey = QRCodeConfig.WX_CHECK_QR_CODE_MAP + userId;
         String mapPath = wxBindingQRCodeService.getQRCode(userId, randomCode);
-        redisCache.setCacheObject(redisKey, randomCode,
+        redisCache.setObject(redisKey, randomCode,
                 QRCodeConfig.WX_CHECK_QR_CODE_TTL, QRCodeConfig.WX_CHECK_QR_CODE_UNIT);
         // 为图片记录缓存时间，时间一到，在服务器存储的文件应该删除掉！
         String savePath = MediaUtil.getLocalFilePath(mapPath);
         ImageUtil.mergeSignatureWrite(savePath, BINDING_CODE_MESSAGE,
                 okrQRCode.getBinding(), okrQRCode.getTextColor(), wxBindingQRCodeService.getQRCodeColor());
-        redisCache.setCacheObject(QRCodeConfig.WX_CHECK_QR_CODE_CACHE + MediaUtil.getLocalFileName(mapPath), 0,
+        redisCache.setObject(QRCodeConfig.WX_CHECK_QR_CODE_CACHE + MediaUtil.getLocalFileName(mapPath), 0,
                 QRCodeConfig.WX_CHECK_QR_CODE_TTL, QRCodeConfig.WX_CHECK_QR_CODE_UNIT);
         return mapPath;
     }
@@ -126,15 +126,15 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
 
     @Override
     public LoginQRCodeVO getLoginQRCode(String secret) {
-        // 设置 为 false
-        redisCache.setCacheObject(QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret, Boolean.FALSE,
+        // 设置为 "null"
+        redisCache.setObject(QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret, "null",
                 QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         // 获取一个小程序码
         String mapPath = wxLoginQRCodeService.getQRCode(secret);
         String savePath = MediaUtil.getLocalFilePath(mapPath);
         ImageUtil.mergeSignatureWrite(savePath, LOGIN_CODE_MESSAGE,
                 okrQRCode.getLogin(), okrQRCode.getTextColor(), wxLoginQRCodeService.getQRCodeColor());
-        redisCache.setCacheObject(QRCodeConfig.WX_LOGIN_QR_CODE_CACHE + MediaUtil.getLocalFileName(mapPath), 0,
+        redisCache.setObject(QRCodeConfig.WX_LOGIN_QR_CODE_CACHE + MediaUtil.getLocalFileName(mapPath), 0,
                 QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         return LoginQRCodeVO.builder()
                 .path(mapPath)
@@ -145,14 +145,14 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     @Override
     public String getCommonQRCode() {
         String redisKey = QRCodeConfig.WX_COMMON_QR_CODE_KEY;
-        return (String) redisLock.tryLockGetSomething(QRCodeConfig.OKR_COMMON_QR_CODE_LOCK, () ->
-            redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisLock.tryLockGetSomething(QRCodeConfig.OKR_COMMON_QR_CODE_LOCK, () ->
+            redisCache.getObject(redisKey, String.class).orElseGet(() -> {
                 // 获取 QRCode
                 String mapPath = wxCommonQRCodeService.getQRCode();
                 String savePath = MediaUtil.getLocalFilePath(mapPath);
                 ImageUtil.mergeSignatureWrite(savePath, COMMON_CODE_MESSAGE,
                         okrQRCode.getCommon(), okrQRCode.getTextColor(), wxCommonQRCodeService.getQRCodeColor());
-                redisCache.setCacheObject(redisKey, mapPath, QRCodeConfig.WX_COMMON_QR_CODE_TTL, QRCodeConfig.WX_COMMON_QR_CODE_UNIT);
+                redisCache.setObject(redisKey, mapPath, QRCodeConfig.WX_COMMON_QR_CODE_TTL, QRCodeConfig.WX_COMMON_QR_CODE_UNIT);
                 return mapPath;
             }), () -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);

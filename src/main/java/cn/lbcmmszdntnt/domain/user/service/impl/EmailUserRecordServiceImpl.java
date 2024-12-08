@@ -36,12 +36,12 @@ public class EmailUserRecordServiceImpl implements UserRecordService {
         }
         Long id = ExtractUtil.getUserIdFromJWT(request);
         String redisKey = JwtUtil.JWT_LOGIN_EMAIL_USER + id;
-        return Optional.ofNullable((LoginUser) redisCache.getCacheObject(redisKey)
+        return Optional.ofNullable(redisCache.getObject(redisKey, LoginUser.class)
                 .orElseGet(() -> userService
                         .getUserById(id)
                         .map(dbUser -> {
                             LoginUser loginUser = new LoginUser(dbUser, userService.getPermissions(id));
-                            redisCache.setCacheObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
+                            redisCache.setObject(redisKey, loginUser, JwtUtil.JWT_TTL, JwtUtil.JWT_TTL_UNIT);
                             return loginUser;
                         }).orElse(null)
                 ));

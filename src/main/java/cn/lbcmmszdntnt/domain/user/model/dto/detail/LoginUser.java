@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.model.dto.detail;
 
 import cn.lbcmmszdntnt.domain.user.model.po.User;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +23,8 @@ public class LoginUser implements UserDetails {
 
     private List<String> permissions;
 
-    @JSONField(serialize = false)//代表，由不通过fastjson序列化，用系统redis其他的方式存入redis
-    private List<GrantedAuthority> authorities;//com.alibaba.fastjson.JSONException: autoType is not support.
+    @JsonIgnore
+    private List<GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

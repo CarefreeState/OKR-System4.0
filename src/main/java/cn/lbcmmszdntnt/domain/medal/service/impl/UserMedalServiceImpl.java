@@ -48,12 +48,12 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
         String redisKey = String.format(USER_MEDAL_ID_MAP, userId, medalId);
         Boolean exists = redisCache.isExists(redisKey);
         if(Boolean.TRUE.equals(exists)) {
-            return (UserMedal) redisCache.getCacheObject(redisKey).orElse(null);
+            return redisCache.getObject(redisKey, UserMedal.class).orElse(null);
         } else {
             UserMedal userMedal = this.lambdaQuery()
                     .eq(UserMedal::getUserId, userId)
                     .eq(UserMedal::getMedalId, medalId).one();
-            redisCache.setCacheObject(redisKey, userMedal, USER_MEDAL_ID_TTL, USER_MEDAL_ID_UNIT);
+            redisCache.setObject(redisKey, userMedal, USER_MEDAL_ID_TTL, USER_MEDAL_ID_UNIT);
             return userMedal;
         }
     }

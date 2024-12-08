@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
@@ -15,9 +15,10 @@ import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
+import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.jwt.JwtUtil;
-import cn.lbcmmszdntnt.util.media.ImageUtil;
+import cn.lbcmmszdntnt.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
@@ -25,7 +26,6 @@ import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -63,12 +63,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static TimeUnit ID_USER_UNIT = TimeUnit.HOURS;
 
-    @Value("${spring.redisson.timeout}")
-    private Long timeout; // 秒
-
     private final RedisCache redisCache;
 
     private final RedisLock redisLock;
+
+    private final RedisLockProperties redisLockProperties;
 
     private final WxBindingQRCodeService wxBindingQRCodeService;
 
@@ -95,9 +94,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Optional<User> getUserById(Long id) {
         String redisKey = ID_USER_MAP + id;
-        return Optional.ofNullable((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
             User user = this.lambdaQuery().eq(User::getId, id).one();
-            redisCache.setCacheObject(redisKey, user, ID_USER_TTL, ID_USER_UNIT);
+            redisCache.setObject(redisKey, user, ID_USER_TTL, ID_USER_UNIT);
             return user;
         }));
     }
@@ -105,9 +104,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Optional<User> getUserByEmail(String email) {
         String redisKey = EMAIL_USER_MAP + email;
-        return Optional.ofNullable((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
             User user = this.lambdaQuery().eq(User::getEmail, email).one();
-            redisCache.setCacheObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
+            redisCache.setObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
             return user;
         }));
     }
@@ -115,9 +114,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Optional<User> getUserByOpenid(String openid) {
         String redisKey = WX_USER_MAP + openid;
-        return Optional.of((User) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
             User user = this.lambdaQuery().eq(User::getOpenid, openid).one();
-            redisCache.setCacheObject(redisKey, user, WX_USER_TTL, WX_USER_UNIT);
+            redisCache.setObject(redisKey, user, WX_USER_TTL, WX_USER_UNIT);
             return user;
         }));
     }
@@ -139,13 +138,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public void deleteUserAllCache(Long id) {
-        redisCache.execute(() -> {
-            getUserById(id).ifPresent(user -> {
-                deleteUserEmailCache(user.getEmail());
-                deleteUserOpenidCache(user.getOpenid());
-            });
-            deleteUserIdCache(id);
+        getUserById(id).ifPresent(user -> {
+            deleteUserEmailCache(user.getEmail());
+            deleteUserOpenidCache(user.getOpenid());
         });
+        deleteUserIdCache(id);
     }
 
     @Override
@@ -214,7 +211,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             MediaUtil.deleteFile(originSavePath);
         });
         // 下载头像到本地
-        String mapPath = MediaUtil.saveImage(photoData, StaticMapperConfig.PHOTO_PATH);
+        String mapPath = MediaUtil.saveImage(photoData, WebMvcConfiguration.PHOTO_PATH);
         // 修改数据库
         this.lambdaUpdate()
                 .set(User::getPhoto, mapPath)
@@ -227,11 +224,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public String tryUploadPhoto(byte[] photoData, Long userId, String originPhoto) {
         // 检查是否是图片
-        if (!ImageUtil.isImage(photoData)) {
+        if (!FileResourceUtil.isImage(MediaUtil.getContentType(photoData))) {
             throw new GlobalServiceException(String.format("用户 %d 上传非法文件", userId), GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
         String lock = USER_PHOTO_LOCK + userId;
-        return redisLock.tryLockGetSomething(lock, 0L, timeout, TimeUnit.SECONDS,
+        return redisLock.tryLockGetSomething(lock, 0L, redisLockProperties.getTimeout(), TimeUnit.SECONDS,
                 () -> uploadPhoto(photoData, userId, originPhoto),
                 () -> {
                     throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
@@ -241,17 +238,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void onLoginState(String secret, String openid, String unionid) {
         String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
-        Object check = redisCache.getCacheObject(redisKey).orElseThrow(() ->
+        String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
-        if (Boolean.FALSE.equals(check)) {
+        if ("null".equals(token)) {
             Map<String, Object> tokenData = new HashMap<String, Object>(){{
                 this.put(ExtractUtil.OPENID, openid);
                 this.put(ExtractUtil.UNIONID, unionid);
 //                this.put(ExtractUtil.SESSION_KEY, sessionKey);
             }};
             String jsonData = JsonUtil.analyzeData(tokenData);
-            String token = JwtUtil.createJwt(jsonData);
-            redisCache.setCacheObject(redisKey, token,
+            redisCache.setObject(redisKey, JwtUtil.createJwt(jsonData),
                     QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         }
     }
@@ -259,14 +255,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public Map<String, Object> checkLoginState(String secret) {
         String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
-        Object check = redisCache.getCacheObject(redisKey).orElseThrow(() ->
+        String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
-        if (Boolean.FALSE.equals(check)) {
+        if ("null".equals(token)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
         }
         redisCache.deleteObject(redisKey);
         return new HashMap<String, Object>() {{
-            this.put(JwtUtil.JWT_HEADER, check);
+            this.put(JwtUtil.JWT_HEADER, token);
         }};
     }
 }

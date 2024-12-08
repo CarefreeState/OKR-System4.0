@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.init;
 
 
-import cn.lbcmmszdntnt.config.StaticMapperConfig;
+import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class OpenAPISwaggerFileInitializer implements ApplicationListener<Applic
         if(Boolean.FALSE.equals(swaggerCanBeVisited)) {
             return;
         }
-        String savePath = StaticMapperConfig.ROOT + StaticMapperConfig.MAP_ROOT + StaticMapperConfig.SWAGGER_PATH;
+        String savePath = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT + WebMvcConfiguration.SWAGGER_PATH;
         String filePath = String.format("%s%s.%s", savePath, applicationName, suffix);
         String url = "http://localhost:" + port + "/v3/api-docs";
         MediaUtil.saveFile(savePath, filePath, url);

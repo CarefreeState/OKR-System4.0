@@ -26,11 +26,11 @@ import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.websocket.util.MessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -159,7 +159,7 @@ public class UserController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
-    @PostMapping("/photo/upload")
+    @PostMapping(value = "/photo/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传用户头像")
     public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片，最大 1MB）") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
         byte[] photoData = multipartFile.getBytes();

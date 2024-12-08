@@ -26,31 +26,19 @@ import java.util.Optional;
 public class ImageUtil {
 
     public final static String RED = "r";
-
     public final static String GREEN = "g";
-
     public final static String BLUE = "b";
 
     private final static String DEFAULT_FONT = "宋体";
-
     private final static String FONT_PATH = SpringUtil.getProperty("font.path");
-
     private final static String BOARD_PATH = SpringUtil.getProperty("font.board");
-
     private final static double MAX_PX_RATE = 0.213;
-
     private final static double REFER_WIDTH_RATE = 0.800;
-
     private final static double REFER_HEIGHT_RATE = 0.333;
-
     private final static double SHIN_BACK_RATE = 0.965;
-
     private final static double IMAGE_SIZE = 750.000;
-
     private final static double MAX_PX = MAX_PX_RATE * IMAGE_SIZE;
-
     private final static double REFER_WIDTH = REFER_WIDTH_RATE * IMAGE_SIZE;
-
     private final static double REFER_HEIGHT = REFER_HEIGHT_RATE * IMAGE_SIZE;
 
     public static Color getColorByMap(Map<String, Integer> lineColor) {
@@ -174,66 +162,6 @@ public class ImageUtil {
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage());
         }
-    }
-
-    @Nullable
-    public static Image getImage(InputStream inputStream) {
-        try {
-            return Objects.nonNull(inputStream) ? ImageIO.read(inputStream) : null;
-        } catch (IOException e) {
-            log.warn(e.getMessage());
-            return null;
-        }
-    }
-
-    @Nullable
-    public static Image getImage(String url) {
-        try (InputStream inputStream = MediaUtil.getInputStream(url)) {
-            return getImage(inputStream);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            return null;
-        }
-    }
-
-    @Nullable
-    public static Image getImage(byte[] bytes) {
-        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
-            return getImage(inputStream);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            return null;
-        }
-    }
-
-    public static boolean isImage(Image image) {
-        return Optional.ofNullable(image)
-                .filter(img -> img.getWidth(null) > 0)
-                .filter(img -> img.getHeight(null) > 0)
-                .map(img -> Boolean.TRUE)
-                .orElse(Boolean.FALSE);
-    }
-
-    public static boolean isImage(String url) {
-        return Optional.ofNullable(url)
-                .filter(StringUtils::hasText)
-                .map(ImageUtil::getImage)
-                .map(ImageUtil::isImage)
-                .orElse(Boolean.FALSE);
-    }
-
-    public static boolean isImage(byte[] bytes) {
-        return Optional.ofNullable(bytes)
-                .map(ImageUtil::getImage)
-                .map(ImageUtil::isImage)
-                .orElse(Boolean.FALSE);
-    }
-
-    public static boolean isImage(InputStream inputStream) {
-        return Optional.ofNullable(inputStream)
-                .map(ImageUtil::getImage)
-                .map(ImageUtil::isImage)
-                .orElse(Boolean.FALSE);
     }
 
 }

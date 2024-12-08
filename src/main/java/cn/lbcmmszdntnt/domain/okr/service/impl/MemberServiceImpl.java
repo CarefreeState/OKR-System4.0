@@ -9,6 +9,7 @@ import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
+import cn.lbcmmszdntnt.redis.cache.RedisMapCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final RedisCache redisCache;
 
+    private final RedisMapCache redisMapCache;
+
     @Override
     public Boolean findExistsInTeam(List<Long> ids, Long userId) {
         return teamPersonalOkrMapper.getTeamPersonalOkrList(userId).stream()
@@ -62,15 +65,15 @@ public class MemberServiceImpl implements MemberService {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
         String redisKey = USER_TEAM_MEMBER + rootId;
-       return (Boolean) redisCache.getCacheMapValue(redisKey, userId).orElseGet(() -> {
+        return redisMapCache.get(redisKey, userId, Boolean.class).orElseGet(() -> {
             List<Long> ids = TeamOkrUtil.getChildIds(rootId);
             Boolean isExists = findExistsInTeam(ids, userId);
-            redisCache.getCacheMap(redisKey).orElseGet(() -> {
+            redisMapCache.getMap(redisKey, Long.class, Boolean.class).orElseGet(() -> {
                 Map<Long, Boolean> data = new HashMap<>();
-                redisCache.setCacheMap(redisKey, data, USER_TEAM_MEMBER_TTL, USER_TEAM_MEMBER_TTL_UNIT);
+                redisMapCache.init(redisKey, data, USER_TEAM_MEMBER_TTL, USER_TEAM_MEMBER_TTL_UNIT);
                 return null;
             });
-           redisCache.setCacheMapValue(redisKey, userId, isExists);
+            redisMapCache.put(redisKey, userId, isExists);
             return isExists;
         });
     }
@@ -89,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
         String redisKey = USER_TEAM_MEMBER + rootId;
-        redisCache.setCacheMapValue(redisKey, userId, Boolean.TRUE);
+        redisMapCache.put(redisKey, userId, Boolean.TRUE);
     }
 
     @Override
@@ -97,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
         String redisKey = USER_TEAM_MEMBER + rootId;
-        redisCache.setCacheMapValue(redisKey, userId, Boolean.FALSE);
+        redisMapCache.put(redisKey, userId, Boolean.FALSE);
     }
 
     @Override

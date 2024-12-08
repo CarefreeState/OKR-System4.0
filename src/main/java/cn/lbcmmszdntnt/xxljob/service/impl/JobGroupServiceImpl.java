@@ -99,9 +99,9 @@ public class JobGroupServiceImpl implements JobGroupService {
         String appname = executor.getAppname();
         String title = executor.getTitle();
         String redisKey = String.format(XXL_JOB_GROUP, appname, title);
-        return (Boolean) redisCache.getCacheObject(redisKey).orElseGet(() -> {
+        return redisCache.getObject(redisKey, Boolean.class).orElseGet(() -> {
             boolean flag = getJobGroup().stream().anyMatch(Objects::nonNull);
-            redisCache.setCacheObject(redisKey, flag, XXL_JOB_GROUP_TTL, XXL_JOB_GROUP_TIMEUNIT);
+            redisCache.setObject(redisKey, flag, XXL_JOB_GROUP_TTL, XXL_JOB_GROUP_TIMEUNIT);
             return flag;
         });
     }
