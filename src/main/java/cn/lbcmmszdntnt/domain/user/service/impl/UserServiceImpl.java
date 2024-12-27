@@ -10,14 +10,15 @@ import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.util.jwt.JwtUtil;
 import cn.lbcmmszdntnt.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
@@ -42,6 +43,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
+
+    private final static String JWT_SUBJECT = "微信登录确认";
 
     private final static String EMAIL_USER_MAP = "emailUserMap:";
 
@@ -75,14 +78,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public String getUserFlag(String code) {
-        String code2SessionUrl = "https://api.weixin.qq.com/sns/jscode2session";
-        Map<String, Object> param = new HashMap<>() {{
-            this.put("appid", TokenUtil.APP_ID);
-            this.put("secret", TokenUtil.APP_SECRET);
-            this.put("js_code", code);
-            this.put("grant_type", "authorization_code");
-        }};
-        return HttpUtil.doGet(code2SessionUrl, param);
+        return HttpUtil.doGet("https://api.weixin.qq.com/sns/jscode2session", new HashMap<>() {{
+            this.put("appid", List.of(TokenUtil.APP_ID));
+            this.put("secret", List.of(TokenUtil.APP_SECRET));
+            this.put("js_code", List.of(code));
+            this.put("grant_type", List.of("authorization_code"));
+        }});
     }
 
     @Override
@@ -236,24 +237,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public void onLoginState(String secret, String openid, String unionid) {
+    public void onLoginState(String secret, Long userId) {
         String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
         String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
         if ("null".equals(token)) {
-            Map<String, Object> tokenData = new HashMap<String, Object>(){{
-                this.put(ExtractUtil.OPENID, openid);
-                this.put(ExtractUtil.UNIONID, unionid);
-//                this.put(ExtractUtil.SESSION_KEY, sessionKey);
-            }};
-            String jsonData = JsonUtil.analyzeData(tokenData);
-            redisCache.setObject(redisKey, JwtUtil.createJwt(jsonData),
+            // 构造 token
+            LoginTokenVO loginTokenVO = LoginTokenVO.builder().userId(userId).build();
+            String jsonData = JsonUtil.toJson(loginTokenVO);
+            redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, loginTokenVO),
                     QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         }
     }
 
     @Override
-    public Map<String, Object> checkLoginState(String secret) {
+    public LoginVO checkLoginState(String secret) {
         String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
         String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
@@ -261,8 +259,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
         }
         redisCache.deleteObject(redisKey);
-        return new HashMap<String, Object>() {{
-            this.put(JwtUtil.JWT_HEADER, token);
-        }};
+        return LoginVO.builder().token(token).build();
     }
 }

@@ -28,8 +28,6 @@ public class BeanNameProperties implements InitializingBean {
 
     private Properties loginServiceMap;
 
-    private Properties userRecordServiceMap;
-
     private Properties inviteQRCodeServiceMap;
 
     private Properties teamAchievementServiceMap;
@@ -51,6 +49,5 @@ public class BeanNameProperties implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         loginServiceMap = convert(loginServiceMap);
-        userRecordServiceMap = convert(userRecordServiceMap);
     }
 }

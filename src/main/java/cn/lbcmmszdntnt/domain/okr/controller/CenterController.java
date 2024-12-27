@@ -4,22 +4,18 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
-import cn.lbcmmszdntnt.domain.user.util.ExtractUtil;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.security.config.SecurityConfig;
-import cn.lbcmmszdntnt.security.handler.AuthFailRedirectHandler;
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.util.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -32,7 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CenterController {
 
-    private final static String ROOT_HTML = "root.html";
+    private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
 
     @Value("${spring.domain}")
     private String domain;
@@ -48,27 +44,18 @@ public class CenterController {
         return new RedirectView(htmlUrl);
     }
 
-    @RequestMapping(AuthFailRedirectHandler.REDIRECT_URL)
-    public SystemJsonResponse unlisted(@RequestParam(value = SecurityConfig.EXCEPTION_MESSAGE, required = false) String exceptionMessage) {
-        throw new GlobalServiceException(
-                Optional.ofNullable(exceptionMessage).orElseGet(GlobalServiceStatusCode.USER_NOT_LOGIN::getMessage),
-                GlobalServiceStatusCode.USER_NOT_LOGIN
-        );
-    }
-
-    @GetMapping("/jwt/{openid}")
-    @Operation(summary = "测试阶段获取微信用户的 token")
-    public SystemJsonResponse<String> getJWTByOpenid(@PathVariable("openid") @Parameter(description = "openid") String openid) {
+    @GetMapping("/jwt/{userId}")
+    @Operation(summary = "测试阶段获取用户的 token")
+    public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
         if(Boolean.FALSE.equals(swaggerCanBeVisited)) {
             // 无法访问 swagger，代表这个接口无法访问
             throw new GlobalServiceException(GlobalServiceStatusCode.SYSTEM_API_VISIT_FAIL);
         }
-        Map<String, Object> tokenData = new HashMap<>(){{
-            this.put(ExtractUtil.OPENID, openid);
-        }};
-        String jsonData = JsonUtil.analyzeData(tokenData);
-        String token = JwtUtil.createJwt(jsonData);
-        return SystemJsonResponse.SYSTEM_SUCCESS(token);
+        // 构造 token
+        LoginTokenVO loginTokenVO = LoginTokenVO.builder().userId(userId).build();
+        String token = JwtUtil.createJwt(JWT_SUBJECT, loginTokenVO);
+        LoginVO loginVO = LoginVO.builder().token(token).build();
+        return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
 }

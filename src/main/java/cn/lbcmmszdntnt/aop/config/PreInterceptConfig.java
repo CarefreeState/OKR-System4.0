@@ -17,7 +17,7 @@ public class PreInterceptConfig implements WebMvcConfigurer {
 
     private final ForceInterceptor forceInterceptor;
 
-    public final static String[] swaggers = {
+    public final static String[] SWAGGERS = {
         "/doc.html/**",
         "/v3/api-docs/**",
         "/webjars/**",
@@ -36,7 +36,7 @@ public class PreInterceptConfig implements WebMvcConfigurer {
         // 接口文档
         if(Boolean.FALSE.equals(swaggerCanBeVisited)) {
             registry.addInterceptor(forceInterceptor)
-                            .addPathPatterns(swaggers);
+                            .addPathPatterns(SWAGGERS);
         }
     }
 

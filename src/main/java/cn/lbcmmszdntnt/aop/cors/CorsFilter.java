@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.cors;
+package cn.lbcmmszdntnt.aop.cors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.*;

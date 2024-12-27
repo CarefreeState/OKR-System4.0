@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.record.model.converter;
 
-import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
+import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -19,6 +19,6 @@ public interface DayRecordConverter {
 
     DayRecordConverter INSTANCE = Mappers.getMapper(DayRecordConverter.class);
 
-    List<DayRecordVO> recordListToDayRecordVOList(List<Record> recordList);
+    List<DayRecordVO> recordListToDayRecordVOList(List<DayRecord> recordList);
 
 }

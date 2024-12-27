@@ -34,6 +34,8 @@ public class SecurityConfig {
 
     private final AuthFailHandler authFailHandler;
 
+    private final IgnoreUrlsConfig ignoreUrlsConfig;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         //关闭 csrf
@@ -42,17 +44,8 @@ public class SecurityConfig {
         http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         // 路径管理
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/user/login").permitAll()
-                .requestMatchers("/user/check/email").permitAll()
-                .requestMatchers("/user/binding/wx").permitAll()
-                .requestMatchers("/web/wxlogin/**").permitAll()
-                .requestMatchers("/events/web/wxlogin/**").permitAll()
-                .requestMatchers("/user/wx/login/**").permitAll()
-                .requestMatchers("/team/describe/**").permitAll()
-                .requestMatchers("/jwt/**").permitAll()
-                .requestMatchers("/media/**").permitAll()
-                .requestMatchers(PreInterceptConfig.swaggers).permitAll()
+                .requestMatchers(ignoreUrlsConfig.getUrls().toArray(new String[0])).permitAll()
+                .requestMatchers(PreInterceptConfig.SWAGGERS).permitAll()
                 .anyRequest().authenticated()
         ).rememberMe(Customizer.withDefaults());
         // 添加过滤器

@@ -1,17 +1,16 @@
 package cn.lbcmmszdntnt.domain.qrcode.util;
 
-import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.util.media.ImageUtil;
 import cn.lbcmmszdntnt.util.media.MediaUtil;
 import cn.lbcmmszdntnt.util.web.HttpUtil;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -25,9 +24,7 @@ public class QRCodeUtil {
 
     public static byte[] doPostGetQRCodeData(String json) {
         String accessToken = TokenUtil.getToken();
-        String url = QRCodeConfig.WX_QR_CORE_URL + HttpUtil.getQueryString(new HashMap<String, Object>(){{
-            this.put("access_token", accessToken);
-        }});
+        String url = HttpUtil.buildUrl(QRCodeConfig.WX_QR_CORE_URL, Map.of("access_token", List.of(accessToken)));
         log.info("请求微信（json） -> {}", json);
         byte[] data = HttpUtil.doPostJsonBytes(url, json);
         if(!FileResourceUtil.isImage(MediaUtil.getContentType(data))) {

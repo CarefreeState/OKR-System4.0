@@ -11,9 +11,6 @@ import java.util.Map;
 @Component
 public class TokenUtil {
 
-    // token 的 url
-    public static String URL = "https://api.weixin.qq.com/cgi-bin/stable_token";
-
     public static String APP_ID;
 
     public static String APP_SECRET;
@@ -37,7 +34,7 @@ public class TokenUtil {
                 .put("secret", APP_SECRET)
                 .build();
         // 发起get请求
-        String response = HttpUtil.doPostJsonString(URL, json);
+        String response = HttpUtil.doPostJsonString("https://api.weixin.qq.com/cgi-bin/stable_token", json);
         // 解析json
         return JsonUtil.analyzeJson(response, Map.class);
     }

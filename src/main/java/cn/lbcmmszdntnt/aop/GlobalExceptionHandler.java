@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    public static SystemJsonResponse getGlobalServiceExceptionResult(GlobalServiceException e, HttpServletRequest request) {
+    public static SystemJsonResponse<?> getGlobalServiceExceptionResult(GlobalServiceException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         GlobalServiceStatusCode statusCode = e.getStatusCode();
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(GlobalServiceException.class)
-    public SystemJsonResponse handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request) {
+    public SystemJsonResponse<?> handleGlobalServiceException(GlobalServiceException e, HttpServletRequest request) {
         return getGlobalServiceExceptionResult(e, request);
     }
 
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
      * 自定义验证异常
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public SystemJsonResponse constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
+    public SystemJsonResponse<?> constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         log.error("数据校验出现问题，异常类型:{}", e.getMessage());
         String message = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public SystemJsonResponse ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public SystemJsonResponse<?> ValidationHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
         log.error("数据校验出现问题，异常类型:{}", e.getMessage());
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
-    public SystemJsonResponse handleExpiredJwtException(ExpiredJwtException e, HttpServletRequest request) {
+    public SystemJsonResponse<?> handleExpiredJwtException(ExpiredJwtException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SignatureException.class)
-    public SystemJsonResponse handleSignatureException(SignatureException e, HttpServletRequest request) {
+    public SystemJsonResponse<?> handleSignatureException(SignatureException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public SystemJsonResponse handleException(Exception e, HttpServletRequest request) {
+    public SystemJsonResponse<?> handleException(Exception e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
         log.error("请求地址'{}' {}", requestURI, message);

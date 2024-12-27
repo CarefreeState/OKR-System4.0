@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.record.model.po;
 
-import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -14,7 +13,7 @@ import java.util.Date;
  */
 @TableName(value ="day_record")
 @Data
-public class DayRecord extends Record implements Serializable {
+public class DayRecord implements Serializable {
     private Long id;
 
     private Long coreId;

@@ -1,8 +1,9 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
 
-import cn.lbcmmszdntnt.domain.user.model.dto.detail.LoginUser;
+import cn.lbcmmszdntnt.domain.user.model.dto.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Optional;
 
@@ -15,7 +16,6 @@ import java.util.Optional;
  */
 public interface UserRecordService {
 
-    Optional<LoginUser> getRecord(HttpServletRequest request);
+    Optional<LoginUser> getRecord(HttpServletRequest request, HttpServletResponse response);
 
-    void deleteRecord(HttpServletRequest request);
 }

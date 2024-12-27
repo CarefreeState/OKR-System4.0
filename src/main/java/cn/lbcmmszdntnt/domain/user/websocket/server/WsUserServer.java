@@ -8,7 +8,7 @@ import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.websocket.session.WsSessionMapper;
-import cn.lbcmmszdntnt.websocket.util.MessageSender;
+import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import cn.lbcmmszdntnt.websocket.util.WsSessionUtil;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
@@ -41,7 +41,7 @@ public class WsUserServer {
         }
         WsSessionMapper.put(sessionKey, session);
         // 发送：path, secret
-        MessageSender.sendMessage(session, JsonUtil.analyzeData(loginQRCode));
+        WsMessageSender.sendMessage(session, JsonUtil.analyzeData(loginQRCode));
 //        SessionUtil.refuse("拒绝连接");
     }
 

@@ -7,14 +7,13 @@ import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.record.model.converter.DayRecordConverter;
-import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
+import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class CoreRecordController {
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         if(Boolean.TRUE.equals(okrOperateService.canVisit(user, coreId))) {
-            List<Record> dayRecords = dayRecordService.getRecords(coreId);
+            List<DayRecord> dayRecords = dayRecordService.getRecords(coreId);
             List<DayRecordVO> dayRecordVOS = DayRecordConverter.INSTANCE.recordListToDayRecordVOList(dayRecords);
             return SystemJsonResponse.SYSTEM_SUCCESS(dayRecordVOS);
         }else {

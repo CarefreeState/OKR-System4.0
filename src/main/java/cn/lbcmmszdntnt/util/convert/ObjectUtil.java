@@ -1,8 +1,11 @@
 package cn.lbcmmszdntnt.util.convert;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -17,12 +20,14 @@ import java.util.stream.Stream;
  * Date: 2024-09-06
  * Time: 13:04
  */
+@Slf4j
 public class ObjectUtil {
 
     public static <C, F> F readByProperty(C object, Field field, Class<F> fieldClazz) {
         try {
             return fieldClazz.cast(field.get(object));
         } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }
@@ -32,6 +37,7 @@ public class ObjectUtil {
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(field.getName(), object.getClass());
             return fieldClazz.cast(propertyDescriptor.getReadMethod().invoke(object));
         } catch (Exception e) {
+            log.warn(e.getMessage());
             return null;
         }
     }
@@ -39,8 +45,8 @@ public class ObjectUtil {
     /**
      * 读取对象的某一个字段的值
      * 1. 若字段不是指定类型 F 或者不是 F 的子类，则返回 null
-     * 2. 若字段不能直接访问，则尝试获取字段的 Getter 方法，若仍然获取不到值，则返回 null
-     * 
+     * 2. 尝试获取字段的 Getter 方法获取值，若没有可以访问的 Getter，就访问字段，若字段不能直接访问，则返回 null
+     *
      * @param object 对象
      * @param field 字段
      * @param fieldClazz 字段类对象
@@ -50,8 +56,8 @@ public class ObjectUtil {
      */
     public static <C, F> F read(C object, Field field, Class<F> fieldClazz) {
         if (fieldClazz.isAssignableFrom(field.getType())) {
-            return Optional.ofNullable(readByProperty(object, field, fieldClazz))
-                    .orElseGet(() -> readByMethod(object, field, fieldClazz));
+            return Optional.ofNullable(readByMethod(object, field, fieldClazz))
+                    .orElseGet(() -> readByProperty(object, field, fieldClazz));
         } else {
             return null;
         }
@@ -62,6 +68,19 @@ public class ObjectUtil {
         // object.getClass() 会获取实例的实现类的类型
         return Arrays.stream(object.getClass().getDeclaredFields())
                 .map(field -> read(object, field, fieldClazz));
+    }
+
+    public static <T> Stream<T> stream(Collection<T> collection) {
+        return Optional.ofNullable(collection).stream().flatMap(Collection::stream);
+    }
+
+    public static <T> Stream<T> nonNullstream(Collection<T> collection) {
+        return stream(collection).filter(Objects::nonNull);
+    }
+
+    // 继承的类，equals 和 hashcode 是不包含父类的，所以要额外注意 distinct 和哈希表等场景！
+    public static <T> Stream<T> distinctNonNullStream(Collection<T> collection) {
+        return nonNullstream(collection).distinct();
     }
 
     public static <C, F, T> T reduce(C object, Class<F> fieldClazz, Function<F, T> mapper,
@@ -77,5 +96,6 @@ public class ObjectUtil {
                 .filter(Objects::nonNull)
                 .forEach(consumer);
     }
+
 
 }

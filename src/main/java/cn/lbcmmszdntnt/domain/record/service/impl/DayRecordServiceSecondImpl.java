@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.record.service.impl;
 
 import cn.lbcmmszdntnt.domain.record.model.entry.PrioritiesUpdate;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
+import org.springframework.stereotype.Service;
 
 /**
  * Created With Intellij IDEA
@@ -11,6 +12,7 @@ import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
  * Date: 2024-04-21
  * Time: 12:46
  */
+@Service
 public class DayRecordServiceSecondImpl implements DayRecordCompleteService {
 
     @Override

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.dto.detail;
+package cn.lbcmmszdntnt.domain.user.model.dto;
 
 import cn.lbcmmszdntnt.domain.user.model.po.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

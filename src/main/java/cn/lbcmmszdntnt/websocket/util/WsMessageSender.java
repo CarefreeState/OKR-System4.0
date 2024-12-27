@@ -18,7 +18,7 @@ import java.util.Objects;
  * Time: 9:53
  */
 @Slf4j
-public class MessageSender {
+public class WsMessageSender {
 
     public static void sendMessage(Session session, String message) {
         if(Objects.isNull(session)) {

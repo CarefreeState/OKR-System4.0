@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.dto.detail;
+package cn.lbcmmszdntnt.domain.user.model.dto;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;

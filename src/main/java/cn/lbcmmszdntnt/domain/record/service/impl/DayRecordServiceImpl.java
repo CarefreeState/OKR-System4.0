@@ -13,7 +13,6 @@ import cn.lbcmmszdntnt.domain.record.model.mapper.DayRecordMapper;
 import cn.lbcmmszdntnt.domain.record.model.po.CoreRecorder;
 import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.po.RecordMap;
-import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
 import cn.lbcmmszdntnt.domain.record.service.CoreRecorderService;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -145,7 +144,7 @@ public class DayRecordServiceImpl extends ServiceImpl<DayRecordMapper, DayRecord
     }
 
     @Override
-    public List<Record> getRecords(Long coreId) {
+    public List<DayRecord> getRecords(Long coreId) {
         if(Boolean.FALSE.equals(checkOkrIsOver(coreId))) {
             getNowRecord(coreId);// 保证记录器指向的是今天的记录（如果 OKR 未结束）
         }

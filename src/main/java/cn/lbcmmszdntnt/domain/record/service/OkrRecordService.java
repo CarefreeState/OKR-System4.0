@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.record.service;
 
 
 import cn.lbcmmszdntnt.domain.record.model.po.CoreRecorder;
-import cn.lbcmmszdntnt.domain.record.model.po.ext.Record;
+import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,18 +16,18 @@ import java.util.List;
  */
 public interface OkrRecordService {
 
-    Record createNewRecord(Long coreId);
+    DayRecord createNewRecord(Long coreId);
 
     /**
      * 此方法可以让 coreRecorder 的 recordMap 存在，且指向最新的 record
      * @param coreRecorder
      * @return
      */
-    Record switchRecord(CoreRecorder coreRecorder);
+    DayRecord switchRecord(CoreRecorder coreRecorder);
 
-    Record getNowRecord(Long coreId);
+    DayRecord getNowRecord(Long coreId);
 
     @Transactional
-    List<Record> getRecords(Long coreId);
+    List<DayRecord> getRecords(Long coreId);
 
 }

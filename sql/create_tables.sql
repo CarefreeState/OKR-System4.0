@@ -1,5 +1,4 @@
 -- 关闭外键检查
-select @@FOREIGN_KEY_CHECKS;
 SET @@FOREIGN_KEY_CHECKS = 0;
 
 -- 创建用户表
@@ -21,7 +20,7 @@ create table `user` (
     unique index `uni_id`(`id` asc) using btree,
     index `idx_openid`(`openid` asc) using btree,
     index `idx_unionid`(`unionid` asc) using btree
-) comment '用户表';
+) auto_increment 10000 comment '用户表';
 
 -- 创建 OKR 内核表
 drop table if exists `okr_core`;
@@ -289,10 +288,6 @@ create table `status_flag` (
     index `idx_fourth_quadrant_id`(`fourth_quadrant_id` asc) using btree
 ) comment '指标表';
 
--- 开启外键检查
-SET @@FOREIGN_KEY_CHECKS = 1;
-
-SET global max_sp_recursion_depth = 255;
 
 DELIMITER //
 
@@ -324,6 +319,7 @@ BEGIN
     );
 
     OPEN nodes_cursor;
+    SET max_sp_recursion_depth = 255;
     read_loop: LOOP
         FETCH nodes_cursor INTO cur_id, parent_id, cur_name;
         IF done THEN
@@ -458,9 +454,6 @@ create table `user_medal` (
 ) comment '用户勋章关联表';
 
 
--- 关闭外键检查
-SET @@FOREIGN_KEY_CHECKS = 0;
-
 -- 创建勋章表
 drop table if exists `medal`;
 create table `medal` (
@@ -488,10 +481,6 @@ insert into medal (`id`, `name`, `description`, `url`, `grey_url`) values
        (6, '长久有成', '中长期计划推进卓有成效', 'media/medal/medal6.png', 'media/medal/grey_medal6.png'),
        (7, '渐入佳境', '本周状态指标良好', 'media/medal/medal7.png', 'media/medal/grey_medal7.png')
 ;
-
--- 开启外键检查
-SET @@FOREIGN_KEY_CHECKS = 1;
-
 
 
 -- 创建 OKR 内核记录器表
@@ -536,3 +525,4 @@ create table `day_record` (
 ) comment 'OKR 内核日记录表';
 
 
+SET @@FOREIGN_KEY_CHECKS = 1;

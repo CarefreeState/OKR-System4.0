@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
         Long teamId = okrOperateDTO.getTeamOkrId();
         String secret = okrOperateDTO.getSecret();
         String type = okrOperateDTO.getType();
+        type = StringUtils.hasText(type) ? type : InviteQRCodeServiceFactory.WX_TYPE;
         InviteQRCodeService inviteQRCodeService = inviteQRCodeServiceFactory.getService(type);
         inviteQRCodeService.checkParams(teamId, secret);
         // 获取用户 ID（受邀者）

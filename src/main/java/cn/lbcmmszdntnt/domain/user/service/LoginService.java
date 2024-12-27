@@ -1,10 +1,9 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
-import cn.lbcmmszdntnt.domain.user.model.dto.unify.LoginDTO;
+import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
+import cn.lbcmmszdntnt.domain.user.model.po.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -16,7 +15,7 @@ import java.util.Map;
 public interface LoginService {
 
     @Transactional
-    Map<String, Object> login(LoginDTO loginDTO);
+    User login(LoginDTO loginDTO);
 
     void logout(HttpServletRequest request);
 

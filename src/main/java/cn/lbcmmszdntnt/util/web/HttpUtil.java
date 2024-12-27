@@ -2,71 +2,52 @@ package cn.lbcmmszdntnt.util.web;
 
 
 import cn.hutool.http.HttpRequest;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.util.StringUtils;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
-    public static String getFormBody(Map<String, Object> map) {
-        if (Objects.isNull(map)) {
-            return "";
-        }
-        try {
-            StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String keyVale = String.format("%s=%s", entry.getKey(), URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
-                builder.append(keyVale);
-                builder.append("&");
-            }
-            if (StringUtils.hasLength(builder)) {
-                builder.deleteCharAt(builder.length() - 1);
-            }
-            return builder.toString();
-        } catch (UnsupportedEncodingException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
+    public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {
+        queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
+        return UriComponentsBuilder
+                .fromHttpUrl(baseUrl)
+                .queryParams(new LinkedMultiValueMap<>(queryParams))
+                .buildAndExpand(uriVariableValues)
+                .encode()
+                .toUriString();
     }
 
-    public static String getQueryString(Map<String, Object> map) {
-        String formBody = getFormBody(map);
-        if (StringUtils.hasLength(formBody)) {
-            return "?" + formBody;
-        } else {
-            return "";
-        }
+    public static <P> String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Map<String, P> pathParams) {
+        queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
+        pathParams = Optional.ofNullable(pathParams).orElseGet(Map::of);
+        return UriComponentsBuilder
+                .fromHttpUrl(baseUrl)
+                .queryParams(new LinkedMultiValueMap<>(queryParams))
+                .buildAndExpand(pathParams)
+                .encode()
+                .toUriString();
     }
 
     public static String doGet(String httpUrl) {
         return doGet(httpUrl, null);
     }
 
-    public static String doGet(String httpUrl, Map<String, Object> map) {
-        // 有queryString的就加
-        httpUrl += HttpUtil.getQueryString(map);
-        return HttpRequest.get(httpUrl)
-                .execute()
-                .body();
-    }
-
-    public static String doPostFrom(String httpUrl, Map<String, Object> map) {
-        return HttpRequest.post(httpUrl)
-                .form(map)
+    public static String doGet(String httpUrl, Map<String, List<String>> map) {
+        return HttpRequest.get(buildUrl(httpUrl, map))
                 .execute()
                 .body();
     }
@@ -76,7 +57,6 @@ public class HttpUtil {
                 .body(json, JSON_CONTENT_TYPE)
                 .execute()
                 .body();
-
     }
 
     public static byte[] doPostJsonBytes(String httpUrl, String json) {

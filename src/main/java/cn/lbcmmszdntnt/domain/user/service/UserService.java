@@ -2,10 +2,10 @@ package cn.lbcmmszdntnt.domain.user.service;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -41,8 +41,8 @@ public interface UserService extends IService<User> {
 
     String tryUploadPhoto(byte[] photoData, Long userId, String originPhoto);
 
-    void onLoginState(String secret, String openId, String unionid);
+    void onLoginState(String secret, Long userId);
 
-    Map<String, Object> checkLoginState(String secret);
+    LoginVO checkLoginState(String secret);
 
 }

@@ -9,33 +9,32 @@ import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.factory.LoginServiceFactory;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
-import cn.lbcmmszdntnt.domain.user.model.dto.EmailBindingDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.unify.LoginDTO;
+import cn.lbcmmszdntnt.domain.user.model.dto.*;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
+import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.sse.server.SseUserServer;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.domain.user.websocket.server.WsUserServer;
+import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.websocket.util.MessageSender;
+import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -51,6 +50,8 @@ import java.util.Map;
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class UserController {
 
+    private final static String JWT_SUBJECT = "登录认证";
+
     private final LoginServiceFactory loginServiceFactory;
 
     private final UserService userService;
@@ -61,19 +62,23 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    public SystemJsonResponse<Map<String, Object>> login(@RequestHeader(PreInterceptConfig.HEADER) @Parameter(description = "type") String type,
-                                                         @Valid @RequestBody LoginDTO loginDTO) {
-        // 检查
-        loginDTO.validate();
+    public SystemJsonResponse<LoginVO> login(@RequestHeader(PreInterceptConfig.HEADER) @Parameter(description = "登录类型") String type,
+                                             @Valid @RequestBody LoginDTO loginDTO) {
         // 选取服务
         LoginService loginService = loginServiceFactory.getService(type);
-        Map<String, Object> result = loginService.login(loginDTO);
-        return SystemJsonResponse.SYSTEM_SUCCESS(result);
+        User user = loginService.login(loginDTO);
+        Long userId = user.getId();
+        userService.deleteUserAllCache(userId);
+        // 构造 token
+        LoginTokenVO loginTokenVO = LoginTokenVO.builder().userId(userId).build();
+        String token = JwtUtil.createJwt(JWT_SUBJECT, loginTokenVO);
+        LoginVO loginVO = LoginVO.builder().token(token).build();
+        return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
     @PostMapping("/logout")
     @Operation(summary = "用户登出")
-    public SystemJsonResponse logout(HttpServletRequest request) {
+    public SystemJsonResponse<?> logout(HttpServletRequest request) {
         String type = request.getHeader(PreInterceptConfig.HEADER);
         // 选取服务
         LoginService loginService = loginServiceFactory.getService(type);
@@ -83,7 +88,7 @@ public class UserController {
 
     @PostMapping("/check/email")
     @Operation(summary = "验证邮箱用户")
-    public SystemJsonResponse emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
+    public SystemJsonResponse<?> emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
         // 获得随机验证码
         String code = IdentifyingCodeValidator.getIdentifyingCode();
         String type = emailCheckDTO.getType();
@@ -113,23 +118,21 @@ public class UserController {
 
     @PostMapping("/wx/confirm/{secret}")
     @Operation(summary = "微信登录确认")
-    public SystemJsonResponse wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
+    public SystemJsonResponse<?> wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
         User user = UserRecordUtil.getUserRecord();
-        String openid = user.getOpenid();
-        String unionid = user.getUnionid();
-        userService.onLoginState(secret, openid, unionid);//如果不是微信用户，但是有 openid，说明这个用户等同于微信登录
+        userService.onLoginState(secret, user.getId());//如果不是微信用户，但是有 openid，说明这个用户等同于微信登录
         // 发送已确认的通知
-        SystemJsonResponse systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
-        String message = JsonUtil.analyzeData(systemJsonResponse);
-        MessageSender.sendMessageToOne(WsUserServer.WEB_SOCKET_USER_SERVER + secret, message);
+        SystemJsonResponse<?> systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
+        String message = JsonUtil.toJson(systemJsonResponse);
+        WsMessageSender.sendMessageToOne(WsUserServer.WEB_SOCKET_USER_SERVER + secret, message);
         SseMessageSender.sendMessage(SseUserServer.SSE_USER_SERVER + secret, message);
         return systemJsonResponse;
     }
 
     @PostMapping("/wx/login/{secret}")
     @Operation(summary = "微信登录检查")
-    public SystemJsonResponse<Map<String, Object>> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-        Map<String, Object> result = userService.checkLoginState(secret);
+    public SystemJsonResponse<LoginVO> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
+        LoginVO result = userService.checkLoginState(secret);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
 
@@ -144,7 +147,6 @@ public class UserController {
         Long userId = userRecord.getId();
         String recordEmail = userRecord.getEmail();
         userService.bindingEmail(userId, email, code, recordEmail);
-        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
@@ -155,32 +157,29 @@ public class UserController {
         String randomCode = wxBindingDTO.getRandomCode();
         String code = wxBindingDTO.getCode();
         userService.bindingWx(userId, randomCode, code);
-        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping(value = "/photo/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传用户头像")
-    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片，最大 1MB）") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
+    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片，最大 1MB）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
         byte[] photoData = multipartFile.getBytes();
         User user = UserRecordUtil.getUserRecord();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
         String mapPath = userService.tryUploadPhoto(photoData, userId, originPhoto);
         // 删除记录
-        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
 
     @PostMapping("/improve")
     @Operation(summary = "完善用户信息")
-    public SystemJsonResponse improveUserinfo(@Valid @RequestBody UserinfoDTO userinfoDTO) {
+    public SystemJsonResponse<?> improveUserinfo(@Valid @RequestBody UserinfoDTO userinfoDTO) {
         // 获取当前用户 ID
         Long userId = UserRecordUtil.getUserRecord().getId();
         // 完善信息
         userService.improveUserinfo(userinfoDTO, userId);
         // 删除记录
-        UserRecordUtil.deleteUserRecord();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 

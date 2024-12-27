@@ -37,7 +37,7 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     private final static String LOGIN_CODE_MESSAGE = String.format("请在 %d %s 内前往微信扫码进行验证！",
             QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
 
-    private final static String COMMON_CODE_MESSAGE = "OKR 目标与规划管理";
+    private final static String COMMON_CODE_MESSAGE = "让目标照耀前程，用规划书写人生！";
 
     private final OkrQRCode okrQRCode;
 
