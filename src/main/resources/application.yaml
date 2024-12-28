@@ -141,6 +141,13 @@ limit:
   time:
     second: 86400
     multiple: 2
+resource:
+  compression:
+    threshold: 65536
+  upload:
+    max-file-size: 20
+    max-request-size: 100
+    data-unit: megabytes
 
 
 secure:

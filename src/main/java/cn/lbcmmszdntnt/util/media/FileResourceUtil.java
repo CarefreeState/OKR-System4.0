@@ -4,6 +4,10 @@ import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.UUID;
 
 import static cn.lbcmmszdntnt.common.enums.FileResourceType.*;
 
@@ -69,6 +73,59 @@ public class FileResourceUtil {
 
     public static void checkText(String contentType) {
         checkType(contentType, TEXT);
+    }
+
+    public static String getOriginalName(MultipartFile file) {
+        String originalName = file.getOriginalFilename();
+        checkOriginalName(originalName);
+        return originalName;
+    }
+
+    public static String getFileNameExcludeSuffix(String originalName) {
+        checkOriginalName(originalName);
+        return originalName.substring(0, originalName.lastIndexOf("."));
+    }
+
+    public static String getFileNameExcludeSuffix(MultipartFile file) {
+        return getFileNameExcludeSuffix(file.getOriginalFilename());
+    }
+
+    public static String getSuffix(String originalName) {
+        checkOriginalName(originalName);
+        return originalName.substring(originalName.lastIndexOf("."));
+    }
+
+    public static String getExtension(String originalName) {
+        return getSuffix(originalName).substring(1);
+    }
+
+    public static String changeSuffix(String originalName, String suffix) {
+        checkSuffix(suffix);
+        return getFileNameExcludeSuffix(originalName) + suffix;
+    }
+
+    public static String changeExtension(String originalName, String extension) {
+        checkExtension(extension);
+        return changeSuffix(originalName, "." + extension);
+    }
+
+    public static String getSimpleFileName(String suffix) {
+        checkSuffix(suffix);
+        return UUID.randomUUID().toString().replace("-", "") + suffix;
+    }
+
+    public static String getFileNameBySuffix(String filename, String suffix) {
+        checkSuffix(suffix);
+        return StringUtils.hasText(filename) ? filename + suffix : getSimpleFileName(suffix);
+    }
+
+    public static String getFileNameByExtension(String filename, String extension) {
+        checkExtension(extension);
+        return getFileNameBySuffix(filename, "." + extension);
+    }
+
+    public static String getUniqueFileName(String suffix) {
+        return getSimpleFileName(suffix);
     }
 
 

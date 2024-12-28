@@ -128,6 +128,11 @@ public enum GlobalServiceStatusCode {
     /*文件资源想关*/
     FILE_RESOURCE_NOT_VALID(12000, "资源非法"),
     FILE_RESOURCE_TYPE_NOT_MATCH(12001, "资源类型不匹配"),
+    FILE_RESOURCE_UPLOAD_FAILED(12002, "资源上传失败"),
+    FILE_RESOURCE_LOAD_FAILED(12003, "资源加载失败"),
+    FILE_RESOURCE_PREVIEW_FAILED(12004, "资源预览失败"),
+    FILE_RESOURCE_DOWNLOAD_FAILED(12005, "资源下载失败"),
+    FILE_RESOURCE_REMOVE_FAILED(12006, "资源删除失败"),
 
     /* -------------- */;
 
