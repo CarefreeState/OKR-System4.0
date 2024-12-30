@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lbcmmszdntnt.domain.media.model.dao.mapper.DigitalResourceMapper">
+
+    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="code" column="code" jdbcType="CHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="originalName" column="original_name" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="version" column="version" jdbcType="INTEGER"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="BIT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,code,type,original_name,
+        file_name,version,is_deleted,
+        create_time,update_time
+    </sql>
+</mapper>
