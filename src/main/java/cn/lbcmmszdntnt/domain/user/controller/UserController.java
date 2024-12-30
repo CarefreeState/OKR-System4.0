@@ -21,7 +21,7 @@ import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.domain.user.websocket.server.WsUserServer;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -162,12 +162,11 @@ public class UserController {
 
     @PostMapping(value = "/photo/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传用户头像")
-    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片，最大 1MB）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
-        byte[] photoData = multipartFile.getBytes();
+    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
         User user = UserRecordUtil.getUserRecord();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
-        String mapPath = userService.tryUploadPhoto(photoData, userId, originPhoto);
+        String mapPath = userService.tryUploadPhoto(multipartFile, userId, originPhoto);
         // 删除记录
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }

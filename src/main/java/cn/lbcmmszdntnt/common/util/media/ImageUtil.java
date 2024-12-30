@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.media;
+package cn.lbcmmszdntnt.common.util.media;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;

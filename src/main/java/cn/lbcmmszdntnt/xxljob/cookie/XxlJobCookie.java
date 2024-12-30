@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.xxljob.cookie;
 
-import cn.lbcmmszdntnt.util.thread.pool.SchedulerThreadPool;
+import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import lombok.Getter;
 import lombok.Setter;
 

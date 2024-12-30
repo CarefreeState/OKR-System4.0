@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.email.model.po;
 
-import cn.lbcmmszdntnt.util.media.MediaUtil;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import jakarta.activation.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;

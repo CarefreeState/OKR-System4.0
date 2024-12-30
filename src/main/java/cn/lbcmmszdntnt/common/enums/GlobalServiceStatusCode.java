@@ -133,6 +133,7 @@ public enum GlobalServiceStatusCode {
     FILE_RESOURCE_PREVIEW_FAILED(12004, "资源预览失败"),
     FILE_RESOURCE_DOWNLOAD_FAILED(12005, "资源下载失败"),
     FILE_RESOURCE_REMOVE_FAILED(12006, "资源删除失败"),
+    RESOURCE_NOT_EXISTS(12007, "资源不存在"),
 
     /* -------------- */;
 

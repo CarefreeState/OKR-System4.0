@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.qrcode.init;
 import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
-import cn.lbcmmszdntnt.util.thread.pool.SchedulerThreadPool;
+import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;

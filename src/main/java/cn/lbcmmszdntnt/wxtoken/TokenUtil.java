@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.wxtoken;
 
 
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

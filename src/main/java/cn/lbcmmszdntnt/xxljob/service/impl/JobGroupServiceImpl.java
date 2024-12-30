@@ -7,7 +7,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.xxljob.config.Admin;
 import cn.lbcmmszdntnt.xxljob.config.Executor;
 import cn.lbcmmszdntnt.xxljob.config.XxlUrl;

@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.websocket.session;
 
-import cn.lbcmmszdntnt.util.session.SessionMap;
+import cn.lbcmmszdntnt.common.util.session.SessionMap;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

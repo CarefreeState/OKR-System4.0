@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.thread.ext;
+package cn.lbcmmszdntnt.common.util.thread.ext;
 
 import java.util.Objects;
 import java.util.concurrent.*;

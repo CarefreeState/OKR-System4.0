@@ -3,6 +3,8 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
+import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
@@ -10,8 +12,11 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,18 +35,25 @@ public class CenterController {
 
     private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
 
-    @Value("${spring.domain}")
-    private String domain;
-
     @Value("${visit.swagger}")
     private Boolean swaggerCanBeVisited;
 
     private final OkrQRCodeService okrQRCodeService;
 
+    private final FileMediaService fileMediaService;
+
     @GetMapping("/")
-    public RedirectView rootHtml()  {
-        String htmlUrl = domain + "/" + okrQRCodeService.getCommonQRCode();
+    public RedirectView root(HttpServletRequest request)  {
+        String htmlUrl = HttpUtil.getBaseUrl(request, "/", okrQRCodeService.getCommonQRCode());
         return new RedirectView(htmlUrl);
+    }
+
+    @GetMapping("/{code}")
+//    @GetMapping({"/{code}", "/"})
+    public void fileMedia(@PathVariable(value = "code", required = false) @Parameter(description = "资源码") String code,
+                                  HttpServletResponse response)  {
+//        fileMediaService.preview(code, response);
+        fileMediaService.preview(StringUtils.hasText(code) ? code : "6ffd982e58e64a5e9fe596f16c758ee6", response);
     }
 
     @GetMapping("/jwt/{userId}")

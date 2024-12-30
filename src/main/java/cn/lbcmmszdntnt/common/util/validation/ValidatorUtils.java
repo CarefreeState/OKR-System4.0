@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.validation;
+package cn.lbcmmszdntnt.common.util.validation;
 
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.validation.ConstraintViolation;

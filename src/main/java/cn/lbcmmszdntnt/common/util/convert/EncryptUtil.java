@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.convert;
+package cn.lbcmmszdntnt.common.util.convert;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.locator;
 
-import cn.lbcmmszdntnt.util.convert.ShortCodeUtil;
+import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

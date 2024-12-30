@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.monio.engine;
 
 
 import cn.lbcmmszdntnt.monio.config.MinioConfig;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
-import cn.lbcmmszdntnt.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Item;

@@ -21,7 +21,7 @@ import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

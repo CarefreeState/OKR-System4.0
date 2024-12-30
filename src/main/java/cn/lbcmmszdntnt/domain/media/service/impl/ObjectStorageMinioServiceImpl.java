@@ -5,18 +5,10 @@ package cn.lbcmmszdntnt.domain.media.service.impl;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.monio.config.MinioConfig;
-import cn.lbcmmszdntnt.monio.engine.MinioBucketEngine;
 import cn.lbcmmszdntnt.monio.engine.MinioEngine;
-import cn.lbcmmszdntnt.monio.enums.MinioPolicyTemplate;
-import cn.lbcmmszdntnt.monio.template.DefaultPolicyTemplate;
-import cn.lbcmmszdntnt.template.engine.TextEngine;
-import cn.lbcmmszdntnt.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
+import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created With Intellij IDEA

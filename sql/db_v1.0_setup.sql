@@ -8,7 +8,8 @@ drop table if exists `digital_resource`;
 create table `digital_resource`
 (
     `id` bigint primary key auto_increment comment '资源 id',
-    `code` bigint unique not null comment '资源码',
+    `code` char(32) unique not null comment '资源码',
+    `type` varchar(32) not null default 'undefined' comment '资源类型',
     `original_name` varchar(100) not null comment '上传时的文件名',
     `file_name` varchar(256) not null comment '在对象存储服务中存储的对象名',
     -- common column
@@ -19,3 +20,4 @@ create table `digital_resource`
     -- index
     unique index `uni_code`(`code` asc) using btree
 ) comment '资源表';
+

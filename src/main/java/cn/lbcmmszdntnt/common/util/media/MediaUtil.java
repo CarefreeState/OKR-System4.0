@@ -1,8 +1,8 @@
-package cn.lbcmmszdntnt.util.media;
+package cn.lbcmmszdntnt.common.util.media;
 
 import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;

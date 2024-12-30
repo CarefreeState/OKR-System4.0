@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.config.properties;
 
-import cn.lbcmmszdntnt.util.media.ImageUtil;
+import cn.lbcmmszdntnt.common.util.media.ImageUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,9 +1,9 @@
-package cn.lbcmmszdntnt.util.web;
+package cn.lbcmmszdntnt.common.util.web;
 
 
 import cn.hutool.http.HttpRequest;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,14 +20,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+
+    public static String getHost(HttpServletRequest request) {
+        return String.format("%s://%s", request.getScheme(), request.getHeader(HttpHeaders.HOST));
+    }
+
+    public static String getBaseUrl(HttpServletRequest request, String... uris) {
+        String uri = Arrays.stream(uris).filter(StringUtils::hasText).collect(Collectors.joining());
+        return getHost(request) + uri;
+    }
 
     public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {
         queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);

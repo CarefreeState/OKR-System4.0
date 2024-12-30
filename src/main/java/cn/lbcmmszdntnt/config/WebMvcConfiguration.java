@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.config;
 
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;

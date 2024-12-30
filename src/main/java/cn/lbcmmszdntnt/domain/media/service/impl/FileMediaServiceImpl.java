@@ -1,10 +1,17 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
+import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
+import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
-import cn.lbcmmszdntnt.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
+import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
+import cn.lbcmmszdntnt.redis.lock.RedisLock;
+import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
+import cn.lbcmmszdntnt.redis.lock.strategy.SimpleLockStrategy;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,15 +33,40 @@ public class FileMediaServiceImpl implements FileMediaService {
     @Value("${resource.compression.threshold}")
     private Integer compressionThreshold;
 
+    private final DigitalResourceService digitalResourceService;
+
     private final ObjectStorageService objectStorageService;
 
     @Override
-    public String uploadFile(MultipartFile file) {
-        return uploadFile(FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    public DigitalResource analyzeCode(String code) {
+        return digitalResourceService.getResourceByCode(code);
     }
 
     @Override
-    public String uploadFile(String originalName, byte[] data) {
+    public void preview(String code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageService.preview(resource.getFileName(), response);
+    }
+
+    @Override
+    public void download(String code, HttpServletResponse response) {
+        DigitalResource resource = analyzeCode(code);
+        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
+    }
+
+    @Override
+    public byte[] load(String code) {
+        DigitalResource resource = analyzeCode(code);
+        return objectStorageService.load(resource.getFileName());
+    }
+
+    @Override
+    public String uploadFile(String type, MultipartFile file) {
+        return uploadFile(type, FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    }
+
+    @Override
+    public String uploadFile(String type, String originalName, byte[] data) {
         // 判断文件类型
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
@@ -48,16 +80,17 @@ public class FileMediaServiceImpl implements FileMediaService {
             // 使用原后缀
             suffix = FileResourceUtil.getSuffix(originalName);
         }
-        return objectStorageService.upload(originalName, data);
+        String fileName = objectStorageService.upload(originalName, data);
+        return digitalResourceService.createResource(type, originalName, fileName).getCode();
     }
 
     @Override
-    public String uploadImage(MultipartFile file) {
-        return uploadImage(FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    public String uploadImage(String type, MultipartFile file) {
+        return uploadImage(type, FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
     }
 
     @Override
-    public String uploadImage(String originalName, byte[] data) {
+    public String uploadImage(String type, String originalName, byte[] data) {
         // 判断文件类型
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
@@ -73,6 +106,7 @@ public class FileMediaServiceImpl implements FileMediaService {
             // 使用原后缀
             suffix = FileResourceUtil.getSuffix(originalName);
         }
-        return objectStorageService.upload(originalName, data);
+        String fileName = objectStorageService.upload(originalName, data);
+        return digitalResourceService.createResource(type, originalName, fileName).getCode();
     }
 }

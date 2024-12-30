@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.user.sse.server;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

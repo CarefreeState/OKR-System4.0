@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.redis.cache;
 
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

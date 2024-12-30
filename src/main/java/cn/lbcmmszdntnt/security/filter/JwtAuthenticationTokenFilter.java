@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.security.filter;
 
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
-import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

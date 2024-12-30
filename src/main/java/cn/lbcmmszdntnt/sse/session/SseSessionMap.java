@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.sse.session;
 
 
-import cn.lbcmmszdntnt.util.session.SessionMap;
+import cn.lbcmmszdntnt.common.util.session.SessionMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

@@ -10,8 +10,8 @@ import cn.lbcmmszdntnt.domain.core.model.po.quadrant.ThirdQuadrant;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.QuadrantDeadlineService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.util.thread.pool.SchedulerThreadPool;
-import cn.lbcmmszdntnt.util.thread.timer.TimerUtil;
+import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
+import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.extern.slf4j.Slf4j;
 

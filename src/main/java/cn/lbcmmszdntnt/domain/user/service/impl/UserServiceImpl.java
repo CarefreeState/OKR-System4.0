@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
+import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
@@ -18,17 +19,17 @@ import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
-import cn.lbcmmszdntnt.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.util.media.MediaUtil;
-import cn.lbcmmszdntnt.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -75,6 +76,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private final WxBindingQRCodeService wxBindingQRCodeService;
 
     private final EmailService emailService;
+
+    private final FileMediaService fileMediaService;
 
     @Override
     public String getUserFlag(String code) {
@@ -205,32 +208,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         log.info("用户 {} 成功绑定 微信 {}", userId, openid);
     }
 
-    private String uploadPhoto(byte[] photoData, Long userId, String originPhoto) {
+    private String uploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto) {
         // 删除原头像（哪怕是字符串是网络路径/非法，只要本地没有完全对应上，就不算存在本地）
-        String originSavePath = MediaUtil.getLocalFilePath(originPhoto);
-        IOThreadPool.submit(() -> {
-            MediaUtil.deleteFile(originSavePath);
-        });
+//        String originSavePath = MediaUtil.getLocalFilePath(originPhoto);
+//        IOThreadPool.submit(() -> {
+//            MediaUtil.deleteFile(originSavePath);
+//        });
+        // todo: 补充删除文件的业务
         // 下载头像到本地
-        String mapPath = MediaUtil.saveImage(photoData, WebMvcConfiguration.PHOTO_PATH);
+        String code = fileMediaService.uploadImage("photo", multipartFile);
         // 修改数据库
         this.lambdaUpdate()
-                .set(User::getPhoto, mapPath)
+                .set(User::getPhoto, code)
                 .eq(User::getId, userId)
                 .update();
         deleteUserAllCache(userId);
-        return mapPath;
+        return code;
     }
 
     @Override
-    public String tryUploadPhoto(byte[] photoData, Long userId, String originPhoto) {
-        // 检查是否是图片
-        if (!FileResourceUtil.isImage(MediaUtil.getContentType(photoData))) {
-            throw new GlobalServiceException(String.format("用户 %d 上传非法文件", userId), GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
-        }
+    public String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto) {
         String lock = USER_PHOTO_LOCK + userId;
         return redisLock.tryLockGetSomething(lock, 0L, redisLockProperties.getTimeout(), TimeUnit.SECONDS,
-                () -> uploadPhoto(photoData, userId, originPhoto),
+                () -> uploadPhoto(multipartFile, userId, originPhoto),
                 () -> {
                     throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
                 });

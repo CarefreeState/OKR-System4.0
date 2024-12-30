@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public interface UserService extends IService<User> {
 
     void bindingWx(Long userId, String randomCode, String code);
 
-    String tryUploadPhoto(byte[] photoData, Long userId, String originPhoto);
+    String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto);
 
     void onLoginState(String secret, Long userId);
 

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.convert;
+package cn.lbcmmszdntnt.common.util.convert;
 
 
 import cn.hutool.extra.spring.SpringUtil;

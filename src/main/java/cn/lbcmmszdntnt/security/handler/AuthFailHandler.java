@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.security.handler;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
-import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

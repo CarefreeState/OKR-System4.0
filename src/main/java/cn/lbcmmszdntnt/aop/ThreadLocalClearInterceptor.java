@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.aop;
 
-import cn.lbcmmszdntnt.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

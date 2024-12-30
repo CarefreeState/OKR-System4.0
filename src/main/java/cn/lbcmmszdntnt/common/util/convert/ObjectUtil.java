@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.convert;
+package cn.lbcmmszdntnt.common.util.convert;
 
 import lombok.extern.slf4j.Slf4j;
 

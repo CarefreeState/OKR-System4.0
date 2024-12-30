@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.thread.pool;
+package cn.lbcmmszdntnt.common.util.thread.pool;
 
 import lombok.extern.slf4j.Slf4j;
 

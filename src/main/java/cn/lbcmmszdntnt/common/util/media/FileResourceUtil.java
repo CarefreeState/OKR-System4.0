@@ -1,7 +1,8 @@
-package cn.lbcmmszdntnt.util.media;
+package cn.lbcmmszdntnt.common.util.media;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -125,7 +126,12 @@ public class FileResourceUtil {
     }
 
     public static String getUniqueFileName(String suffix) {
-        return getSimpleFileName(suffix);
+        return String.format(
+                "%s/%s/%s",
+                suffix,
+                TimerUtil.getOnlyDateFormat(new Date()),
+                getSimpleFileName(suffix)
+        );
     }
 
 

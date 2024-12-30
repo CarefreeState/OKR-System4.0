@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.util.thread.timer;
+package cn.lbcmmszdntnt.common.util.thread.timer;
 
 import lombok.extern.slf4j.Slf4j;
 
