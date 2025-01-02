@@ -185,10 +185,10 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     public Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         String redisKey = TeamOkrUtil.CREATE_CD_FLAG + userId;
-        // 判断是否处于冷却状态
-        redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
-            throw new GlobalServiceException(GlobalServiceStatusCode.TEAM_CREATE_TOO_FREQUENT);
-        });
+        // todo: 判断是否处于冷却状态
+//        redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
+//            throw new GlobalServiceException(GlobalServiceStatusCode.TEAM_CREATE_TOO_FREQUENT);
+//        });
         // 创建两个 OKR 内核
         Long coreId1 = okrCoreService.createOkrCore();
         Long coreId2 = okrCoreService.createOkrCore();
@@ -209,7 +209,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         }
         log.info("用户 {} 新建团队 OKR {}  内核 {}", userId, teamId, coreId1);
         // 设置冷却时间
-        redisCache.setObject(redisKey, 0, TeamOkrUtil.CREATE_CD, TeamOkrUtil.CD_UNIT);// CD 没好的意思
+//        redisCache.setObject(redisKey, 0, TeamOkrUtil.CREATE_CD, TeamOkrUtil.CD_UNIT);// CD 没好的意思
         // 团队的“始祖”有团队个人 OKR
         TeamPersonalOkr teamPersonalOkr = new TeamPersonalOkr();
         teamPersonalOkr.setCoreId(coreId2);

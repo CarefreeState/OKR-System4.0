@@ -3,6 +3,7 @@ FROM openjdk:21
 COPY ./OKR-System-4.0.jar /root/app.jar
 
 EXPOSE 1701
+EXPOSE 9999
 
 ENV TZ=Asia/Shanghai
 

@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.common.util.convert;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,6 +17,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.StringUtils;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Map;
 
 import static cn.lbcmmszdntnt.common.constants.DateTimeConstants.*;
 
@@ -43,6 +46,16 @@ public class JsonUtil {
                 .build()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.FALSE)
         ;
+    }
+
+    public static void main(String[] args) {
+        User user = new User();
+        user.setId(1L);
+        user.setCreateTime(new Date());
+        String json = toJson(user);
+        System.out.println(json);
+        User parse = parse(json, User.class);
+        System.out.println(parse);
     }
 
     public static <T> T parse(String json, Class<T> clazz) {
