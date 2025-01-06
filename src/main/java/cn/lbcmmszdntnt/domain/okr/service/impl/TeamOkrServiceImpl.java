@@ -2,6 +2,8 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
@@ -21,8 +23,6 @@ import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
@@ -185,10 +185,9 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     public Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         String redisKey = TeamOkrUtil.CREATE_CD_FLAG + userId;
-        // todo: 判断是否处于冷却状态
-//        redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
-//            throw new GlobalServiceException(GlobalServiceStatusCode.TEAM_CREATE_TOO_FREQUENT);
-//        });
+        redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
+            throw new GlobalServiceException(GlobalServiceStatusCode.TEAM_CREATE_TOO_FREQUENT);
+        });
         // 创建两个 OKR 内核
         Long coreId1 = okrCoreService.createOkrCore();
         Long coreId2 = okrCoreService.createOkrCore();
@@ -209,7 +208,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         }
         log.info("用户 {} 新建团队 OKR {}  内核 {}", userId, teamId, coreId1);
         // 设置冷却时间
-//        redisCache.setObject(redisKey, 0, TeamOkrUtil.CREATE_CD, TeamOkrUtil.CD_UNIT);// CD 没好的意思
+        redisCache.setObject(redisKey, 0, TeamOkrUtil.CREATE_CD, TeamOkrUtil.CD_UNIT);// CD 没好的意思
         // 团队的“始祖”有团队个人 OKR
         TeamPersonalOkr teamPersonalOkr = new TeamPersonalOkr();
         teamPersonalOkr.setCoreId(coreId2);

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.vo;
+package cn.lbcmmszdntnt.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginTokenVO {
+public class TokenVO {
 
     private Long userId;
 

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.security.config;
+package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import lombok.Getter;

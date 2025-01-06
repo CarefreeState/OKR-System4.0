@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.model.po;
 
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,8 +38,11 @@ public class User implements Serializable {
     @Schema(description = "手机号")
     private String phone;
 
-    @Schema(description = "乐观锁")
+    @Schema(description = "用户类型")
+    private UserType userType;
+
     @JsonIgnore
+    @Schema(description = "乐观锁")
     private Integer version;
 
     @Schema(description = "是否删除")

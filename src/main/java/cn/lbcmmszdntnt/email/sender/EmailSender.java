@@ -1,11 +1,11 @@
 package cn.lbcmmszdntnt.email.sender;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
 import cn.lbcmmszdntnt.email.model.po.EmailAttachment;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.email.provider.EmailSenderProvider;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

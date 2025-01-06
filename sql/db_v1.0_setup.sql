@@ -21,3 +21,26 @@ create table `digital_resource`
     unique index `uni_code`(`code` asc) using btree
 ) comment '资源表';
 
+
+-- 创建用户表
+drop table if exists `user`;
+create table `user` (
+    `id` bigint primary key auto_increment comment 'ID',
+    `openid` varchar(32) not null default '' comment 'OpenID',
+    `unionid` varchar(32) not null default '' comment 'UnionID',
+    `nickname` varchar(32) not null default '' comment '昵称',
+    `photo` varchar(500) not null default '' comment '用户头像',
+    `email` varchar(64) not null default '' comment '邮箱',
+    `phone` char(11) not null default '' comment '手机号',
+    `user_type` int not null default 1 comment '用户类型（默认为 1 普通用户）',
+    -- common column
+    `version` int not null default 0 comment '乐观锁',
+    `is_deleted` bit not null default b'0' comment '伪删除标记',
+    `create_time` datetime not null default current_timestamp comment '创建时间',
+    `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
+    -- 索引
+    unique index `uni_id`(`id` asc) using btree,
+    index `idx_openid`(`openid` asc) using btree,
+    index `idx_unionid`(`unionid` asc) using btree
+) auto_increment 10000 comment '用户表';
+

@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.model.vo;
 
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -34,5 +35,8 @@ public class UserVO {
 
     @Schema(description = "手机号")
     private String phone;
+
+    @Schema(description = "用户类型")
+    private UserType userType;
 
 }

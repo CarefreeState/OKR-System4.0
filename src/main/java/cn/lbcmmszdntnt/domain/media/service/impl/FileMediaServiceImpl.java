@@ -1,16 +1,12 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
+import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
+import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
-import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.common.util.media.MediaUtil;
-import cn.lbcmmszdntnt.redis.cache.RedisCache;
-import cn.lbcmmszdntnt.redis.lock.RedisLock;
-import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
-import cn.lbcmmszdntnt.redis.lock.strategy.SimpleLockStrategy;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

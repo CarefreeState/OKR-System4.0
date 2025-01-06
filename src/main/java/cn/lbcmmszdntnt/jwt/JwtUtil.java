@@ -157,17 +157,17 @@ public class JwtUtil {
         return request.getHeader(JWT_NAME);
     }
 
-    public static <T> T parseJwtFromHeader(HttpServletRequest request, HttpServletResponse response, T data) {
+    public static TokenVO parseJwtFromHeader(HttpServletRequest request, HttpServletResponse response) {
         return Optional.ofNullable(getJwt(request))
                 .filter(StringUtils::hasText)
-                .map(token -> parseJwtData(token, data, response))
+                .map(token -> parseJwtData(token, new TokenVO(), response))
                 .orElse(null);
     }
 
-    public static <T> T parseJwtFromParameter(HttpServletRequest request, HttpServletResponse response, T data) {
+    public static TokenVO parseJwtFromParameter(HttpServletRequest request, HttpServletResponse response) {
         return Optional.ofNullable(getJwt(request))
                 .filter(StringUtils::hasText)
-                .map(token -> parseJwtData(token, data, response))
+                .map(token -> parseJwtData(token, new TokenVO(), response))
                 .orElse(null);
     }
 

@@ -1,7 +1,8 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.config.WebMvcConfiguration;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
@@ -11,18 +12,14 @@ import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
-import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.TokenVO;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
-import cn.lbcmmszdntnt.common.util.media.MediaUtil;
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -99,9 +96,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Optional<User> getUserById(Long id) {
         String redisKey = ID_USER_MAP + id;
         return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
-            User user = this.lambdaQuery().eq(User::getId, id).one();
-            redisCache.setObject(redisKey, user, ID_USER_TTL, ID_USER_UNIT);
-            return user;
+            return this.lambdaQuery().eq(User::getId, id).oneOpt().map(user -> {
+                redisCache.setObject(redisKey, user, ID_USER_TTL, ID_USER_UNIT);
+                return user;
+            }).orElse(null);
         }));
     }
 
@@ -109,9 +107,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Optional<User> getUserByEmail(String email) {
         String redisKey = EMAIL_USER_MAP + email;
         return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
-            User user = this.lambdaQuery().eq(User::getEmail, email).one();
-            redisCache.setObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
-            return user;
+            return this.lambdaQuery().eq(User::getEmail, email).oneOpt().map(user -> {
+                redisCache.setObject(redisKey, user, EMAIL_USER_TTL, EMAIL_USER_UNIT);
+                return user;
+            }).orElse(null);
         }));
     }
 
@@ -119,9 +118,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Optional<User> getUserByOpenid(String openid) {
         String redisKey = WX_USER_MAP + openid;
         return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {
-            User user = this.lambdaQuery().eq(User::getOpenid, openid).one();
-            redisCache.setObject(redisKey, user, WX_USER_TTL, WX_USER_UNIT);
-            return user;
+            return this.lambdaQuery().eq(User::getOpenid, openid).oneOpt().map(user -> {
+                redisCache.setObject(redisKey, user, WX_USER_TTL, WX_USER_UNIT);
+                return user;
+            }).orElse(null);
         }));
     }
 
@@ -243,9 +243,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
         if ("null".equals(token)) {
             // 构造 token
-            LoginTokenVO loginTokenVO = LoginTokenVO.builder().userId(userId).build();
-            String jsonData = JsonUtil.toJson(loginTokenVO);
-            redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, loginTokenVO),
+            TokenVO tokenVO = TokenVO.builder().userId(userId).build();
+            String jsonData = JsonUtil.toJson(tokenVO);
+            redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, tokenVO),
                     QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         }
     }

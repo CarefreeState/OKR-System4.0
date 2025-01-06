@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.media.service;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created With Intellij IDEA

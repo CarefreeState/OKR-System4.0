@@ -1,11 +1,11 @@
 package cn.lbcmmszdntnt.domain.qrcode.util;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpUtil;
+import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
+import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 

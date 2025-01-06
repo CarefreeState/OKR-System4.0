@@ -6,10 +6,10 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
-import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.TokenVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,8 +64,8 @@ public class CenterController {
             throw new GlobalServiceException(GlobalServiceStatusCode.SYSTEM_API_VISIT_FAIL);
         }
         // 构造 token
-        LoginTokenVO loginTokenVO = LoginTokenVO.builder().userId(userId).build();
-        String token = JwtUtil.createJwt(JWT_SUBJECT, loginTokenVO);
+        TokenVO tokenVO = TokenVO.builder().userId(userId).build();
+        String token = JwtUtil.createJwt(JWT_SUBJECT, tokenVO);
         LoginVO loginVO = LoginVO.builder().token(token).build();
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }

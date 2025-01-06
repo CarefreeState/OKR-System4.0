@@ -2,15 +2,15 @@ package cn.lbcmmszdntnt.domain.user.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginUser;
 import cn.lbcmmszdntnt.domain.user.model.po.User;
-import cn.lbcmmszdntnt.domain.user.model.vo.LoginTokenVO;
 import cn.lbcmmszdntnt.domain.user.service.UserRecordService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.TokenVO;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.security.config.SecurityConfig;
-import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +52,8 @@ public class UserRecordUtil {
 
     // 获取 json 中的数字类型的元素，要进行判断~
     public static Long getUserIdFromJWT(HttpServletRequest request, HttpServletResponse response) {
-        LoginTokenVO loginTokenVO = JwtUtil.parseJwtFromHeader(request, response, new LoginTokenVO());
-        return loginTokenVO.getUserId();
+        TokenVO tokenVO = JwtUtil.parseJwtFromHeader(request, response);
+        return tokenVO.getUserId();
     }
 
     public static PreAuthenticatedAuthenticationToken getAuthenticationToken() {

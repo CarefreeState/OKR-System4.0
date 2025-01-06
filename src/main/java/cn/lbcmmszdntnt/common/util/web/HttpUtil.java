@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.common.util.web;
 
 
 import cn.hutool.http.HttpRequest;
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
@@ -10,7 +11,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -26,6 +29,17 @@ import java.util.stream.Collectors;
 public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+
+    public final static PathMatcher PATH_MATCHER = new AntPathMatcher();
+
+    public static boolean matchPath(String pattern, String path) {
+        return PATH_MATCHER.match(pattern, path);
+    }
+
+    public static boolean anyMatchPath(List<String> patterns, String path) {
+        return ObjectUtil.distinctNonNullStream(patterns)
+                .anyMatch(pattern -> matchPath(pattern, path));
+    }
 
     public static String getHost(HttpServletRequest request) {
         return String.format("%s://%s", request.getScheme(), request.getHeader(HttpHeaders.HOST));

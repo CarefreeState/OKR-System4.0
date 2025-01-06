@@ -1,17 +1,15 @@
 spring:
   application:
-    name: okr-system
-    version: 4.0
+    name: @spring.application.name@
+    version: @spring.application.version@
   profiles:
     active: @profiles.active@
-  request:
-    id:
-      header: Request-ID
+  trace-id: @trace.id@
 
 # 日志配置
 logging:
   level:
-    com.achobeta: @logging.level@
+    cn.lbcmmszdntnt: @logging.level@
     org.springframework: warn
     tech.powerjob.worker.background: warn
   config: classpath:logback-plus.xml

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.aop;
+package cn.lbcmmszdntnt.aop.handler;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;

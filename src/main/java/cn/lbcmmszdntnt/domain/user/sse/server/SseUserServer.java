@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.user.sse.server;
 
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@Tag(name = "SSE 接口")
+@Tag(name = "用户 SSE 接口")
 @RequestMapping("/events")
 @RequiredArgsConstructor
 public class SseUserServer {

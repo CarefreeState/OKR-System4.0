@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.core.loader;
 
 
 import cn.lbcmmszdntnt.domain.core.service.QuadrantDeadlineService;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
@@ -21,8 +21,9 @@ public class QuadrantDeadlineServiceLoader {
 
     public QuadrantDeadlineService load() {
         // 选取服务
-        Iterator<QuadrantDeadlineService> iterator = quadrantDeadlineServices.iterator();
-        return iterator.hasNext() ? iterator.next() : null;
+        return SpringFactoriesLoader.loadFactories(QuadrantDeadlineService.class, this.getClass().getClassLoader()).getFirst();
+//        Iterator<QuadrantDeadlineService> iterator = quadrantDeadlineServices.iterator();
+//        return iterator.hasNext() ? iterator.next() : null;
     }
 
 }
