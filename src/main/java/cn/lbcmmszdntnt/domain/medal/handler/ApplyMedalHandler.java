@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.medal.handler;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.medal.config.properties.MedalMap;
-import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import lombok.extern.slf4j.Slf4j;
 

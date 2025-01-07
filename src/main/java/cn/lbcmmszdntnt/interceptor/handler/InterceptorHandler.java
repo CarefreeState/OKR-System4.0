@@ -29,7 +29,7 @@ public abstract class InterceptorHandler {
         return Boolean.TRUE;
     }
 
-    protected void doNext(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    private void doNext(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Optional.ofNullable(this.next).ifPresent(nextHandler -> {
             nextHandler.handle(request, response, handler);
         });
@@ -44,11 +44,11 @@ public abstract class InterceptorHandler {
         doNext(request, response, handler);
     }
 
-    protected void setNext(InterceptorHandler next) {
+    private void setNext(InterceptorHandler next) {
         this.next = next;
     }
 
-    protected void setPrev(InterceptorHandler prev) {
+    private void setPrev(InterceptorHandler prev) {
         this.prev = prev;
     }
 

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.service.inner;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

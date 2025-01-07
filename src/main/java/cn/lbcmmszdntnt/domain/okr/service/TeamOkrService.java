@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.okr.service;
 
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.record.model.converter;
 
-import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
+import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

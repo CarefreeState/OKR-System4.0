@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.FirstQuadrantMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.core.model.po.quadrant.FirstQuadrant">
+    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="coreId" column="core_id" jdbcType="BIGINT"/>
             <result property="objective" column="objective" jdbcType="VARCHAR"/>

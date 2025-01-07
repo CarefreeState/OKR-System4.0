@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.service;
 
 
-import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
+import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.model.mapper;
 
 
-import cn.lbcmmszdntnt.domain.okr.model.po.PersonalOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;

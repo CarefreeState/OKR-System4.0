@@ -4,7 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginUser;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserRecordService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;

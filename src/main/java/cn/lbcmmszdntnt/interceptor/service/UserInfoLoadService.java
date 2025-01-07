@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.service;
 
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 
 /**
  * Created With Intellij IDEA

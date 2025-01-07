@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.core.model.converter;
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.dto.StatusFlagDTO;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.dto.StatusFlagUpdateDTO;
+import cn.lbcmmszdntnt.domain.core.model.dto.inner.StatusFlagDTO;
+import cn.lbcmmszdntnt.domain.core.model.dto.inner.StatusFlagUpdateDTO;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

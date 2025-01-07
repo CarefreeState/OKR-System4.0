@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,8 +22,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ContextClearAfterHandler extends InterceptorHandler {
 
+    @Value("${spring.trace-id}")
+    private String traceId;
+
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         ThreadLocalMapUtil.removeAll();
+        MDC.remove(traceId);
     }
 }

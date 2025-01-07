@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.ThirdQuadrantMapper">
 
-    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.ThirdQuadrantVO">
-        <collection property="actions" ofType="cn.lbcmmszdntnt.domain.core.model.po.inner.Action"
+    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.ThirdQuadrantVO">
+        <collection property="actions" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.Action"
                     resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.ActionMapper.BaseResultMap" columnPrefix="a_" />
     </resultMap>
     <select id="searchThirdQuadrant" resultMap="AllInfoResultMap">

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.service;
 
 
-import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 

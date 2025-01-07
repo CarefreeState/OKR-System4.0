@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.core.model.converter;
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.dto.KeyResultDTO;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.dto.KeyResultUpdateDTO;
+import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultDTO;
+import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultUpdateDTO;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

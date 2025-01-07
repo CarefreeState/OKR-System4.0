@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.domain.core.service.impl.inner;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.PriorityNumberOne;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.PriorityNumberOneMapper;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.PriorityNumberOne;
 import cn.lbcmmszdntnt.domain.core.service.TaskService;
 import cn.lbcmmszdntnt.domain.core.service.inner.PriorityNumberOneService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;

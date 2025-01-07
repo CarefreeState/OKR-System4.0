@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.okr.model.mapper.PersonalOkrMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.okr.model.po.PersonalOkr">
+    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="coreId" column="core_id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>

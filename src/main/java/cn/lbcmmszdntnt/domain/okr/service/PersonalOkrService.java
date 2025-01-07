@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.okr.service;
 
 
-import cn.lbcmmszdntnt.domain.okr.model.po.PersonalOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

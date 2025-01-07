@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.model.mapper;
 
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

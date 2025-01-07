@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.okr.service;
 
 
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamPersonalOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

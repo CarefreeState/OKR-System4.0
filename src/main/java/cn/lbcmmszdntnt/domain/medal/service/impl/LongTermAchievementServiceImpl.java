@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.medal.service.impl;
 
 
 import cn.lbcmmszdntnt.domain.medal.handler.chain.MedalHandlerChain;
-import cn.lbcmmszdntnt.domain.medal.model.entry.LongTermAchievement;
+import cn.lbcmmszdntnt.domain.medal.model.entity.entry.LongTermAchievement;
 import cn.lbcmmszdntnt.domain.medal.service.TermAchievementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

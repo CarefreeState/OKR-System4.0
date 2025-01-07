@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.PersonalOkrService;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

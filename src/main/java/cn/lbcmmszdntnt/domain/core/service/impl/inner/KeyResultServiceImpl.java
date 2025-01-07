@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.domain.core.service.impl.inner;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.KeyResultMapper;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.service.inner.KeyResultService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;

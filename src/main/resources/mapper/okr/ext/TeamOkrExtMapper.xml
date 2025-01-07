@@ -7,7 +7,7 @@
     <resultMap extends="BaseResultMap" id="KeyResultsMap" type="cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO">
         <result property="isOver" column="is_over" jdbcType="BIT"/>
         <result property="degree" column="degree" jdbcType="INTEGER"/>
-        <collection property="keyResults" ofType="cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult"
+        <collection property="keyResults" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult"
                     resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.KeyResultMapper.BaseResultMap" columnPrefix="k_" />
     </resultMap>
 

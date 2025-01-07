@@ -5,8 +5,8 @@ import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.medal.handler.chain.MedalHandlerChain;
-import cn.lbcmmszdntnt.domain.medal.model.entry.StayTrueBeginning;
-import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.entry.StayTrueBeginning;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
@@ -83,6 +83,6 @@ public class QuadrantInitialInterceptorConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        InterceptorHandler.addHandlerAfter(quadrantInitialAfterHandler(), contextClearAfterHandler);
+        InterceptorHandler.addHandlerBefore(quadrantInitialAfterHandler(), contextClearAfterHandler);
     }
 }

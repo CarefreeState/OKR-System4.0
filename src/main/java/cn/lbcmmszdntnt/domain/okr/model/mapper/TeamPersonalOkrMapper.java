@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.okr.model.mapper;
 
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamPersonalOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

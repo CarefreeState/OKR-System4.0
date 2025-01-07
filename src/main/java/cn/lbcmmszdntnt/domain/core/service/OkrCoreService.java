@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.service;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.OkrCore;
+import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;

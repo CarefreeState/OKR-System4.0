@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamOkr;
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;

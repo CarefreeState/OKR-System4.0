@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.config.properties;
 
 
-import cn.lbcmmszdntnt.domain.medal.model.po.Medal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.Medal;
 import cn.lbcmmszdntnt.domain.medal.service.MedalService;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;

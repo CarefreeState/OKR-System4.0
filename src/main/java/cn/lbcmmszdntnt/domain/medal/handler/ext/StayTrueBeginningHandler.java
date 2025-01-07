@@ -1,13 +1,13 @@
 package cn.lbcmmszdntnt.domain.medal.handler.ext;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.FirstQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.FirstQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.medal.handler.ApplyMedalHandler;
 import cn.lbcmmszdntnt.domain.medal.handler.util.MedalEntryUtil;
-import cn.lbcmmszdntnt.domain.medal.model.entry.StayTrueBeginning;
-import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.entry.StayTrueBeginning;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

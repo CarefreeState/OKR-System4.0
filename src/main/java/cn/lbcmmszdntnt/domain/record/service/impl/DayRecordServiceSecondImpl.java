@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.service.impl;
 
 
-import cn.lbcmmszdntnt.domain.record.model.entry.PrioritiesUpdate;
+import cn.lbcmmszdntnt.domain.record.model.entity.entry.PrioritiesUpdate;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
 import org.springframework.stereotype.Service;
 

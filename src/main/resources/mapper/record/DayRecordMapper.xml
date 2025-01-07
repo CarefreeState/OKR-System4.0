@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.record.model.mapper.DayRecordMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.record.model.po.DayRecord">
+    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.record.model.entity.DayRecord">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="coreId" column="core_id" jdbcType="BIGINT"/>
             <result property="recordDate" column="record_date" jdbcType="DATE"/>

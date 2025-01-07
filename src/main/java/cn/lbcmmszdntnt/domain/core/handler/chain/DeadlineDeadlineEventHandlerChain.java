@@ -5,7 +5,7 @@ import cn.lbcmmszdntnt.domain.core.handler.DeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.core.handler.ext.FirstQuadrantDeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.core.handler.ext.SecondQuadrantDeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.core.handler.ext.ThirdQuadrantDeadlineEventHandler;
-import cn.lbcmmszdntnt.domain.core.model.po.event.DeadlineEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

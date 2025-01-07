@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.model.mapper.inner;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

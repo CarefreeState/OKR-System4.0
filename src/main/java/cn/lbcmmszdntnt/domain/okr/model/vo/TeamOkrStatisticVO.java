@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.okr.model.vo;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.KeyResult;
-import cn.lbcmmszdntnt.domain.okr.model.po.TeamOkr;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
+import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

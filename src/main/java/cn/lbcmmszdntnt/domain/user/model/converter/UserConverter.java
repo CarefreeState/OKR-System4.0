@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.model.converter;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.model.mapper;
 
 
-import cn.lbcmmszdntnt.domain.medal.model.po.Medal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.Medal;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

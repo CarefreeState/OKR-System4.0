@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.core.handler.ext;
 
 
 import cn.lbcmmszdntnt.domain.core.handler.DeadlineEventHandler;
-import cn.lbcmmszdntnt.domain.core.model.po.event.DeadlineEvent;
-import cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.SecondQuadrantEvent;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.SecondQuadrant;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.SecondQuadrantEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
 import lombok.RequiredArgsConstructor;

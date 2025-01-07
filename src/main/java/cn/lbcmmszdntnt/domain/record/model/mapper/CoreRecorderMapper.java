@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.model.mapper;
 
 
-import cn.lbcmmszdntnt.domain.record.model.po.CoreRecorder;
+import cn.lbcmmszdntnt.domain.record.model.entity.CoreRecorder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

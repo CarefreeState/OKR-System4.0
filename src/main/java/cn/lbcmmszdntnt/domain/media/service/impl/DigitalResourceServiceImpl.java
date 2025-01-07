@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.media.model.dao.mapper.DigitalResourceMapper;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
+import cn.lbcmmszdntnt.domain.media.model.mapper.DigitalResourceMapper;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

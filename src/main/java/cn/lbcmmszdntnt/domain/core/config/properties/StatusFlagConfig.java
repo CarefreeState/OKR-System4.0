@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.domain.core.config.properties;
 
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
-import cn.lbcmmszdntnt.domain.core.model.po.inner.StatusFlag;
 import jakarta.annotation.PostConstruct;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

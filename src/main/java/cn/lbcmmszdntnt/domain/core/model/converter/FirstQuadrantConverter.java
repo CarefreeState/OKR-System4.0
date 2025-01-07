@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.model.converter;
 
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto.FirstQuadrantDTO;
+import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.FirstQuadrantDTO;
+import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.service.quadrant;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.ThirdQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.dto.InitQuadrantDTO;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.ThirdQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
+import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.ThirdQuadrant;
+import cn.lbcmmszdntnt.domain.core.model.vo.ThirdQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

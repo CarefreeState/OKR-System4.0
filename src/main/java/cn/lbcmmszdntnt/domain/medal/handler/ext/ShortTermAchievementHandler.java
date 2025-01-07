@@ -1,8 +1,9 @@
 package cn.lbcmmszdntnt.domain.medal.handler.ext;
+
 import cn.lbcmmszdntnt.domain.medal.handler.ApplyMedalHandler;
 import cn.lbcmmszdntnt.domain.medal.handler.util.MedalEntryUtil;
-import cn.lbcmmszdntnt.domain.medal.model.entry.ShortTermAchievement;
-import cn.lbcmmszdntnt.domain.medal.model.po.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.entry.ShortTermAchievement;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

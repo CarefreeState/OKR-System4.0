@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.medal.model.converter;
 
-import cn.lbcmmszdntnt.domain.medal.model.po.Medal;
+import cn.lbcmmszdntnt.domain.medal.model.entity.Medal;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

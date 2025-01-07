@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.service.inner;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.inner.PriorityNumberOne;
+import cn.lbcmmszdntnt.domain.core.model.entity.inner.PriorityNumberOne;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

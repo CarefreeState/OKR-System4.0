@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.okr.service;
 
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;

@@ -6,7 +6,7 @@ import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.user.constants.UserPhotoConstants;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;

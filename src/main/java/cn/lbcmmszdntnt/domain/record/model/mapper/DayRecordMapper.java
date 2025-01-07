@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.model.mapper;
 
 
-import cn.lbcmmszdntnt.domain.record.model.po.DayRecord;
+import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

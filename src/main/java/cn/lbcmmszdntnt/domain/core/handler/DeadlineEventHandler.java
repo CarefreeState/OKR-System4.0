@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.handler;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.event.DeadlineEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
 
 import java.util.Objects;
 

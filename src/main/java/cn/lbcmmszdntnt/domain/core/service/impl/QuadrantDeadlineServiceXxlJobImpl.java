@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.core.service.impl;
 
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.FirstQuadrantEvent;
-import cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.SecondQuadrantEvent;
-import cn.lbcmmszdntnt.domain.core.model.po.event.quadrant.ThirdQuadrantEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.FirstQuadrantEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.SecondQuadrantEvent;
+import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.ThirdQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.service.QuadrantDeadlineService;
 import cn.lbcmmszdntnt.domain.core.xxljob.XxlDeadlineJobConfig;
 import lombok.extern.slf4j.Slf4j;

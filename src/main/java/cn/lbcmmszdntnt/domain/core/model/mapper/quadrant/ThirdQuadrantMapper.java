@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.model.mapper.quadrant;
 
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.ThirdQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.ThirdQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.ThirdQuadrant;
+import cn.lbcmmszdntnt.domain.core.model.vo.ThirdQuadrantVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 

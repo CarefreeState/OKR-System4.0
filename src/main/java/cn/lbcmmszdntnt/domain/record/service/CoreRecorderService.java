@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.service;
 
 
-import cn.lbcmmszdntnt.domain.record.model.po.CoreRecorder;
+import cn.lbcmmszdntnt.domain.record.model.entity.CoreRecorder;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

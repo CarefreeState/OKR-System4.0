@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.model.converter;
 
-import cn.lbcmmszdntnt.domain.core.model.po.OkrCore;
+import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

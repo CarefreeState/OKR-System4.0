@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication;
 
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import cn.lbcmmszdntnt.interceptor.service.UserInfoLoadService;

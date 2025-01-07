@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.service.impl;
 
 
-import cn.lbcmmszdntnt.domain.record.model.entry.ActionUpdate;
+import cn.lbcmmszdntnt.domain.record.model.entity.entry.ActionUpdate;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
 import org.springframework.stereotype.Service;
 

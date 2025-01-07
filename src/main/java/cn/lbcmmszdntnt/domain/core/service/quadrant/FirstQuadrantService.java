@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.core.service.quadrant;
 
 
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.po.quadrant.vo.FirstQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
+import cn.lbcmmszdntnt.domain.core.model.vo.FirstQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

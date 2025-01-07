@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.record.handler.ext;
 
 import cn.lbcmmszdntnt.domain.record.handler.ApplyRecordEventHandler;
 import cn.lbcmmszdntnt.domain.record.handler.util.RecordEntryUtil;
-import cn.lbcmmszdntnt.domain.record.model.entry.ActionUpdate;
+import cn.lbcmmszdntnt.domain.record.model.entity.entry.ActionUpdate;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

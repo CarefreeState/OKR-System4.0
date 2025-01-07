@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
-import cn.lbcmmszdntnt.domain.user.model.po.User;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 
