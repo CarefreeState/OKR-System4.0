@@ -1,7 +1,5 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.authorization;
 
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
-import cn.lbcmmszdntnt.interceptor.config.IgnoreUrlsConfig;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,8 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA

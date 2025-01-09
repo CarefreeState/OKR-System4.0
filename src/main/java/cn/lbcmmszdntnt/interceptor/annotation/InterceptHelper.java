@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.interceptor.annotation;
 
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;

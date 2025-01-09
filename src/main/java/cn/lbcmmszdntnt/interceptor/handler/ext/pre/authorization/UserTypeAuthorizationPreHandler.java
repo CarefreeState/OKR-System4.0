@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.interceptor.handler.ext.pre.authorization;
 
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
-import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA

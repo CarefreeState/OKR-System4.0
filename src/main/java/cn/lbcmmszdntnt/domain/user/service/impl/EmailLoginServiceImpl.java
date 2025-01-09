@@ -4,7 +4,6 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
-import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;

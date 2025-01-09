@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.init;
 
-import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.annotation.InterceptHelper;
 import cn.lbcmmszdntnt.interceptor.config.properties.InterceptProperties;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;

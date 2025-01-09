@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.core.interceptor;
 
-import cn.lbcmmszdntnt.domain.core.interceptor.QuadrantInitialAfterHandler;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import cn.lbcmmszdntnt.interceptor.handler.ext.after.ContextClearAfterHandler;
 import lombok.RequiredArgsConstructor;

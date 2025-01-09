@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.context;
 
 import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
-import cn.lbcmmszdntnt.domain.user.model.entity.User;
 
 /**
  * Created With Intellij IDEA

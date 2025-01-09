@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.interceptor.config.properties.CustomInterceptProperties;
-import cn.lbcmmszdntnt.interceptor.config.properties.InterceptProperties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

@@ -1,17 +1,10 @@
 package cn.lbcmmszdntnt.domain.user.interceptor;
 
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.JwtAuthenticationPreHandler;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
