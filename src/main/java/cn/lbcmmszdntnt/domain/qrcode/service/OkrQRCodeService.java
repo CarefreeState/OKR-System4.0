@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.service;
 
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 
 /**
@@ -11,9 +12,9 @@ import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
  */
 public interface OkrQRCodeService {
 
-    String getInviteQRCode(Long teamId, String teamName, String type);
+    String getInviteQRCode(Long teamId, String teamName, QRCodeType type);
 
-    String getInviteQRCodeLock(Long teamId, String teamName, String type);
+    String getInviteQRCodeLock(Long teamId, String teamName, QRCodeType type);
 
     void deleteTeamNameCache(Long teamId);
 

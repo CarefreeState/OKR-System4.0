@@ -1,6 +1,8 @@
 package cn.lbcmmszdntnt.domain.core.model.dto;
 
 
+import cn.lbcmmszdntnt.domain.okr.enums.OkrType;
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,9 +18,9 @@ import lombok.Data;
 @Data
 public class OkrOperateDTO {
 
-    @Schema(description = "场景")
+    @Schema(description = "场景值")
     @NotNull(message = "缺少场景值")
-    private String scene;
+    private OkrType scene;
 
     @Schema(description = "团队 OKR ID", nullable = true)
     private Long teamOkrId;
@@ -27,7 +29,7 @@ public class OkrOperateDTO {
     private String secret;
 
     @Schema(description = "邀请码类型", nullable = true)
-    private String type;
+    private QRCodeType type;
 
     @Schema(description = "团队名", nullable = true)
     private String teamName;

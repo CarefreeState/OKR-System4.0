@@ -1,8 +1,14 @@
 package cn.lbcmmszdntnt.domain.record.factory;
 
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
-import cn.lbcmmszdntnt.locator.ServiceFactory;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -11,5 +17,15 @@ import cn.lbcmmszdntnt.locator.ServiceFactory;
  * Date: 2024-09-05
  * Time: 16:47
  */
-public interface DayaRecordCompleteServiceFactory extends ServiceFactory<Integer, DayRecordCompleteService> {
+@Configuration
+@ConfigurationProperties(prefix = "day-record-complete-service")
+@Data
+public class DayaRecordCompleteServiceFactory {
+
+    private Map<TaskType, String> map;
+
+    public DayRecordCompleteService getService(TaskType taskType) {
+        return SpringUtil.getBean(map.get(taskType), DayRecordCompleteService.class);
+    }
+
 }

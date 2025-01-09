@@ -1,13 +1,13 @@
-package cn.lbcmmszdntnt.domain.user.service.impl;
+package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
+import cn.lbcmmszdntnt.domain.auth.model.dto.WxLoginDTO;
+import cn.lbcmmszdntnt.domain.auth.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
-import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.WxCode2SessionVO;
-import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;

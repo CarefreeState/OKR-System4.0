@@ -1,6 +1,6 @@
-package cn.lbcmmszdntnt.domain.user.service;
+package cn.lbcmmszdntnt.domain.auth.service;
 
-import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
+import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 

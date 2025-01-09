@@ -1,8 +1,7 @@
-package cn.lbcmmszdntnt.handler;
+package cn.lbcmmszdntnt.exception;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,7 +1,13 @@
 package cn.lbcmmszdntnt.domain.qrcode.factory;
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.service.InviteQRCodeService;
-import cn.lbcmmszdntnt.locator.ServiceFactory;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -10,10 +16,15 @@ import cn.lbcmmszdntnt.locator.ServiceFactory;
  * Date: 2024-09-05
  * Time: 15:22
  */
-public interface InviteQRCodeServiceFactory extends ServiceFactory<String, InviteQRCodeService> {
+@Configuration
+@ConfigurationProperties(prefix = "okr.service.invite-qrcode-service")
+@Data
+public class InviteQRCodeServiceFactory {
 
-    String WX_TYPE = "wx";
+    private Map<QRCodeType, String> map;
 
-    String WEB_TYPE = "web";
+    public InviteQRCodeService getService(QRCodeType qrCodeType) {
+        return SpringUtil.getBean(map.get(qrCodeType), InviteQRCodeService.class);
+    }
 
 }

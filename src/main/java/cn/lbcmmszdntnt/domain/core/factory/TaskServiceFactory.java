@@ -1,8 +1,14 @@
 package cn.lbcmmszdntnt.domain.core.factory;
 
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.core.service.TaskService;
-import cn.lbcmmszdntnt.locator.ServiceFactory;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -11,5 +17,15 @@ import cn.lbcmmszdntnt.locator.ServiceFactory;
  * Date: 2024-09-05
  * Time: 16:40
  */
-public interface TaskServiceFactory extends ServiceFactory<Integer, TaskService> {
+@Configuration
+@ConfigurationProperties(prefix = "okr.service.task-service")
+@Data
+public class TaskServiceFactory {
+
+    private Map<TaskType, String> map;
+
+    public TaskService getService(TaskType taskType) {
+        return SpringUtil.getBean(map.get(taskType), TaskService.class);
+    }
+
 }

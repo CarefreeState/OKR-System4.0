@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.converter.KeyResultConverter;
@@ -46,7 +45,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/keyresult")
 @Tag(name = "关键结果")
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class KeyResultController {
 
     private final OkrCoreService okrCoreService;

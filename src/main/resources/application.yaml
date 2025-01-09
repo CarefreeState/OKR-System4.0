@@ -45,28 +45,35 @@ media:
 
 okr:
   service:
-    okrOperateServiceMap:
-      scene-p: personalOkrServiceImpl
-      scene-t: teamOkrServiceImpl
-      scene-tp: teamPersonalOkrServiceImpl
-    loginServiceMap:
-      WX_JWT: wxLoginServiceImpl
-      EMAIL_JWT: emailLoginServiceImpl
-    inviteQRCodeServiceMap:
-      wx: wxInviteQRCodeServiceImpl
-      web: webInviteQRCodeServiceImpl
-    teamAchievementServiceMap:
-      0: longTermAchievementServiceImpl
-      1: shortTermAchievementServiceImpl
-      2: shortTermAchievementServiceImpl
-    taskServiceMap:
-      0: actionServiceImpl
-      1: priorityNumberOneServiceImpl
-      2: priorityNumberTwoServiceImpl
-    dayRecordCompleteServiceMap:
-      0: dayRecordServiceThirdImpl
-      1: dayRecordServiceSecondImpl
-      2: dayRecordServiceSecondImpl
+    login-service:
+      map:
+        wx: wxLoginServiceImpl
+        email: emailLoginServiceImpl
+        ack: ackLoginServiceImpl
+    okr-operate-service:
+      map:
+        personal: personalOkrServiceImpl
+        team: teamOkrServiceImpl
+        team-personal: teamPersonalOkrServiceImpl
+    task-service:
+      map:
+        action: actionServiceImpl
+        priority1: priorityNumberOneServiceImpl
+        priority2: priorityNumberTwoServiceImpl
+    invite-qrcode-service:
+      map:
+        wx: wxInviteQRCodeServiceImpl
+        web: webInviteQRCodeServiceImpl
+    team-achievement-service:
+      map:
+        action: longTermAchievementServiceImpl
+        priority1: shortTermAchievementServiceImpl
+        priority2: shortTermAchievementServiceImpl
+    day-record-complete-service:
+      map:
+        action: dayRecordServiceThirdImpl
+        priority1: dayRecordServiceSecondImpl
+        priority2: dayRecordServiceSecondImpl
 
 medal:
   status-flag:
@@ -167,14 +174,3 @@ secure:
           permit:
           authenticate: false
           authorize: false
-
-  ignored:
-    urls: # 安全路径白名单
-      - /doc.html/**
-      - /v3/api-docs/**
-      - /webjars/**
-      - /error
-      - /favicon.ico
-      - /swagger-resources/**
-      - /swagger-ui/**
-      - /swagger-ui.html/**

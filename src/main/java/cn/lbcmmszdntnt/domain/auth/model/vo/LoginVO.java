@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.vo;
+package cn.lbcmmszdntnt.domain.auth.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

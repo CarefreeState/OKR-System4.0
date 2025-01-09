@@ -53,6 +53,9 @@ public class ShortCodeUtil {
     public static void main(String[] args) {
         long teamId = 10;
         System.out.println("\"" + subCodeByString(EncryptUtil.md5("teamId=" + teamId + "macaku")) +"\"");
+        System.out.println(subCodeByString(EncryptUtil.md5("WX_JWT" + "macaku"))); // r6Vsr0
+        System.out.println(subCodeByString(EncryptUtil.md5("EMAIL_JWT" + "macaku"))); // Rl0p0r
+        System.out.println(subCodeByString(EncryptUtil.md5("ACK" + "macaku"))); // Z-1_rf
     }
 
 }

@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
@@ -14,6 +13,8 @@ import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
+import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.InviteQRCodeServiceFactory;
 import cn.lbcmmszdntnt.domain.qrcode.service.InviteQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -24,11 +25,11 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -38,7 +39,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMapper, TeamPersonalOkr>
     implements TeamPersonalOkrService, OkrOperateService {
 
@@ -57,8 +57,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
         // 检测密钥
         Long teamId = okrOperateDTO.getTeamOkrId();
         String secret = okrOperateDTO.getSecret();
-        String type = okrOperateDTO.getType();
-        type = StringUtils.hasText(type) ? type : InviteQRCodeServiceFactory.WX_TYPE;
+        QRCodeType type = Optional.ofNullable(okrOperateDTO.getType()).orElse(QRCodeConstants.DEFAULT_QRCODE_TYPE);
         InviteQRCodeService inviteQRCodeService = inviteQRCodeServiceFactory.getService(type);
         inviteQRCodeService.checkParams(teamId, secret);
         // 获取用户 ID（受邀者）

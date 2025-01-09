@@ -11,7 +11,7 @@ import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
-import cn.lbcmmszdntnt.domain.qrcode.factory.InviteQRCodeServiceFactory;
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
@@ -19,6 +19,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -136,14 +137,18 @@ public class TeamOkrController {
     @PostMapping("/qrcode/{teamId}")
     @Operation(summary = "获取邀请码")
     public SystemJsonResponse<String> getQRCode(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId,
-                                                @RequestParam(value = "type", required = false, defaultValue = InviteQRCodeServiceFactory.WX_TYPE) @Parameter(description = "邀请码类型") String type) {
+                                                @RequestParam(value = "type", required = false) @Parameter(example = "wx", schema = @Schema(
+                                                        type = "string",
+                                                        description = "二维码类型 wx 微信小程序二维码、web 网页二维码",
+                                                        allowableValues = {"wx", "web"}
+                                                )) String type) {
         // 检测
         User user = UserRecordUtil.getUserRecord();
         Long managerId = user.getId();
         // 检测管理者身份
         teamOkrService.checkManager(teamId, managerId);
         // 进行操作
-        String path = okrQRCodeService.getInviteQRCodeLock(teamId, TeamOkrUtil.getTeamName(teamId), type);
+        String path = okrQRCodeService.getInviteQRCodeLock(teamId, TeamOkrUtil.getTeamName(teamId), QRCodeType.get(type));
         return SystemJsonResponse.SYSTEM_SUCCESS(path);
     }
 

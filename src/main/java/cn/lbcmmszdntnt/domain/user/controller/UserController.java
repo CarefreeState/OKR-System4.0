@@ -3,17 +3,22 @@ package cn.lbcmmszdntnt.domain.user.controller;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
+import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
+import cn.lbcmmszdntnt.domain.auth.factory.LoginServiceFactory;
+import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
+import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
+import cn.lbcmmszdntnt.domain.auth.service.LoginService;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
-import cn.lbcmmszdntnt.domain.user.factory.LoginServiceFactory;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
-import cn.lbcmmszdntnt.domain.user.model.dto.*;
+import cn.lbcmmszdntnt.domain.user.model.dto.EmailBindingDTO;
+import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
+import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
+import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
-import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.sse.server.SseUserServer;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
@@ -67,12 +72,13 @@ public class UserController {
     public SystemJsonResponse<LoginVO> login(
             @RequestHeader("Login-Type") @Parameter(example = "Rl0p0r", schema = @Schema(
                     type = "string",
-                    description = "登录类型 r6Vsr0 微信登录、Rl0p0r 邮箱登录",
-                    allowableValues = {"r6Vsr0", "Rl0p0r"})) String type,
+                    description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、Z-1_rf 授权登录",
+                    allowableValues = {"Rl0p0r", "r6Vsr0", "Z-1_rf"})
+            ) String type,
             @Valid @RequestBody LoginDTO loginDTO
     ) {
         // 选取服务
-        LoginService loginService = loginServiceFactory.getService(type);
+        LoginService loginService = loginServiceFactory.getService(LoginType.get(type));
         User user = loginService.login(loginDTO);
         Long userId = user.getId();
         userService.deleteUserAllCache(userId);
@@ -128,7 +134,7 @@ public class UserController {
     }
 
     @PostMapping("/wx/confirm/{secret}")
-    @Operation(summary = "微信登录确认")
+    @Operation(summary = "微信登录授权")
     @Tag(name = "用户测试接口/微信")
     public SystemJsonResponse<?> wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
         User user = UserRecordUtil.getUserRecord();

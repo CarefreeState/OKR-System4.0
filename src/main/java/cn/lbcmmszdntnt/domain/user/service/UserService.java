@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
+import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 

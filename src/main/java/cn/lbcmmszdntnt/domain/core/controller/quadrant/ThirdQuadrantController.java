@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.context.OkrCoreContext;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/thirdquadrant")
 @Tag(name = "第三象限")
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class ThirdQuadrantController {
 
     private final ThirdQuadrantService thirdQuadrantService;

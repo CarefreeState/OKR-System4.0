@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.core.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.annotation.IntRange;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
@@ -44,7 +43,6 @@ import java.util.Map;
 @Validated
 @Tag(name = "OKR 内核")
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class OkrCoreController {
 
     private final OkrCoreService okrCoreService;
@@ -75,7 +73,7 @@ public class OkrCoreController {
     @PostMapping("/celebrate/{day}")
     @Operation(summary = "确定庆祝日")
     public SystemJsonResponse confirmCelebrateDay(@Valid @RequestBody OkrCoreDTO okrCoreDTO,
-                                                  @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(description = "庆祝日（星期）") Integer celebrateDay) {
+                                                  @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(example = "1", description = "庆祝日（星期）") Integer celebrateDay) {
         User user = UserRecordUtil.getUserRecord();
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());

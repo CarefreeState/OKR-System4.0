@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.model.dto.inner;
 
 
+import cn.lbcmmszdntnt.domain.okr.enums.OkrType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -18,9 +19,9 @@ import lombok.Data;
 @Data
 public class OkrTaskDTO {
 
-    @Schema(description = "场景")
+    @Schema(description = "场景值")
     @NotBlank(message = "缺少场景值")
-    private String scene;
+    private OkrType scene;
 
     @Schema
     @NotNull(message = "缺少任务数据")

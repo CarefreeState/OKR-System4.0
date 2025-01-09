@@ -1,13 +1,13 @@
-package cn.lbcmmszdntnt.domain.user.service.impl;
+package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.auth.model.dto.EmailLoginDTO;
+import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
+import cn.lbcmmszdntnt.domain.auth.service.LoginService;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
-import cn.lbcmmszdntnt.domain.user.model.dto.EmailLoginDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;

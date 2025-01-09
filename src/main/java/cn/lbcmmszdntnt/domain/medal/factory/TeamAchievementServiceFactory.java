@@ -1,8 +1,14 @@
 package cn.lbcmmszdntnt.domain.medal.factory;
 
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.medal.service.TermAchievementService;
-import cn.lbcmmszdntnt.locator.ServiceFactory;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -11,5 +17,15 @@ import cn.lbcmmszdntnt.locator.ServiceFactory;
  * Date: 2024-09-05
  * Time: 15:46
  */
-public interface TeamAchievementServiceFactory extends ServiceFactory<Integer, TermAchievementService> {
+@Configuration
+@ConfigurationProperties(prefix = "team-achievement-service")
+@Data
+public class TeamAchievementServiceFactory {
+
+    private Map<TaskType, String> map;
+
+    public TermAchievementService getService(TaskType taskType) {
+        return SpringUtil.getBean(map.get(taskType), TermAchievementService.class);
+    }
+
 }

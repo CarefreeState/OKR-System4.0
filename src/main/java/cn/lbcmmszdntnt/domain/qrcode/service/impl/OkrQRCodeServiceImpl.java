@@ -8,6 +8,7 @@ import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.domain.qrcode.bloomfilter.SecretCodeBloomFilter;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.properties.OkrQRCode;
+import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.InviteQRCodeServiceFactory;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.*;
@@ -55,7 +56,7 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
 
     private final WxCommonQRCodeService wxCommonQRCodeService;
 
-    public String getInviteQRCode(Long teamId, String teamName, String type) {
+    public String getInviteQRCode(Long teamId, String teamName, QRCodeType type) {
         InviteQRCodeService inviteQRCodeService = inviteQRCodeServiceFactory.getService(type);
         String redisKey = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, type, teamId);
         return redisCache.getObject(redisKey, String.class).orElseGet(() -> {
@@ -71,7 +72,7 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
     }
 
     @Override
-    public String getInviteQRCodeLock(Long teamId, String teamName, String type) {
+    public String getInviteQRCodeLock(Long teamId, String teamName, QRCodeType type) {
         String lockKey = QRCodeConfig.OKR_INVITE_QR_CODE_LOCK + teamId;
         return redisLock.tryLockGetSomething(lockKey, () -> getInviteQRCode(teamId, teamName, type), () -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
@@ -80,8 +81,8 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
 
     @Override
     public void deleteTeamNameCache(Long teamId) {
-        String redisKey1 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, InviteQRCodeServiceFactory.WEB_TYPE, teamId);
-        String redisKey2 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, InviteQRCodeServiceFactory.WX_TYPE, teamId);
+        String redisKey1 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, QRCodeType.WEB.getType(), teamId);
+        String redisKey2 = String.format(QRCodeConfig.TEAM_QR_CODE_MAP, QRCodeType.WX.getType(), teamId);
         redisCache.getObject(redisKey1, String.class).ifPresent(mapPath -> {
             redisCache.deleteObject(redisKey1);
             String originPath = MediaUtil.getLocalFilePath(mapPath);

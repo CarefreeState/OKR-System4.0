@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.dto;
+package cn.lbcmmszdntnt.domain.auth.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -15,12 +15,16 @@ import lombok.Data;
 @Data
 public class LoginDTO {
 
-    @Schema
+    @Schema(description = "邮箱登录数据")
     @Valid
     private EmailLoginDTO emailLoginDTO;
 
-    @Schema
+    @Schema(description = "微信登录数据")
     @Valid
     private WxLoginDTO wxLoginDTO;
+
+    @Schema(description = "授权登录数据")
+    @Valid
+    private AckLoginDTO ackLoginDTO;
 
 }

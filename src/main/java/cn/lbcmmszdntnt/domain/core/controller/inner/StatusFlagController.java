@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagConfig;
@@ -38,7 +37,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flag")
 @Tag(name = "状态指标")
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class StatusFlagController {
 
     private final StatusFlagService statusFlagService;
