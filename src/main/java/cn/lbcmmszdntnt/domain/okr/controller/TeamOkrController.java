@@ -16,6 +16,7 @@ import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +41,7 @@ import java.util.Map;
 @RequestMapping("/team")
 @RequiredArgsConstructor
 @Slf4j
+@Intercept
 public class TeamOkrController {
 
     private final TeamOkrService teamOkrService;
@@ -147,6 +149,7 @@ public class TeamOkrController {
 
     @GetMapping("/describe/{teamId}")
     @Operation(summary = "了解团队")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<String> getTeamName(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId) throws IOException {
         String teamName = TeamOkrUtil.getTeamName(teamId);
         return SystemJsonResponse.SYSTEM_SUCCESS(teamName);

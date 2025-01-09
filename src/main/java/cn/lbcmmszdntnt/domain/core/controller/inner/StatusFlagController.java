@@ -17,6 +17,7 @@ import cn.lbcmmszdntnt.domain.record.model.entity.entry.StatusFlagUpdate;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/flag")
 @Tag(name = "状态指标")
+@Intercept
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class StatusFlagController {
 

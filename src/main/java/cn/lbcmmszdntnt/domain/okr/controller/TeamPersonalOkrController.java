@@ -11,6 +11,7 @@ import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +33,7 @@ import java.util.List;
 @Tag(name = "团队个人 OKR 测试接口")
 @RequestMapping("/teampersonal")
 @RequiredArgsConstructor
+@Intercept
 public class TeamPersonalOkrController {
 
     private final MemberService memberService;

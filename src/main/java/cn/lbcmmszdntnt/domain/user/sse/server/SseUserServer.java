@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.user.sse.server;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Tag(name = "用户 SSE 接口")
 @RequestMapping("/events")
 @RequiredArgsConstructor
+@Intercept(authenticate = false, authorize = false)
 public class SseUserServer {
 
     public final static String SSE_USER_SERVER = "SseUserServer:";

@@ -16,7 +16,7 @@ import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
-import cn.lbcmmszdntnt.jwt.TokenVO;
+import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;

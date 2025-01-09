@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/fourthquadrant")
 @Tag(name = "第四象限")
+@Intercept
 public class FourthQuadrantController {
 
 }

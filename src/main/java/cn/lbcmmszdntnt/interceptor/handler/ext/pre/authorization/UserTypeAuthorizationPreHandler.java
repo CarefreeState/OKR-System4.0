@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.authorization;
 
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -33,11 +35,8 @@ public class UserTypeAuthorizationPreHandler extends InterceptorHandler {
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         try {
-            Intercept intercept = InterceptorContext.getIntercept();
             UserType userType = InterceptorContext.getUser().getUserType();
-            boolean isValid = Arrays.stream(intercept.permit())
-                    .distinct()
-                    .filter(Objects::nonNull)
+            boolean isValid = ObjectUtil.distinctNonNullStream(InterceptorContext.getInterceptProperties().getPermit())
                     .anyMatch(type -> type.equals(userType));
             if (Boolean.TRUE.equals(isValid)) {
                 InterceptorContext.setIsAuthorized(Boolean.TRUE);

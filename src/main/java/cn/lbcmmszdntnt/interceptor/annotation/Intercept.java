@@ -20,7 +20,6 @@ import java.lang.annotation.*;
  * 2. 需要认证、需要授权 ✅ <br />
  * 3. 需要认证、不需要授权 ✅ <br />
  * 4. 不需要认证、需要授权 ❌（必然失败） <br />
- * 接口若未没有对应的注解，则应该代表无法访问
  */
 @Documented
 @Target({ElementType.TYPE, ElementType.METHOD})

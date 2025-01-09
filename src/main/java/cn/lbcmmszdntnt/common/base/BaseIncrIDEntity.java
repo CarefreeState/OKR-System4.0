@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <span>
@@ -30,14 +31,14 @@ public class BaseIncrIDEntity implements Serializable {
      */
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @Schema(description = "创建时间")
-    protected Long createTime;
+    protected Date createTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @Schema(description = "更新时间")
-    private Long updateTime;
+    private Date updateTime;
 
     /**
      * 乐观锁

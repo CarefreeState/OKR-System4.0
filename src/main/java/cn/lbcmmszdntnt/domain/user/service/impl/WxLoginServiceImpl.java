@@ -2,16 +2,14 @@ package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.domain.user.constants.UserPhotoConstants;
+import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.WxCode2SessionVO;
 import cn.lbcmmszdntnt.domain.user.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,15 +60,12 @@ public class WxLoginServiceImpl implements LoginService {
                     userService.lambdaUpdate().eq(User::getOpenid, openId).update(user);
                 }, () -> {
                     user.setNickname(DEFAULT_NICKNAME);
-                    user.setPhoto(UserPhotoConstants.getDefaultPhoto());
+                    user.setPhoto(UserConstants.getDefaultPhoto());
+                    user.setUserType(UserConstants.DEFAULT_USER_TYPE);
                     userService.save(user);
                     log.info("新用户注册 -> {}", user);
                 });
         return user;
     }
 
-    @Override
-    public void logout(HttpServletRequest request) {
-        UserRecordUtil.joinTheTokenBlacklist(request);
-    }
 }

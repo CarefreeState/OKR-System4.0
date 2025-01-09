@@ -13,6 +13,7 @@ import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,6 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/corerecord")
 @Tag(name = "OKR 记录")
+@Intercept
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class CoreRecordController {
 

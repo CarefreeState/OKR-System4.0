@@ -16,7 +16,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Schema(
-        type = "int32",
+        type = "integer",
+        format = "int32",
         description = "用户类型 0 封禁用户、1 普通用户、2 管理员",
         allowableValues = {"0", "1", "2"}
 )

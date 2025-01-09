@@ -1,10 +1,8 @@
 package cn.lbcmmszdntnt.interceptor.handler.chain.pre;
 
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
-import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.IsIgnoreAuthenticationPreHandler;
-import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.JwtHeaderAuthenticationPreHandler;
-import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.JwtParameterAuthenticationPreHandler;
-import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.LogPreHandler;
+import cn.lbcmmszdntnt.interceptor.handler.ext.pre.authentication.*;
+import cn.lbcmmszdntnt.interceptor.handler.ext.pre.init.LogInitPreHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +22,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AuthenticationPreHandlerChain extends InterceptorHandler implements InitializingBean {
 
-    private final LogPreHandler logPreHandler;
     private final IsIgnoreAuthenticationPreHandler isIgnoreAuthenticationPreHandler;
-    private final JwtHeaderAuthenticationPreHandler jwtHeaderAuthenticationPreHandler;
-    private final JwtParameterAuthenticationPreHandler jwtParameterAuthenticationPreHandler;
+    private final JwtPrepareHeaderHandler jwtPrepareHeaderHandler;
+    private final JwtPrepareParameterHandler jwtPrepareParameterHandler;
+    private final JwtAuthenticationPreHandler jwtAuthenticationPreHandler;
 
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -36,10 +34,10 @@ public class AuthenticationPreHandlerChain extends InterceptorHandler implements
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        InterceptorHandler.addHandlerAfter(logPreHandler, this);
-        InterceptorHandler.addHandlerAfter(isIgnoreAuthenticationPreHandler, logPreHandler);
-        InterceptorHandler.addHandlerAfter(jwtHeaderAuthenticationPreHandler, isIgnoreAuthenticationPreHandler);
-        InterceptorHandler.addHandlerAfter(jwtParameterAuthenticationPreHandler, jwtHeaderAuthenticationPreHandler);
+        InterceptorHandler.addHandlerAfter(isIgnoreAuthenticationPreHandler, this);
+        InterceptorHandler.addHandlerAfter(jwtPrepareHeaderHandler, isIgnoreAuthenticationPreHandler);
+        InterceptorHandler.addHandlerAfter(jwtPrepareParameterHandler, jwtPrepareHeaderHandler);
+        InterceptorHandler.addHandlerAfter(jwtAuthenticationPreHandler, jwtPrepareParameterHandler);
     }
 
 }

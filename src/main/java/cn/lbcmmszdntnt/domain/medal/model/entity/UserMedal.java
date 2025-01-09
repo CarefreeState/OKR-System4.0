@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.medal.model.entity;
 
+import cn.lbcmmszdntnt.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -11,7 +12,8 @@ import java.util.Date;
  */
 @TableName(value ="user_medal")
 @Data
-public class UserMedal implements Serializable {
+public class UserMedal extends BaseIncrIDEntity implements Serializable {
+
     private Long userId;
 
     private Long medalId;
@@ -23,14 +25,6 @@ public class UserMedal implements Serializable {
     private Boolean isRead;
 
     private Date issueTime;
-
-    private Integer version;
-
-    private Boolean isDeleted;
-
-    private Date createTime;
-
-    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 }

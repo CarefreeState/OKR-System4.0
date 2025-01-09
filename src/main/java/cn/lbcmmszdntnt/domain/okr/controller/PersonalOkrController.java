@@ -5,6 +5,7 @@ import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.PersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.List;
 @Tag(name = "个人 OKR 测试接口")
 @RequestMapping("/personal")
 @RequiredArgsConstructor
+@Intercept
 public class PersonalOkrController {
 
     private final PersonalOkrService personalOkrService;

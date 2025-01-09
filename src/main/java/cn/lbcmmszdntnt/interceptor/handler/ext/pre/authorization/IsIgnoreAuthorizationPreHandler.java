@@ -24,20 +24,10 @@ import java.util.Optional;
 @Slf4j
 public class IsIgnoreAuthorizationPreHandler extends InterceptorHandler {
 
-    private final IgnoreUrlsConfig ignoreUrlsConfig;
-
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 判断是不是可以直接忽略的请求
-        String requestURI = request.getRequestURI();
-        boolean anyMatchPath = HttpUtil.anyMatchPath(ignoreUrlsConfig.getUrls(), requestURI);
-        if (Boolean.FALSE.equals(anyMatchPath)) {
-            Optional.ofNullable(InterceptorContext.getIntercept()).ifPresent(intercept -> {
-                if (intercept.authorize()) {
-                    InterceptorContext.setIsAuthorized(Boolean.TRUE);
-                }
-            });
-        } else {
+        if(Boolean.FALSE.equals(InterceptorContext.getInterceptProperties().getAuthorize())) {
             InterceptorContext.setIsAuthorized(Boolean.TRUE);
         }
     }

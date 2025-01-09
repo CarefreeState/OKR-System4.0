@@ -7,6 +7,7 @@ import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.websocket.session.WsSessionMapper;
 import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import cn.lbcmmszdntnt.websocket.util.WsSessionUtil;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 @ServerEndpoint("/web/wxlogin")
 @Slf4j
 @Component
+@Intercept(authenticate = false, authorize = false)
 public class WsUserServer {
 
     private String secret;

@@ -5,6 +5,7 @@
 <mapper namespace="cn.lbcmmszdntnt.domain.medal.model.mapper.UserMedalMapper">
 
     <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal">
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="medalId" column="medal_id" jdbcType="BIGINT"/>
             <result property="credit" column="credit" jdbcType="BIGINT"/>
@@ -18,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        user_id,medal_id,credit,
+        id,user_id,medal_id,credit,
         level,is_read,issue_time,version,
         is_deleted,create_time,update_time
     </sql>

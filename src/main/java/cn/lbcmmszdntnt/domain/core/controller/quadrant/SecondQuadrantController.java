@@ -1,10 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
-import cn.lbcmmszdntnt.aop.config.AfterInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.domain.core.context.OkrCoreContext;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrInitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
@@ -13,6 +12,7 @@ import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/secondquadrant")
 @Tag(name = "第二象限")
+@Intercept
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class SecondQuadrantController {
 
@@ -65,7 +66,7 @@ public class SecondQuadrantController {
         if(user.getId().equals(userId)) {
             secondQuadrantService.initSecondQuadrant(initQuadrantDTO);
             log.info("第二象限初始化成功：{}", initQuadrantDTO);
-            ThreadLocalMapUtil.set(AfterInterceptConfig.CORE_ID, coreId);
+            OkrCoreContext.setCoreId(coreId);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

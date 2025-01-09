@@ -1,5 +1,8 @@
 package cn.lbcmmszdntnt.interceptor.annotation;
 
+import com.esotericsoftware.minlog.Log;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Method;
 
 /**
@@ -9,6 +12,7 @@ import java.lang.reflect.Method;
  * Date: 2024-08-08
  * Time: 17:32
  */
+@Slf4j
 public class InterceptHelper {
 
     public static Intercept getIntercept(Class<?> clazz) {
@@ -17,8 +21,10 @@ public class InterceptHelper {
     }
 
     public static Intercept getIntercept(Method targetMethod) {
+        log.error("{}", targetMethod);
         // 获取目标方法所在的类
         Class<?> declaringClass = targetMethod.getDeclaringClass();
+        log.error("{}", declaringClass);
         // 类上的 Intercept 为初步结果
         Intercept intercept = getIntercept(declaringClass);
         // 方法上的 Intercept 为最终结果

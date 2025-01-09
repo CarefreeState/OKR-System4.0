@@ -8,8 +8,9 @@ import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.vo.LoginVO;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
-import cn.lbcmmszdntnt.jwt.TokenVO;
+import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @RestController
 @RequiredArgsConstructor
+@Intercept
 public class CenterController {
 
     private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
@@ -58,6 +60,7 @@ public class CenterController {
 
     @GetMapping("/jwt/{userId}")
     @Operation(summary = "测试阶段获取用户的 token")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
         if(Boolean.FALSE.equals(swaggerCanBeVisited)) {
             // 无法访问 swagger，代表这个接口无法访问

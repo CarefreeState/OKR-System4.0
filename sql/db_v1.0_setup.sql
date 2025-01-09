@@ -298,6 +298,7 @@ insert into medal (`id`, `name`, `description`, `url`, `grey_url`) values
 -- 创建用户勋章关联表
 drop table if exists `user_medal`;
 create table `user_medal` (
+    `id` bigint primary key auto_increment comment 'ID',
     `user_id` bigint not null comment '用户 ID',
     `medal_id` bigint not null comment '勋章 ID',
     `credit` bigint not null default 0 comment '积分',
@@ -309,10 +310,8 @@ create table `user_medal` (
     `is_deleted` bit not null default b'0' comment '伪删除标记',
     `create_time` datetime not null default current_timestamp comment '创建时间',
     `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
-    -- 主键
-    primary key (`user_id`, `medal_id`),
     -- 索引
-    unique index `uni_id`(`user_id` asc, `medal_id` asc) using btree
+    index `idx_um`(`user_id` asc, `medal_id` asc) using btree
 ) comment '用户勋章关联表';
 
 

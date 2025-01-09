@@ -39,7 +39,7 @@ public class ResourceUploadConfig {
         factory.setMaxFileSize(DataSize.of(maxFileSize,  dataUnit));
         // 设置总上传文件大小
         factory.setMaxRequestSize(DataSize.of(maxRequestSize, dataUnit));
-        // 设置临时存储位置（资源过大不直接写入内存），若进行设置清书写对应的异常处理器
+        // 设置临时存储位置（资源过大不直接写入内存），若进行设置请书写对应的异常处理器
 //        factory.setFileSizeThreshold(DataSize.ofMegabytes());
 //        factory.setLocation();
         return factory.createMultipartConfig();

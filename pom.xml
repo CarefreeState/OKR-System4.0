@@ -22,6 +22,7 @@
 		<spring.application.name>${name}</spring.application.name>
 		<spring.application.version>${version}</spring.application.version>
 		<trace.id.name>traceId</trace.id.name>
+		<trace.uri.name>uri</trace.uri.name>
 	</properties>
 
 	<profiles>

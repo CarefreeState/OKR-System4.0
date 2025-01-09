@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.interceptor.context;
 
 import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.config.properties.InterceptProperties;
 
 /**
  * Created With Intellij IDEA
@@ -14,7 +14,9 @@ import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 public class InterceptorContext {
 
     private final static String USER = "user";
-    private final static String INTERCEPT = "intercept";
+    private final static String JWT = "jwt";
+    private final static String INTERCEPT_PROPERTIES = "interceptProperties";
+
     private final static String IS_AUTHENTICATED = "isAuthenticated";
     private final static String IS_AUTHORIZED = "isAuthorized";
 
@@ -26,12 +28,20 @@ public class InterceptorContext {
         ThreadLocalMapUtil.set(USER, user);
     }
 
-    public static void setIntercept(Intercept intercept) {
-        ThreadLocalMapUtil.set(INTERCEPT, intercept);
+    public static String getJwt() {
+        return ThreadLocalMapUtil.get(JWT, String.class);
     }
 
-    public static Intercept getIntercept() {
-        return ThreadLocalMapUtil.get(INTERCEPT, Intercept.class);
+    public static void setJwt(String jwt) {
+        ThreadLocalMapUtil.set(JWT, jwt);
+    }
+
+    public static void setInterceptProperties(InterceptProperties intercept) {
+        ThreadLocalMapUtil.set(INTERCEPT_PROPERTIES, intercept);
+    }
+
+    public static InterceptProperties getInterceptProperties() {
+        return ThreadLocalMapUtil.get(INTERCEPT_PROPERTIES, InterceptProperties.class);
     }
 
     public static void setIsAuthenticated(Boolean isAuthenticated) {

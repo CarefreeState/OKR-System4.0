@@ -31,7 +31,7 @@ public class ThreadLocalMapUtil {
     }
 
     public static void removeAll() {
-        log.warn("{} 移除本地线程资源", Thread.currentThread().getName());
+        log.info("{} 移除本地线程资源", Thread.currentThread().getName());
         THREAD_LOCAL.remove();
     }
 
@@ -50,7 +50,6 @@ public class ThreadLocalMapUtil {
         Map<String, Object> map = getMap();
         Object value = map.get(key);
         log.info("{} 获取本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
-        remove(key);
         return value;
     }
 

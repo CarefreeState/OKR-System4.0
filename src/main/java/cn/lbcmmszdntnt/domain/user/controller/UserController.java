@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
-import cn.lbcmmszdntnt.aop.config.PreInterceptConfig;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
@@ -19,14 +18,15 @@ import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.sse.server.SseUserServer;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.domain.user.websocket.server.WsUserServer;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
-import cn.lbcmmszdntnt.jwt.TokenVO;
+import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -44,9 +44,9 @@ import java.io.IOException;
  * Time: 0:07
  */
 @RestController
-@Tag(name = "用户测试接口")
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Intercept
 @SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class UserController {
 
@@ -63,8 +63,14 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "用户登录")
     @Tag(name = "用户测试接口/登录")
-    public SystemJsonResponse<LoginVO> login(@RequestHeader(PreInterceptConfig.HEADER) @Parameter(description = "登录类型") String type,
-                                             @Valid @RequestBody LoginDTO loginDTO) {
+    @Intercept(authenticate = false, authorize = false)
+    public SystemJsonResponse<LoginVO> login(
+            @RequestHeader("Login-Type") @Parameter(example = "Rl0p0r", schema = @Schema(
+                    type = "string",
+                    description = "登录类型 r6Vsr0 微信登录、Rl0p0r 邮箱登录",
+                    allowableValues = {"r6Vsr0", "Rl0p0r"})) String type,
+            @Valid @RequestBody LoginDTO loginDTO
+    ) {
         // 选取服务
         LoginService loginService = loginServiceFactory.getService(type);
         User user = loginService.login(loginDTO);
@@ -80,17 +86,16 @@ public class UserController {
     @PostMapping("/logout")
     @Operation(summary = "用户登出")
     @Tag(name = "用户测试接口/登录")
-    public SystemJsonResponse<?> logout(HttpServletRequest request) {
-        String type = request.getHeader(PreInterceptConfig.HEADER);
+    public SystemJsonResponse<?> logout() {
         // 选取服务
-        LoginService loginService = loginServiceFactory.getService(type);
-        loginService.logout(request);
+        UserRecordUtil.joinTheTokenBlacklist();
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
     @PostMapping("/check/email")
     @Operation(summary = "验证邮箱用户")
     @Tag(name = "用户测试接口/邮箱")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<?> emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
         // 获得随机验证码
         String code = IdentifyingCodeValidator.getIdentifyingCode();
@@ -115,6 +120,7 @@ public class UserController {
     @GetMapping("/wx/login")
     @Operation(summary = "获取微信登录码")
     @Tag(name = "用户测试接口/微信")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginQRCodeVO> wxLoginCheck() {
         // 生成一个小程序检查码
         LoginQRCodeVO result = okrQRCodeService.getLoginQRCode();
@@ -138,6 +144,7 @@ public class UserController {
     @PostMapping("/wx/login/{secret}")
     @Operation(summary = "微信登录检查")
     @Tag(name = "用户测试接口/微信")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
         LoginVO result = userService.checkLoginState(secret);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
@@ -161,6 +168,7 @@ public class UserController {
     @PostMapping("/binding/wx")
     @Operation(summary = "绑定用户微信")
     @Tag(name = "用户测试接口/微信")
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse wxBinding(@Valid @RequestBody WxBindingDTO wxBindingDTO) {
         Long userId = wxBindingDTO.getUserId();
         String randomCode = wxBindingDTO.getRandomCode();

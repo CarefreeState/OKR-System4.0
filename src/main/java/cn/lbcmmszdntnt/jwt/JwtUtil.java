@@ -6,7 +6,6 @@ import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -153,22 +152,12 @@ public class JwtUtil {
         return data;
     }
 
-    public static String getJwt(HttpServletRequest request) {
+    public static String getJwtFromHeader(HttpServletRequest request) {
         return request.getHeader(JWT_NAME);
     }
 
-    public static TokenVO parseJwtFromHeader(HttpServletRequest request, HttpServletResponse response) {
-        return Optional.ofNullable(getJwt(request))
-                .filter(StringUtils::hasText)
-                .map(token -> parseJwtData(token, new TokenVO(), response))
-                .orElse(null);
-    }
-
-    public static TokenVO parseJwtFromParameter(HttpServletRequest request, HttpServletResponse response) {
-        return Optional.ofNullable(getJwt(request))
-                .filter(StringUtils::hasText)
-                .map(token -> parseJwtData(token, new TokenVO(), response))
-                .orElse(null);
+    public static String getJwtFromParameter(HttpServletRequest request) {
+        return request.getParameter(JWT_NAME);
     }
 
 }

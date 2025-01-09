@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.user.service;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -16,7 +15,5 @@ public interface LoginService {
 
     @Transactional
     User login(LoginDTO loginDTO);
-
-    void logout(HttpServletRequest request);
 
 }

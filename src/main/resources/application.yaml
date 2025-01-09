@@ -4,7 +4,8 @@ spring:
     version: @spring.application.version@
   profiles:
     active: @profiles.active@
-  trace-id: @trace.id@
+  trace-id: @trace.id.name@
+  trace-uri: @trace.uri.name@
 
 # 日志配置
 logging:
@@ -12,7 +13,7 @@ logging:
     cn.lbcmmszdntnt: @logging.level@
     org.springframework: warn
     tech.powerjob.worker.background: warn
-  config: classpath:logback-plus.xml
+  config: classpath:logback-spring.xml
 
 # mp设置
 mybatis-plus:
@@ -144,16 +145,36 @@ resource:
 
 
 secure:
+  custom:
+    list:
+      - urls:
+          - /doc.html/**
+          - /v3/api-docs/**
+          - /webjars/**
+          - /error
+          - /favicon.ico
+          - /swagger-resources/**
+          - /swagger-ui/**
+          - /swagger-ui.html/**
+        properties:
+          permit:
+          authenticate: false
+          authorize: false
+      # websocket 接口在这里配置拦截参数
+      - urls:
+          - /web/wxloginws
+        properties:
+          permit:
+          authenticate: false
+          authorize: false
+
   ignored:
     urls: # 安全路径白名单
-      - /
-      - /*
-      - /user/login
-      - /user/wx/login/**
-      - /user/check/email
-      - /user/binding/wx
-      - /web/wxlogin/**
-      - /events/web/wxlogin/**
-      - /team/describe/**
-      - /jwt/**
-      - /media/**
+      - /doc.html/**
+      - /v3/api-docs/**
+      - /webjars/**
+      - /error
+      - /favicon.ico
+      - /swagger-resources/**
+      - /swagger-ui/**
+      - /swagger-ui.html/**

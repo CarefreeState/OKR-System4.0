@@ -8,8 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.util.Date;
 
 /**
  * <span>
@@ -17,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * </span>
  *
  */
-@Component
+@Configuration
 @EnableTransactionManagement
 public class MybatisFillConfig implements MetaObjectHandler {
 
@@ -26,17 +29,17 @@ public class MybatisFillConfig implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        long currentTimeMillis = System.currentTimeMillis();
+        Date current = new Date();
         this.strictInsertFill(metaObject, "version", Integer.class, 1);
         this.strictInsertFill(metaObject, "isDeleted", Boolean.class, Boolean.FALSE);
-        this.strictInsertFill(metaObject, "createTime", Long.class, currentTimeMillis);
-        this.strictUpdateFill(metaObject, "updateTime", Long.class, currentTimeMillis);
+        this.strictInsertFill(metaObject, "createTime", Date.class, current);
+        this.strictUpdateFill(metaObject, "updateTime", Date.class, current);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        long currentTimeMillis = System.currentTimeMillis();
-        this.strictUpdateFill(metaObject, "updateTime", Long.class, currentTimeMillis);
+        Date current = new Date();
+        this.strictUpdateFill(metaObject, "updateTime", Date.class, current);
     }
 
     //乐观锁

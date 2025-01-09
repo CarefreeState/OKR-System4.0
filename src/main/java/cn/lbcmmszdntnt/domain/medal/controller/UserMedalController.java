@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
+import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,7 @@ import java.util.List;
 @Tag(name = "用户勋章测试接口")
 @RequestMapping("/medal")
 @RequiredArgsConstructor
+@Intercept
 public class UserMedalController {
 
     private final UserMedalService userMedalService;
