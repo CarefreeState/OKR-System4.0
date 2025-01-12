@@ -284,7 +284,6 @@ create table `medal` (
     unique index `uni_id`(`id` asc) using btree
 ) comment '勋章表';
 
-delete from medal where 1 = '1';
 insert into medal (`id`, `name`, `description`, `url`, `grey_url`) values
        (1, '初心启航', '第一次成功制定OKR', 'media/medal/medal1.png', 'media/medal/grey_medal1.png'),
        (2, '硕果累累', '目标持续坚持完成', 'media/medal/medal2.png', 'media/medal/grey_medal2.png'),
@@ -313,23 +312,6 @@ create table `user_medal` (
     -- 索引
     index `idx_um`(`user_id` asc, `medal_id` asc) using btree
 ) comment '用户勋章关联表';
-
-
--- 创建 OKR 内核记录器表
-drop table if exists `core_recorder`;
-create table `core_recorder` (
-    `id` bigint primary key auto_increment comment 'ID',
-    `core_id` bigint unique not null comment 'OKR 内核 ID',
-    `record_map` json not null comment 'OKR 记录对应表',
-    -- common column
-    `version` int not null default 0 comment '乐观锁',
-    `is_deleted` bit not null default b'0' comment '伪删除标记',
-    `create_time` datetime not null default current_timestamp comment '创建时间',
-    `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
-    -- 索引
-    index `idx_core_id`(`core_id` asc) using btree
-) comment 'OKR 内核记录器表';
-
 
 -- 创建 OKR 内核日记录表
 drop table if exists `day_record`;

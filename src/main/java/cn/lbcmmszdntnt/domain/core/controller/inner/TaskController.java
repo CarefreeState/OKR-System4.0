@@ -2,23 +2,18 @@ package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.core.factory.TaskServiceFactory;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.*;
-import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
+import cn.lbcmmszdntnt.domain.core.model.event.TaskUpdate;
 import cn.lbcmmszdntnt.domain.core.service.TaskService;
-import cn.lbcmmszdntnt.domain.medal.factory.TeamAchievementServiceFactory;
-import cn.lbcmmszdntnt.domain.medal.service.TermAchievementService;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.record.factory.DayaRecordCompleteServiceFactory;
-import cn.lbcmmszdntnt.domain.record.handler.chain.RecordEventHandlerChain;
-import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,17 +38,9 @@ import org.springframework.web.bind.annotation.*;
 @Intercept
 public class TaskController {
 
-    private final OkrCoreService okrCoreService;
-
     private final OkrOperateServiceFactory okrOperateServiceFactory;
 
     private final TaskServiceFactory taskServiceFactory;
-
-    private final TeamAchievementServiceFactory teamAchievementServiceFactory;
-
-    private final DayaRecordCompleteServiceFactory dayaRecordCompleteServiceFactory;
-
-    private final RecordEventHandlerChain recordEventHandlerChain;
 
     @PostMapping("/{option}/add")
     @Operation(summary = "增加一条任务")
@@ -67,7 +54,7 @@ public class TaskController {
             @Valid @RequestBody OkrTaskDTO okrTaskDTO
     ) {
         // 检查
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         TaskDTO taskDTO = okrTaskDTO.getTaskDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrTaskDTO.getScene());
         TaskService taskService = taskServiceFactory.getService(TaskType.get(option));
@@ -97,7 +84,7 @@ public class TaskController {
             @Valid @RequestBody OkrTaskRemoveDTO okrTaskRemoveDTO
     ) {
         // 检查
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long taskId = okrTaskRemoveDTO.getId();
         // 选择服务
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrTaskRemoveDTO.getScene());
@@ -127,7 +114,7 @@ public class TaskController {
     ) {
         // 检查
         TaskUpdateDTO taskUpdateDTO = okrTaskUpdateDTO.getTaskUpdateDTO();
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 选择服务
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrTaskUpdateDTO.getScene());
         TaskType taskType = TaskType.get(option);
@@ -141,14 +128,14 @@ public class TaskController {
             String content = taskUpdateDTO.getContent();
             Boolean isCompleted = taskUpdateDTO.getIsCompleted();
             Boolean oldCompleted = taskService.updateTask(taskId, content, isCompleted);
-            // 开启两个异步线程
-            IOThreadPool.submit(() -> {
-                okrCoreService.checkOverThrows(coreId);
-                TermAchievementService termAchievementService = teamAchievementServiceFactory.getService(taskType);
-                termAchievementService.issueTermAchievement(userId, isCompleted, oldCompleted);
-                DayRecordCompleteService dayRecordCompleteService = dayaRecordCompleteServiceFactory.getService(taskType);
-                recordEventHandlerChain.handle(dayRecordCompleteService.getEvent(coreId, isCompleted, oldCompleted));
-            });
+            TaskUpdate taskUpdate = TaskUpdate.builder()
+                    .taskType(taskType)
+                    .coreId(coreId)
+                    .userId(userId)
+                    .isCompleted(isCompleted)
+                    .oldCompleted(oldCompleted)
+                    .build();
+            OkrCoreUpdateEventUtil.sendTaskUpdate(taskUpdate);
         } else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

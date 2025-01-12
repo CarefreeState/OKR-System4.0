@@ -5,6 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import java.util.Objects;
  * Time: 13:49
  */
 @Setter
+@Getter
 @Configuration
 @ConfigurationProperties(prefix = "medal.status-flag")
 public class StatusFlagConfig {

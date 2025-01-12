@@ -77,7 +77,7 @@ okr:
 
 medal:
   status-flag:
-    statusFlagProperties:
+    status-flag-properties:
       - color: "#000000"
         credit: 80
       - color: "#000001"
@@ -85,27 +85,6 @@ medal:
       - color: "#000002"
         credit: 20
     threshold: 60
-  stay-true-beginning:
-    id: 1
-    coefficient: 0
-  harvest-achievement:
-    id: 2
-    coefficient: 60
-  stand-out-crowd:
-    id: 3
-    coefficient: 1
-  victory-within-grasp:
-    id: 4
-    coefficient: 1
-  short-term-achievement:
-    id: 5
-    coefficient: 5
-  long-term-achievement:
-    id: 6
-    coefficient: 2
-  great-state:
-    id: 7
-    coefficient: 1
 
 
 font:

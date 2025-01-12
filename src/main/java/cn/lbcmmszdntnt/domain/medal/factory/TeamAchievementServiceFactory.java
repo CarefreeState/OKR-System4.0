@@ -18,7 +18,7 @@ import java.util.Map;
  * Time: 15:46
  */
 @Configuration
-@ConfigurationProperties(prefix = "team-achievement-service")
+@ConfigurationProperties(prefix = "okr.service.team-achievement-service")
 @Data
 public class TeamAchievementServiceFactory {
 

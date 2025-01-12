@@ -9,9 +9,9 @@ import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,7 +46,7 @@ public class TeamPersonalOkrController {
     @Operation(summary = "获取团队个人 OKR 列表")
     public SystemJsonResponse<List<TeamPersonalOkrVO>> getTeamOkrs() {
         // 获取当前登录的用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 调用方法
         List<TeamPersonalOkrVO> teamPersonalOkrVOS = teamPersonalOkrService.getTeamPersonalOkrList(user);
         return SystemJsonResponse.SYSTEM_SUCCESS(teamPersonalOkrVOS);
@@ -56,7 +56,7 @@ public class TeamPersonalOkrController {
     @Operation(summary = "获取团队成员列表")
     public SystemJsonResponse<List<TeamMemberVO>> getTeamMember(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId) {
         // 获取当前登录用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 判断是不是团队成员
         memberService.checkExistsInTeam(teamId, user.getId());
         // 查询
@@ -77,7 +77,7 @@ public class TeamPersonalOkrController {
         Long teamId = teamPersonalOkr.getTeamId();
         Long useId = teamPersonalOkr.getUserId();
         // 获取当前登录用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 判断是不是团队成员
         memberService.checkExistsInTeam(teamId, useId);
         teamOkrService.checkManager(teamId, user.getId());

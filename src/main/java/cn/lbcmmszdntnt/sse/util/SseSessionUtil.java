@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.sse.util;
 
+import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
 import cn.lbcmmszdntnt.sse.session.SseSessionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -55,7 +55,7 @@ public class SseSessionUtil {
         // 超时时间设置为 timeout ms
         SseEmitter sseEmitter = new SseEmitter(timeout);
         log.warn("{} 成功建立连接，将于 {} ms 后断开连接，即 {}", sessionKey, timeout,
-                TimerUtil.getDateFormat(new Date(System.currentTimeMillis() + timeout)));
+                DateTimeUtil.getDateFormat(new Date(System.currentTimeMillis() + timeout)));
         initSseEmitter(sseEmitter, sessionKey);
         replyMessage(sessionKey, messageSupplier);
         return sseEmitter;

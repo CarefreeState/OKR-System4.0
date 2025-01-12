@@ -97,5 +97,9 @@ public class ObjectUtil {
                 .forEach(consumer);
     }
 
+    public static boolean noneIsNull(Object... objects) {
+        return Arrays.stream(objects).noneMatch(Objects::isNull);
+    }
+
 
 }

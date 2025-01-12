@@ -3,8 +3,8 @@ package cn.lbcmmszdntnt.domain.medal.controller;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +34,7 @@ public class UserMedalController {
     @GetMapping("/list/all")
     @Operation(description = "获得用户的所有勋章")
     public SystemJsonResponse<List<UserMedalVO>> getAll() {
-        Long userId = UserRecordUtil.getUserRecord().getId();
+        Long userId = InterceptorContext.getUser().getId();
         List<UserMedalVO> result = userMedalService.getUserMedalListAll(userId);
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
@@ -42,7 +42,7 @@ public class UserMedalController {
     @GetMapping("/list/unread")
     @Operation(description = "获得用户的所有未读勋章")
     public SystemJsonResponse<List<UserMedalVO>> getUnread() {
-        Long userId = UserRecordUtil.getUserRecord().getId();
+        Long userId = InterceptorContext.getUser().getId();
         List<UserMedalVO> result = userMedalService.getUserMedalListUnread(userId);
         log.info("查询用户 {} 的所有未读勋章 : {} 个", userId, result.size());
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
@@ -50,8 +50,8 @@ public class UserMedalController {
 
     @PostMapping("/read/{medalId}")
     @Operation(description = "用户知晓获得了新勋章")
-    public SystemJsonResponse readUserMedal(@PathVariable("medalId") @Parameter(description = "勋章 ID") Long medalId) {
-        Long userId = UserRecordUtil.getUserRecord().getId();
+    public SystemJsonResponse<?> readUserMedal(@PathVariable("medalId") @Parameter(description = "勋章 ID") Long medalId) {
+        Long userId = InterceptorContext.getUser().getId();
         log.info("用户 {} 查看勋章 {}", userId, medalId);
         userMedalService.readUserMedal(userId, medalId);
         return SystemJsonResponse.SYSTEM_SUCCESS();

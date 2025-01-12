@@ -2,6 +2,10 @@ package cn.lbcmmszdntnt.domain.core.model.vo;
 
 
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FourthQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.SecondQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.ThirdQuadrantVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

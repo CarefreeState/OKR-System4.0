@@ -1,11 +1,11 @@
 package cn.lbcmmszdntnt.domain.core.model.dto.quadrant;
 
+import cn.lbcmmszdntnt.common.annotation.AfterNow;
 import cn.lbcmmszdntnt.common.constants.DateTimeConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -26,7 +26,7 @@ public class InitQuadrantDTO {
 
     @Schema(description = "截止时间" + DateTimeConstants.DATE_TIME_PATTERN)
     @NotNull(message = "截止时间不能为空")
-    @DateTimeFormat(pattern = DateTimeConstants.DATE_TIME_PATTERN)
+    @AfterNow
     private Date deadline;
 
     @Schema(description = "象限周期")

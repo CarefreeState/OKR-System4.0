@@ -4,8 +4,6 @@ import cn.hutool.core.util.RandomUtil;
 
 public class IdentifyingCodeValidator {
 
-    public static final String IDENTIFYING_CODE_PURPOSE = "验证用户身份";
-
     public static final int IDENTIFYING_CODE_SIZE = 6; // 验证码长度
 
     public static final String IDENTIFYING_CODE = "IdentifyingCode"; // 验证码

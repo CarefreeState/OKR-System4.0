@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.FirstQuadrantMapper">
-    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.FirstQuadrantVO">
+    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO">
         <collection property="keyResults" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult"
                     resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.KeyResultMapper.BaseResultMap" columnPrefix="k_" />
     </resultMap>

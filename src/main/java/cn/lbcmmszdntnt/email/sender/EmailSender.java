@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.email.sender;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
+import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import cn.lbcmmszdntnt.email.model.po.EmailAttachment;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.email.provider.EmailSenderProvider;
@@ -62,7 +62,7 @@ public class EmailSender {
             mimeMessageHelper.setSentDate(sendDate);
             // 发送
             log.info("发送者 {}，接收者 {}，抄送人 {}，标题 {}，附件数 {}，发送日期 {}",
-                    sender, recipient, carbonCopy, title, fileList.size(), TimerUtil.getDateFormat(sendDate)
+                    sender, recipient, carbonCopy, title, fileList.size(), DateTimeUtil.getDateFormat(sendDate)
             );
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {

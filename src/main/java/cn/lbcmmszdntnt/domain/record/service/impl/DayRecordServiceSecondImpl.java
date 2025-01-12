@@ -1,8 +1,11 @@
 package cn.lbcmmszdntnt.domain.record.service.impl;
 
 
-import cn.lbcmmszdntnt.domain.record.model.entity.entry.PrioritiesUpdate;
+import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordCompleteService;
+import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,10 +16,18 @@ import org.springframework.stereotype.Service;
  * Time: 12:46
  */
 @Service
+@RequiredArgsConstructor
 public class DayRecordServiceSecondImpl implements DayRecordCompleteService {
 
+    private final RedisCache redisCache;
+
+    private final DayRecordService dayRecordService;
+
     @Override
-    public Object getEvent(Long coreId, Boolean isCompleted, Boolean oldCompleted) {
-        return PrioritiesUpdate.builder().coreId(coreId).isCompleted(isCompleted).oldCompleted(oldCompleted).build();
+    public void handle(Long coreId, Boolean isCompleted, Boolean oldCompleted) {
+        String redisKey = dayRecordService.todayRedisKey(coreId);
+        DayRecord dayRecord = dayRecordService.tryInitDayRecord(coreId);
+        dayRecord.setCredit2(dayRecord.getCredit2() + dayRecordService.recordSecondQuadrant(coreId, isCompleted, oldCompleted));
+        redisCache.setObject(redisKey, dayRecord);
     }
 }

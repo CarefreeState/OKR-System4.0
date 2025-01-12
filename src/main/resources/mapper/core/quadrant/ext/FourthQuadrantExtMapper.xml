@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.FourthQuadrantMapper">
 
-    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.FourthQuadrantVO">
+    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FourthQuadrantVO">
         <collection property="statusFlags" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag"
                     resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper.BaseResultMap" columnPrefix="sf_" />
     </resultMap>

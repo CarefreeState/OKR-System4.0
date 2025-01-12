@@ -18,7 +18,7 @@ import java.util.Map;
  * Time: 16:47
  */
 @Configuration
-@ConfigurationProperties(prefix = "day-record-complete-service")
+@ConfigurationProperties(prefix = "okr.service.day-record-complete-service")
 @Data
 public class DayaRecordCompleteServiceFactory {
 

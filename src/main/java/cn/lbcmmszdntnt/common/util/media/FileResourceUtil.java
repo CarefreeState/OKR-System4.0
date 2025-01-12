@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.common.util.media;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
+import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -129,7 +129,7 @@ public class FileResourceUtil {
         return String.format(
                 "%s/%s/%s",
                 suffix,
-                TimerUtil.getOnlyDateFormat(new Date()),
+                DateTimeUtil.getOnlyDateFormat(new Date()),
                 getSimpleFileName(suffix)
         );
     }

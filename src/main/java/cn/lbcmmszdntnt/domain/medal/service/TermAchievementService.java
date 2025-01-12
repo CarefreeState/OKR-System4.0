@@ -9,6 +9,6 @@ package cn.lbcmmszdntnt.domain.medal.service;
  */
 public interface TermAchievementService {
 
-    void issueTermAchievement(Long userId, Boolean isCompleted, Boolean oldCompleted);
+    void handle(Long userId, Boolean isCompleted, Boolean oldCompleted);
 
 }

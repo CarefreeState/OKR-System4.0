@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.core.service.quadrant;
 
 
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FourthQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.vo.FourthQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FourthQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

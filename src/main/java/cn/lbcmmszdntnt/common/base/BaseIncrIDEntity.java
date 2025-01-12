@@ -31,7 +31,7 @@ public class BaseIncrIDEntity implements Serializable {
      */
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @Schema(description = "创建时间")
-    protected Date createTime;
+    private Date createTime;
 
     /**
      * 更新时间

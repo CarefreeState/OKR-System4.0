@@ -2,26 +2,22 @@ package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.converter.KeyResultConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
-import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
+import cn.lbcmmszdntnt.domain.core.model.event.KeyResultUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.KeyResultService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
-import cn.lbcmmszdntnt.domain.medal.handler.chain.MedalHandlerChain;
-import cn.lbcmmszdntnt.domain.medal.model.entity.entry.VictoryWithinGrasp;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.record.handler.chain.RecordEventHandlerChain;
-import cn.lbcmmszdntnt.domain.record.model.entity.entry.KeyResultUpdate;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,23 +43,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Intercept
 public class KeyResultController {
 
-    private final OkrCoreService okrCoreService;
-
     private final KeyResultService keyResultService;
 
     private final OkrOperateServiceFactory okrOperateServiceFactory;
 
     private final FirstQuadrantService firstQuadrantService;
 
-    private final MedalHandlerChain medalHandlerChain;
-
-    private final RecordEventHandlerChain recordEventHandlerChain;
-
     @PostMapping("/add")
     @Operation(summary = "添加关键结果")
     public SystemJsonResponse<Long> addKeyResult(@Valid @RequestBody OkrKeyResultDTO okrKeyResultDTO) {
         // 校验
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         KeyResultDTO keyResultDTO = okrKeyResultDTO.getKeyResultDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultDTO.getScene());
         KeyResult keyResult = KeyResultConverter.INSTANCE.keyResultDTOToKeyResult(keyResultDTO);
@@ -79,17 +69,13 @@ public class KeyResultController {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }
         Integer probability = keyResult.getProbability();
-        IOThreadPool.submit(() -> {
-            okrCoreService.checkOverThrows(coreId);
-            VictoryWithinGrasp victoryWithinGrasp = VictoryWithinGrasp.builder()
-                    .userId(userId)
-                    .probability(probability)
-                    .oldProbability(0)
-                    .build();
-            medalHandlerChain.handle(victoryWithinGrasp);
-            KeyResultUpdate keyResultUpdate = KeyResultUpdate.builder().coreId(coreId).build();
-            recordEventHandlerChain.handle(keyResultUpdate);
-        });
+        KeyResultUpdate keyResultUpdate = KeyResultUpdate.builder()
+                .userId(userId)
+                .coreId(coreId)
+                .probability(probability)
+                .oldProbability(0)
+                .build();
+        OkrCoreUpdateEventUtil.sendKeyResultUpdate(keyResultUpdate);
         return SystemJsonResponse.SYSTEM_SUCCESS(id);
     }
 
@@ -97,7 +83,7 @@ public class KeyResultController {
     @Operation(summary = "更新完成概率")
     public SystemJsonResponse<?> updateKeyResult(@Valid @RequestBody OkrKeyResultUpdateDTO okrKeyResultUpdateDTO) {
         // 校验
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         KeyResultUpdateDTO keyResultUpdateDTO = okrKeyResultUpdateDTO.getKeyResultUpdateDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrKeyResultUpdateDTO.getScene());
         KeyResult keyResult = KeyResultConverter.INSTANCE.keyResultUpdateDTOToKeyResult(keyResultUpdateDTO);
@@ -112,17 +98,13 @@ public class KeyResultController {
             log.info("提交更新：{}", keyResultUpdateDTO);
             Integer probability = keyResult.getProbability();
             Integer oldProbability = oldKeyResult.getProbability();
-            IOThreadPool.submit(() -> {
-                okrCoreService.checkOverThrows(coreId);
-                VictoryWithinGrasp victoryWithinGrasp = VictoryWithinGrasp.builder()
-                        .userId(userId)
-                        .probability(probability)
-                        .oldProbability(oldProbability)
-                        .build();
-                medalHandlerChain.handle(victoryWithinGrasp);
-                KeyResultUpdate keyResultUpdate = KeyResultUpdate.builder().coreId(coreId).build();
-                recordEventHandlerChain.handle(keyResultUpdate);
-            });
+            KeyResultUpdate keyResultUpdate = KeyResultUpdate.builder()
+                    .userId(userId)
+                    .coreId(coreId)
+                    .probability(probability)
+                    .oldProbability(oldProbability)
+                    .build();
+            OkrCoreUpdateEventUtil.sendKeyResultUpdate(keyResultUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

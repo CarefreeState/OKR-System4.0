@@ -1,12 +1,15 @@
 package cn.lbcmmszdntnt.domain.medal.service.impl;
 
 
-import cn.lbcmmszdntnt.domain.medal.handler.chain.MedalHandlerChain;
-import cn.lbcmmszdntnt.domain.medal.model.entity.entry.LongTermAchievement;
+import cn.lbcmmszdntnt.domain.medal.enums.MedalType;
+import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
 import cn.lbcmmszdntnt.domain.medal.service.TermAchievementService;
+import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -20,13 +23,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LongTermAchievementServiceImpl implements TermAchievementService {
 
-    private final MedalHandlerChain medalHandlerChain;
+    private final UserMedalService userMedalService;
 
     @Override
-    public void issueTermAchievement(Long userId, Boolean isCompleted, Boolean oldCompleted) {
-        LongTermAchievement longTermAchievement = LongTermAchievement.builder()
-                .userId(userId).isCompleted(isCompleted).oldCompleted(oldCompleted).build();
-        medalHandlerChain.handle(longTermAchievement);
+    public void handle(Long userId, Boolean isCompleted, Boolean oldCompleted) {
+        // 任务是否完成，决定是否计数给用户
+        MedalType medalType = MedalType.LONG_TERM_ACHIEVEMENT;
+        Long medalId = medalType.getMedalId();
+        UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
+        long credit = Objects.isNull(dbUserMedal) ? 0 : dbUserMedal.getCredit();
+        int increment = Boolean.TRUE.equals(oldCompleted) ? (Boolean.TRUE.equals(isCompleted) ? 0 : -1) : (Boolean.TRUE.equals(isCompleted) ? 1 : 0);
+        if(increment != 0) {
+            credit += increment;
+            userMedalService.saveUserMedal(userId, medalId, dbUserMedal, credit, medalType.getCoefficient());
+        }
     }
 
 }

@@ -10,9 +10,9 @@ import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,11 +47,11 @@ public class CoreRecordController {
     @PostMapping("/search/dayrecord")
     @Operation(summary = "查看一个 OKR 的日记录")
     public SystemJsonResponse<List<DayRecordVO>> searchOkrCoreDayRecord(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());
         if(Boolean.TRUE.equals(okrOperateService.canVisit(user, coreId))) {
-            List<DayRecord> dayRecords = dayRecordService.getRecords(coreId);
+            List<DayRecord> dayRecords = dayRecordService.getDayRecords(coreId);
             List<DayRecordVO> dayRecordVOS = DayRecordConverter.INSTANCE.recordListToDayRecordVOList(dayRecords);
             return SystemJsonResponse.SYSTEM_SUCCESS(dayRecordVOS);
         }else {

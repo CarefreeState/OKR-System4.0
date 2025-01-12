@@ -3,10 +3,8 @@ package cn.lbcmmszdntnt.mq.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.retry.ImmediateRequeueMessageRecoverer;
 import org.springframework.amqp.rabbit.retry.MessageRecoverer;
 import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
-import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

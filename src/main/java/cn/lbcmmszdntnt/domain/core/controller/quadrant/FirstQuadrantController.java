@@ -2,18 +2,19 @@ package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.core.context.OkrCoreContext;
 import cn.lbcmmszdntnt.domain.core.model.converter.FirstQuadrantConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.FirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrFirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
+import cn.lbcmmszdntnt.domain.core.model.event.OkrInitialize;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,7 +48,7 @@ public class FirstQuadrantController {
     @Operation(summary = "初始化第一项象限")
     public SystemJsonResponse<?> initFirstQuadrant(@Valid @RequestBody OkrFirstQuadrantDTO okrFirstQuadrantDTO) {
         // 校验
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         FirstQuadrantDTO firstQuadrantDTO = okrFirstQuadrantDTO.getFirstQuadrantDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrFirstQuadrantDTO.getScene());
         FirstQuadrant firstQuadrant = FirstQuadrantConverter.INSTANCE.firstQuadrantDTOToFirstQuadrant(firstQuadrantDTO);
@@ -58,7 +59,7 @@ public class FirstQuadrantController {
         if(user.getId().equals(userId)) {
             firstQuadrantService.initFirstQuadrant(firstQuadrant);
             log.info("第一象限初始化成功：{}", firstQuadrantDTO);
-            OkrCoreContext.setCoreId(coreId);
+            OkrCoreUpdateEventUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

@@ -4,8 +4,8 @@ import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.PersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class PersonalOkrController {
     @Operation(summary = "获取个人 OKR 列表")
     public SystemJsonResponse<List<PersonalOkrVO>> getPersonalOkrs() {
         // 获取当前登录的用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 调用方法
         List<PersonalOkrVO> personalOkrVOS = personalOkrService.getPersonalOkrList(user);
         return SystemJsonResponse.SYSTEM_SUCCESS(personalOkrVOS);

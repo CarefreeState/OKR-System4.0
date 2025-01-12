@@ -6,6 +6,7 @@ import cn.lbcmmszdntnt.domain.medal.model.vo.UserMedalVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author 马拉圈
@@ -14,9 +15,11 @@ import java.util.List;
 */
 public interface UserMedalService extends IService<UserMedal> {
 
-    UserMedal getUserMedal(Long userId, Long medalId);
+    Map<Long, UserMedal> getUserMedalMap(Long userId);
 
-    void deleteDbUserMedalCache(Long userId, Long medalId);
+    void saveUserMedal(Long userId, Long medalId, UserMedal dbUserMedal, Long newCredit, Integer coefficient);
+
+    UserMedal getUserMedal(Long userId, Long medalId);
 
     List<UserMedalVO> getUserMedalListAll(Long userId);
 

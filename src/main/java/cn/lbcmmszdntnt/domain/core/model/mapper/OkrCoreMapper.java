@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.core.model.mapper;
 
 
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
-import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
+import cn.lbcmmszdntnt.domain.quadrantdeadline.model.event.DeadlineEvent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;

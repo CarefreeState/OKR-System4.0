@@ -2,14 +2,14 @@ package cn.lbcmmszdntnt.domain.core.init;
 
 
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.domain.core.deadline.chain.DeadlineDeadlineEventHandlerChain;
-import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
 import cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper;
+import cn.lbcmmszdntnt.domain.quadrantdeadline.handler.chain.DeadlineDeadlineEventHandlerChain;
+import cn.lbcmmszdntnt.domain.quadrantdeadline.model.event.DeadlineEvent;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationStartingEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DeadlineEventInitializer implements ApplicationListener<ApplicationStartingEvent> {
+public class DeadlineEventInitializer implements ApplicationListener<ApplicationStartedEvent> {
 
     private final static String AUTHOR = "macaku";
 
@@ -52,7 +52,7 @@ public class DeadlineEventInitializer implements ApplicationListener<Application
     }
 
     @Override
-    public void onApplicationEvent(ApplicationStartingEvent event) {
+    public void onApplicationEvent(ApplicationStartedEvent event) {
         log.warn("--> --> --> 应用启动成功 --> 开始恢复定时任务 --> --> -->");
         action();
         log.warn("<-- <-- <-- <-- <-- 定时任务恢复成功 <-- <-- <-- <-- <--");

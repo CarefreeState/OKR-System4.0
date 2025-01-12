@@ -9,6 +9,6 @@ package cn.lbcmmszdntnt.domain.record.service;
  */
 public interface DayRecordCompleteService {
 
-    Object getEvent(Long coreId, Boolean isCompleted, Boolean oldCompleted);
+    void handle(Long coreId, Boolean isCompleted, Boolean oldCompleted);
 
 }

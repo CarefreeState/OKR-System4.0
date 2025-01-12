@@ -1,9 +1,8 @@
 package cn.lbcmmszdntnt.common.util.thread.timer;
 
-import cn.lbcmmszdntnt.common.constants.DateTimeConstants;
+import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,18 +20,10 @@ public class TimerUtil {
 
     private final static Timer TIMER = new Timer();
 
-    public static String getDateFormat(Date date) {
-        return new SimpleDateFormat(DateTimeConstants.DATE_TIME_PATTERN).format(date);
-    }
-
-    public static String getOnlyDateFormat(Date date) {
-        return new SimpleDateFormat(DateTimeConstants.DATE_PATTERN).format(date);
-    }
-
     public static void log(long delay, TimeUnit timeUnit) {
         long deadline = timeUnit.toMillis(delay) + System.currentTimeMillis();
         log.warn("计时开始，将于 “ {} ” {} 后执行，即于 {} 执行！", delay, timeUnit.name(),
-                getDateFormat(new Date(deadline)));
+                DateTimeUtil.getDateFormat(new Date(deadline)));
     }
 
     public static void schedule(TimerTask timerTask, long delay, TimeUnit timeUnit) {

@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.core.service.quadrant;
 
 
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.vo.FirstQuadrantVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 

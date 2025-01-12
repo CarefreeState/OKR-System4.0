@@ -15,9 +15,9 @@ import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,7 +55,7 @@ public class TeamOkrController {
     @Operation(summary = "获取管理的团队 OKR 列表")
     public SystemJsonResponse<List<TeamOkrVO>> getTeamOkrs() {
         // 获取当前登录的用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 调用方法
         List<TeamOkrVO> teamOkrVOS = teamOkrService.getTeamOkrList(user);
         return SystemJsonResponse.SYSTEM_SUCCESS(teamOkrVOS);
@@ -65,7 +65,7 @@ public class TeamOkrController {
     @Operation(summary = "修改团队的名字")
     public SystemJsonResponse updateName(@Valid @RequestBody TeamUpdateDTO teamUpdateDTO) {
         // 获取当前登录用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 判断是不是管理员
         Long managerId = user.getId();
         Long teamId = teamUpdateDTO.getId();
@@ -87,7 +87,7 @@ public class TeamOkrController {
     public SystemJsonResponse<List<TeamOkrStatisticVO>> getCompleteTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") Long id) {
         // 获取当前团队的祖先 ID
         Long rootId = TeamOkrUtil.getTeamRootId(id);
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long userId = user.getId();
         // 判断是否是其中的成员
         memberService.checkExistsInTeam(rootId, userId);
@@ -106,7 +106,7 @@ public class TeamOkrController {
     @Operation(summary = "获取一个团队的子树")
     public SystemJsonResponse<List<TeamOkrStatisticVO>> getChildTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") Long id) {
         // 获取当前团队的祖先 ID
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long userId = user.getId();
         // 判断是否是其中的成员
         memberService.checkExistsInTeam(id, userId);
@@ -125,7 +125,7 @@ public class TeamOkrController {
     @Operation(summary = "给成员授权，使其可以扩展一个子团队")
     public SystemJsonResponse<OKRCreateVO> grantTeamForMember(@Valid @RequestBody GrantDTO grantDTO) {
         // 获取当前管理员 ID
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long managerId = user.getId();
         Long userId = grantDTO.getUserId();
         Long teamId = grantDTO.getTeamId();
@@ -143,7 +143,7 @@ public class TeamOkrController {
                                                         allowableValues = {"wx", "web"}
                                                 )) String type) {
         // 检测
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long managerId = user.getId();
         // 检测管理者身份
         teamOkrService.checkManager(teamId, managerId);

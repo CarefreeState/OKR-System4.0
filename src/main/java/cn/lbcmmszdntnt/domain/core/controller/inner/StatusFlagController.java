@@ -2,21 +2,20 @@ package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagConfig;
 import cn.lbcmmszdntnt.domain.core.model.converter.StatusFlagConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.*;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
+import cn.lbcmmszdntnt.domain.core.model.event.StatusFlagUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.StatusFlagService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FourthQuadrantService;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.record.handler.chain.RecordEventHandlerChain;
-import cn.lbcmmszdntnt.domain.record.model.entity.entry.StatusFlagUpdate;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,13 +46,11 @@ public class StatusFlagController {
 
     private final StatusFlagConfig statusFlagConfig;
 
-    private final RecordEventHandlerChain recordEventHandlerChain;
-
     @PostMapping("/add")
     @Operation(summary = "增加一条状态指标")
     public SystemJsonResponse<?> addStatusFlag(@Valid @RequestBody OkrStatusFlagDTO okrStatusFlagDTO) {
         // 检查
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         StatusFlagDTO statusFlagDTO = okrStatusFlagDTO.getStatusFlagDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagDTO.getScene());
         StatusFlag statusFlag = StatusFlagConverter.INSTANCE.statusFlagDTOToStatusFlag(statusFlagDTO);
@@ -65,10 +62,8 @@ public class StatusFlagController {
         if(user.getId().equals(userId)) {
             // 插入
             id = statusFlagService.addStatusFlag(statusFlag);
-            IOThreadPool.submit(() -> {
-                StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().coreId(coreId).build();
-                recordEventHandlerChain.handle(statusFlagUpdate);
-            });
+            StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().userId(userId).coreId(coreId).build();
+            OkrCoreUpdateEventUtil.sendStatusFlagUpdate(statusFlagUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }
@@ -79,7 +74,7 @@ public class StatusFlagController {
     @PostMapping("/remove")
     @Operation(summary = "删除一条指标")
     public SystemJsonResponse<?> remove(@Valid @RequestBody OkrStatusFlagRemoveDTO okrStatusFlagRemoveDTO) {
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long statusFlagId = okrStatusFlagRemoveDTO.getId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagRemoveDTO.getScene());
         // 检测身份
@@ -98,7 +93,7 @@ public class StatusFlagController {
     @Operation(summary = "更新一条指标")
     public SystemJsonResponse<?> update(@Valid @RequestBody OkrStatusFlagUpdateDTO okrStatusFlagUpdateDTO) {
         // 检查
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         StatusFlagUpdateDTO statusFlagUpdateDTO = okrStatusFlagUpdateDTO.getStatusFlagUpdateDTO();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagUpdateDTO.getScene());
         StatusFlag statusFlag = StatusFlagConverter.INSTANCE.statusFlagUpdateDTOToStatusFlag(statusFlagUpdateDTO);
@@ -109,10 +104,8 @@ public class StatusFlagController {
         Long userId = okrOperateService.getCoreUser(coreId);
         if(user.getId().equals(userId)) {
             statusFlagService.updateStatusFlag(statusFlag);
-            IOThreadPool.submit(() -> {
-                StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().coreId(coreId).build();
-                recordEventHandlerChain.handle(statusFlagUpdate);
-            });
+            StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().userId(userId).coreId(coreId).build();
+            OkrCoreUpdateEventUtil.sendStatusFlagUpdate(statusFlagUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }
@@ -123,7 +116,7 @@ public class StatusFlagController {
     @Operation(summary = "检查当前用户的状态指标")
     public SystemJsonResponse<Boolean> updateKeyResult() {
         // 校验
-        Long userId = UserRecordUtil.getUserRecord().getId();
+        Long userId = InterceptorContext.getUser().getId();
         double average = statusFlagConfig.calculateStatusFlag(userId);
         boolean isTouch = statusFlagConfig.isTouch(average);
         log.info("检查用户 {} 状态指标 {}", userId, isTouch);

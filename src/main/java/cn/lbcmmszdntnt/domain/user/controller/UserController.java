@@ -19,8 +19,8 @@ import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
@@ -85,15 +85,6 @@ public class UserController {
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }
 
-    @PostMapping("/logout")
-    @Operation(summary = "用户登出")
-    @Tag(name = "用户测试接口/登录")
-    public SystemJsonResponse<?> logout() {
-        // 选取服务
-        UserRecordUtil.joinTheTokenBlacklist();
-        return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
     @PostMapping("/check/email")
     @Operation(summary = "验证邮箱用户")
     @Tag(name = "用户测试接口/邮箱")
@@ -112,7 +103,7 @@ public class UserController {
     @Operation(summary = "验证微信用户")
     @Tag(name = "用户测试接口/微信")
     public SystemJsonResponse<String> wxIdentifyCheck() {
-        Long userId = UserRecordUtil.getUserRecord().getId();
+        Long userId = InterceptorContext.getUser().getId();
         String randomCode = IdentifyingCodeValidator.getIdentifyingCode();
         // 生成一个小程序检查码
         String mapPath = okrQRCodeService.getBindingQRCode(userId, randomCode);
@@ -133,7 +124,7 @@ public class UserController {
     @Operation(summary = "微信登录授权")
     @Tag(name = "用户测试接口/微信")
     public SystemJsonResponse<?> wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         userService.onLoginState(secret, user.getId());//如果不是微信用户，但是有 openid，说明这个用户等同于微信登录
         // 发送已确认的通知
         SystemJsonResponse<?> systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
@@ -160,7 +151,7 @@ public class UserController {
         String code = emailBindingDTO.getCode();
         // 获取当前登录的用户
         // todo: 考察是否要限制绑定次数，或者是否可以重新绑定，当前不做限制
-        User userRecord = UserRecordUtil.getUserRecord();
+        User userRecord = InterceptorContext.getUser();
         Long userId = userRecord.getId();
         String recordEmail = userRecord.getEmail();
         userService.bindingEmail(userId, email, code, recordEmail);
@@ -183,7 +174,7 @@ public class UserController {
     @Operation(summary = "上传用户头像")
     @Tag(name = "用户测试接口/信息")
     public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
         String mapPath = userService.tryUploadPhoto(multipartFile, userId, originPhoto);
@@ -196,7 +187,7 @@ public class UserController {
     @Tag(name = "用户测试接口/信息")
     public SystemJsonResponse<?> improveUserinfo(@Valid @RequestBody UserinfoDTO userinfoDTO) {
         // 获取当前用户 ID
-        Long userId = UserRecordUtil.getUserRecord().getId();
+        Long userId = InterceptorContext.getUser().getId();
         // 完善信息
         userService.improveUserinfo(userinfoDTO, userId);
         // 删除记录
@@ -208,7 +199,7 @@ public class UserController {
     @Tag(name = "用户测试接口/信息")
     public SystemJsonResponse<UserVO> getUserInfo() {
         // 获取当前登录用户
-        User user = UserRecordUtil.getUserRecord();
+        User user = InterceptorContext.getUser();
         // 提取信息
         UserVO userVO = UserConverter.INSTANCE.userToUserVO(user);
         // 返回

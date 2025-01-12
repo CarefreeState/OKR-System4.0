@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.email.aspect;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,7 +26,7 @@ public class EmailAsynchronousSendAspect {
     @Around("send()")
     public Object doAround(ProceedingJoinPoint joinPoint) {
         // 如果是自调用则不会触发切点
-        IOThreadPool.submit(() -> {
+        EmailAsynchronousThreadPool.submit(() -> {
             try {
                 log.info("异步发送邮件");
                 joinPoint.proceed();
