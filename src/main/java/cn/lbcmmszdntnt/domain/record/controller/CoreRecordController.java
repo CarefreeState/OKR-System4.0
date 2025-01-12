@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.record.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
@@ -39,7 +38,6 @@ import java.util.List;
 @RequestMapping("/corerecord")
 @Tag(name = "OKR 记录")
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class CoreRecordController {
 
     private final OkrOperateServiceFactory okrOperateServiceFactory;

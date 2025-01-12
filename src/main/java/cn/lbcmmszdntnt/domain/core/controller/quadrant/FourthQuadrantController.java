@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/fourthquadrant")
-@Tag(name = "第四象限")
+@Tag(name = "OKR 内核/象限/第四象限")
 @Intercept
 public class FourthQuadrantController {
 

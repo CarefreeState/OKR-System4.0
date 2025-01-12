@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.okr.service;
 
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
@@ -8,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author 马拉圈
@@ -26,7 +26,7 @@ public interface TeamOkrService extends IService<TeamOkr> {
     void checkManager(Long teamId, Long managerId);
 
     @Transactional
-    Map<String, Object> grantTeamForMember(Long teamId, Long managerId, Long userId, String teamName);
+    OKRCreateVO grantTeamForMember(Long teamId, Long managerId, Long userId, String teamName);
 
     List<TeamOkrStatisticVO> countCompletionRate(List<Long> ids);
 

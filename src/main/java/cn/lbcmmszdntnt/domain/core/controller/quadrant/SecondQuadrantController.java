@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/secondquadrant")
-@Tag(name = "第二象限")
+@Tag(name = "OKR 内核/象限/第二象限")
 @Intercept
 public class SecondQuadrantController {
 
@@ -47,7 +47,7 @@ public class SecondQuadrantController {
 
     @PostMapping("/init")
     @Operation(summary = "初始化第二象限")
-    public SystemJsonResponse initSecondQuadrant(@Valid @RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
+    public SystemJsonResponse<?> initSecondQuadrant(@Valid @RequestBody OkrInitQuadrantDTO okrInitQuadrantDTO) {
         // 初始化
         InitQuadrantDTO initQuadrantDTO = okrInitQuadrantDTO.getInitQuadrantDTO();
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();

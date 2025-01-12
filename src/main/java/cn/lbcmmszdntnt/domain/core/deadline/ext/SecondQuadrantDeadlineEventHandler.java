@@ -4,9 +4,8 @@ package cn.lbcmmszdntnt.domain.core.deadline.ext;
 import cn.lbcmmszdntnt.domain.core.deadline.DeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
 import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.SecondQuadrantEvent;
-import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
+import cn.lbcmmszdntnt.domain.core.deadline.util.QuadrantDeadlineUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -36,8 +35,6 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         Long secondQuadrantId = secondQuadrantEvent.getId();
         Date secondQuadrantDeadline = secondQuadrantEvent.getDeadline();
         Integer secondQuadrantCycle = secondQuadrantEvent.getCycle();
-        log.info("处理事件：内核 ID {}，第二象限 ID {}，第二象限截止时间 {}，第二象限周期 {}",
-                id, secondQuadrantId, secondQuadrantDeadline, secondQuadrantCycle);
         // 3. 是否设置了第二象限截止时间和周期
         if(Objects.nonNull(secondQuadrantDeadline) && Objects.nonNull(secondQuadrantCycle)) {
             // 3.1 获取一个正确的截止点
@@ -50,16 +47,13 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
             Date nextDeadline = new Date(nextDeadTimestamp);
             // 3.2 更新截止时间
             if(nextDeadTimestamp != deadTimestamp) {
-                SecondQuadrant updateQuadrant = new SecondQuadrant();
-                updateQuadrant.setId(secondQuadrantId);
-                updateQuadrant.setDeadline(nextDeadline);
-                secondQuadrantService.lambdaUpdate()
-                        .eq(SecondQuadrant::getId, secondQuadrantId)
-                        .update(updateQuadrant);
+                log.info("处理事件：内核 ID {}，第二象限 ID {}，第二象限截止时间 {}，第二象限周期 {}",
+                        id, secondQuadrantId, secondQuadrantDeadline, secondQuadrantCycle);
+                secondQuadrantService.updateDeadline(secondQuadrantId, nextDeadline);
+                // 3.3 发起定时任务
+                secondQuadrantEvent.setDeadline(nextDeadline);
+                QuadrantDeadlineUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
             }
-            // 3.3 发起定时任务
-            secondQuadrantEvent.setDeadline(nextDeadline);
-            QuadrantDeadlineUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
         }
         super.doNextHandler(deadlineEvent, nowTimestamp);//执行下一个责任处理器
     }

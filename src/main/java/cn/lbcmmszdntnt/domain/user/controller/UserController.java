@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
 import cn.lbcmmszdntnt.domain.auth.factory.LoginServiceFactory;
@@ -20,9 +19,7 @@ import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.domain.user.sse.server.SseUserServer;
 import cn.lbcmmszdntnt.domain.user.util.UserRecordUtil;
-import cn.lbcmmszdntnt.domain.user.websocket.server.WsUserServer;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
@@ -52,7 +49,6 @@ import java.io.IOException;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @Intercept
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class UserController {
 
     private final static String JWT_SUBJECT = "登录认证";
@@ -147,14 +143,14 @@ public class UserController {
         return systemJsonResponse;
     }
 
-    @PostMapping("/wx/login/{secret}")
-    @Operation(summary = "微信登录检查")
-    @Tag(name = "用户测试接口/微信")
-    @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<LoginVO> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-        LoginVO result = userService.checkLoginState(secret);
-        return SystemJsonResponse.SYSTEM_SUCCESS(result);
-    }
+//    @PostMapping("/wx/login/{secret}")
+//    @Operation(summary = "微信登录检查")
+//    @Tag(name = "用户测试接口/微信")
+//    @Intercept(authenticate = false, authorize = false)
+//    public SystemJsonResponse<LoginVO> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
+//        LoginVO result = userService.checkLoginState(secret);
+//        return SystemJsonResponse.SYSTEM_SUCCESS(result);
+//    }
 
     @PostMapping("/binding/email")
     @Operation(summary = "绑定用户邮箱")

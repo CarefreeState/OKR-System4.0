@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
@@ -20,9 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author 马拉圈
@@ -44,7 +43,7 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
     private final RedisCache redisCache;
 
     @Override
-    public Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
+    public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         // 查看当前用户是否有未完成的 OKR
         Long count = personalOkrMapper.getNotCompletedCount(userId);
@@ -60,10 +59,7 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
         personalOkrMapper.insert(personalOkr);
         Long id = personalOkr.getId();
         log.info("用户 {} 个人 OKR {}  内核 {}", userId, id, coreId);
-        return new HashMap<String, Object>() {{
-            this.put("id", id);
-            this.put("coreId", coreId);
-        }};
+        return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
 
     @Override

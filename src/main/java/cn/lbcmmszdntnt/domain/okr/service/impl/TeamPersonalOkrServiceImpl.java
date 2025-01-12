@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
@@ -26,9 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,7 +52,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
     private final InviteQRCodeServiceFactory inviteQRCodeServiceFactory;
 
     @Override
-    public Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
+    public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         // 检测密钥
         Long teamId = okrOperateDTO.getTeamOkrId();
         String secret = okrOperateDTO.getSecret();
@@ -80,10 +79,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
         log.info("用户 {} 新建团队 {} 的 团队个人 OKR {} 内核 {}", userId, teamId, id, coreId);
         // 更新一下缓存
         memberService.setExistsInTeam(teamId, userId);
-        return new HashMap<String, Object>() {{
-            this.put("id", id);
-            this.put("coreId", coreId);
-        }};
+        return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.common.util.thread.timer;
 
+import cn.lbcmmszdntnt.common.constants.DateTimeConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
@@ -21,11 +22,11 @@ public class TimerUtil {
     private final static Timer TIMER = new Timer();
 
     public static String getDateFormat(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        return new SimpleDateFormat(DateTimeConstants.DATE_TIME_PATTERN).format(date);
     }
 
     public static String getOnlyDateFormat(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return new SimpleDateFormat(DateTimeConstants.DATE_PATTERN).format(date);
     }
 
     public static void log(long delay, TimeUnit timeUnit) {

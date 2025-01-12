@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/keyresult")
-@Tag(name = "关键结果")
+@Tag(name = "OKR 内核/内件/关键结果")
 @Intercept
 public class KeyResultController {
 
@@ -95,7 +95,7 @@ public class KeyResultController {
 
     @PostMapping("/update")
     @Operation(summary = "更新完成概率")
-    public SystemJsonResponse updateKeyResult(@Valid @RequestBody OkrKeyResultUpdateDTO okrKeyResultUpdateDTO) {
+    public SystemJsonResponse<?> updateKeyResult(@Valid @RequestBody OkrKeyResultUpdateDTO okrKeyResultUpdateDTO) {
         // 校验
         User user = UserRecordUtil.getUserRecord();
         KeyResultUpdateDTO keyResultUpdateDTO = okrKeyResultUpdateDTO.getKeyResultUpdateDTO();

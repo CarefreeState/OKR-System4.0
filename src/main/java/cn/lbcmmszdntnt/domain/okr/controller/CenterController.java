@@ -2,21 +2,19 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +31,10 @@ import org.springframework.web.servlet.view.RedirectView;
 @RestController
 @RequiredArgsConstructor
 @Intercept
+@Tag(name = "Center")
 public class CenterController {
 
     private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
-
-    @Value("${visit.swagger}")
-    private Boolean swaggerCanBeVisited;
 
     private final OkrQRCodeService okrQRCodeService;
 
@@ -62,10 +58,6 @@ public class CenterController {
     @Operation(summary = "测试阶段获取用户的 token")
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
-        if(Boolean.FALSE.equals(swaggerCanBeVisited)) {
-            // 无法访问 swagger，代表这个接口无法访问
-            throw new GlobalServiceException(GlobalServiceStatusCode.SYSTEM_API_VISIT_FAIL);
-        }
         // 构造 token
         TokenVO tokenVO = TokenVO.builder().userId(userId).build();
         String token = JwtUtil.createJwt(JWT_SUBJECT, tokenVO);

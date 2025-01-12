@@ -23,7 +23,7 @@ import java.util.List;
  * Time: 21:35
  */
 @RestController
-@Tag(name = "个人 OKR 测试接口")
+@Tag(name = "OKR/个人 OKR 测试接口")
 @RequestMapping("/personal")
 @RequiredArgsConstructor
 @Intercept

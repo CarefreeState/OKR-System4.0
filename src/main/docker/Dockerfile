@@ -7,6 +7,7 @@ EXPOSE 9999
 
 ENV TZ=Asia/Shanghai
 
+# 如果 java 字体有问题，需要下载 👇
 # RUN yum install fontconfig
 WORKDIR /root
 ENTRYPOINT java -jar /root/app.jar

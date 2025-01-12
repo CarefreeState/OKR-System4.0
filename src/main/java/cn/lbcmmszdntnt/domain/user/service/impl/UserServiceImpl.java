@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.domain.user.service.impl;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpUtil;
-import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
@@ -15,7 +14,6 @@ import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
@@ -239,26 +237,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void onLoginState(String secret, Long userId) {
         String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
-        String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
-        if ("null".equals(token)) {
-            // 构造 token
-            TokenVO tokenVO = TokenVO.builder().userId(userId).build();
-            String jsonData = JsonUtil.toJson(tokenVO);
-            redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, tokenVO),
-                    QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
-        }
+        redisCache.getObject(redisKey, Long.class).ifPresentOrElse(uid -> {
+            if (uid.compareTo(0L) <= 0) {
+                redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, userId),
+                        QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
+            }
+        }, () -> {
+            throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID);
+        });
     }
 
-    @Override
-    public LoginVO checkLoginState(String secret) {
-        String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
-        String token = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
-                new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
-        if ("null".equals(token)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
-        }
-        redisCache.deleteObject(redisKey);
-        return LoginVO.builder().token(token).build();
-    }
 }

@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/firstquadrant")
-@Tag(name = "第一象限")
+@Tag(name = "OKR 内核/象限/第一象限")
 @Intercept
 public class FirstQuadrantController {
 
@@ -45,7 +45,7 @@ public class FirstQuadrantController {
 
     @PostMapping("/init")
     @Operation(summary = "初始化第一项象限")
-    public SystemJsonResponse initFirstQuadrant(@Valid @RequestBody OkrFirstQuadrantDTO okrFirstQuadrantDTO) {
+    public SystemJsonResponse<?> initFirstQuadrant(@Valid @RequestBody OkrFirstQuadrantDTO okrFirstQuadrantDTO) {
         // 校验
         User user = UserRecordUtil.getUserRecord();
         FirstQuadrantDTO firstQuadrantDTO = okrFirstQuadrantDTO.getFirstQuadrantDTO();

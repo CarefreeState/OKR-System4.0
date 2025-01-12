@@ -7,6 +7,8 @@ import cn.lbcmmszdntnt.domain.core.model.vo.ThirdQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
 * @author 马拉圈
 * @description 针对表【third_quadrant(第三象限表)】的数据库操作Service
@@ -16,6 +18,7 @@ public interface ThirdQuadrantService extends IService<ThirdQuadrant> {
 
     @Transactional
     void initThirdQuadrant(InitQuadrantDTO initQuadrantDTO);
+    void updateDeadline(Long id, Date date);
 
     ThirdQuadrantVO searchThirdQuadrant(Long coreId);
 

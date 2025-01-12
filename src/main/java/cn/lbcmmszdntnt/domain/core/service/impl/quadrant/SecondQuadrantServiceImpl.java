@@ -10,7 +10,7 @@ import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.SecondQuadrantMapper;
 import cn.lbcmmszdntnt.domain.core.model.vo.SecondQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
+import cn.lbcmmszdntnt.domain.core.deadline.util.QuadrantDeadlineUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -85,6 +85,14 @@ public class SecondQuadrantServiceImpl extends ServiceImpl<SecondQuadrantMapper,
         QuadrantDeadlineUtil.scheduledUpdateSecondQuadrant(event);
         // 清楚缓存
         redisCache.deleteObject(OkrCoreConfig.OKR_CORE_ID_MAP + coreId);
+    }
+
+    @Override
+    public void updateDeadline(Long id, Date date) {
+        SecondQuadrant updateQuadrant = new SecondQuadrant();
+        updateQuadrant.setId(id);
+        updateQuadrant.setDeadline(date);
+        this.updateById(updateQuadrant);
     }
 
     @Override

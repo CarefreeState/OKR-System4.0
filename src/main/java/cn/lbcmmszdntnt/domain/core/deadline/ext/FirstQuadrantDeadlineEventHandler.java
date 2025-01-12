@@ -5,7 +5,6 @@ import cn.lbcmmszdntnt.domain.core.deadline.DeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.core.model.entity.event.DeadlineEvent;
 import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.FirstQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,16 +31,12 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         FirstQuadrantEvent firstQuadrantEvent = deadlineEvent.getFirstQuadrantEvent();
         Long id = firstQuadrantEvent.getCoreId();
         Date firstQuadrantDeadline = firstQuadrantEvent.getDeadline();
-        log.info("处理事件：内核 ID {}，第一象限截止时间 {}", id, firstQuadrantDeadline);
-        // 1. 判断是否截止
+        // 判断是否截止
         if(Objects.nonNull(firstQuadrantDeadline) &&
                 firstQuadrantDeadline.getTime() <= nowTimestamp) {
+            log.info("处理事件：内核 ID {}，第一象限截止时间 {}", id, firstQuadrantDeadline);
             okrCoreService.complete(id);
             return; // 责任链终止
-        }
-        // 2. 是否设置了第一象限截止时间（这里一定代表未截止）
-        if(Objects.nonNull(firstQuadrantDeadline)) {
-            QuadrantDeadlineUtil.scheduledComplete(firstQuadrantEvent);
         }
         super.doNextHandler(deadlineEvent, nowTimestamp);//执行下一个责任处理器
     }

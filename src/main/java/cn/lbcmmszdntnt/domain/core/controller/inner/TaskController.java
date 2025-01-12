@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/task")
-@Tag(name = "任务管理")
+@Tag(name = "OKR 内核/内件/任务管理")
 @Intercept
 public class TaskController {
 
@@ -57,7 +57,7 @@ public class TaskController {
 
     @PostMapping("/{option}/add")
     @Operation(summary = "增加一条任务")
-    public SystemJsonResponse addTask(
+    public SystemJsonResponse<?> addTask(
             @PathVariable("option") @Parameter(example = "0", schema = @Schema(
                     type = "integer",
                     format = "int32",
@@ -87,7 +87,7 @@ public class TaskController {
 
     @PostMapping("/{option}/remove")
     @Operation(summary = ("删除一个任务"))
-    public SystemJsonResponse removeTask(
+    public SystemJsonResponse<?> removeTask(
             @PathVariable("option") @Parameter(example = "0", schema = @Schema(
                     type = "integer",
                     format = "int32",
@@ -116,7 +116,7 @@ public class TaskController {
 
     @PostMapping("/{option}/update")
     @Operation(summary = "更新一条任务")
-    public SystemJsonResponse updateTask(
+    public SystemJsonResponse<?> updateTask(
             @PathVariable("option") @Parameter(example = "0", schema = @Schema(
                     type = "integer",
                     format = "int32",

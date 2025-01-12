@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/flag")
-@Tag(name = "状态指标")
+@Tag(name = "OKR 内核/内件/状态指标")
 @Intercept
 public class StatusFlagController {
 
@@ -51,7 +51,7 @@ public class StatusFlagController {
 
     @PostMapping("/add")
     @Operation(summary = "增加一条状态指标")
-    public SystemJsonResponse addStatusFlag(@Valid @RequestBody OkrStatusFlagDTO okrStatusFlagDTO) {
+    public SystemJsonResponse<?> addStatusFlag(@Valid @RequestBody OkrStatusFlagDTO okrStatusFlagDTO) {
         // 检查
         User user = UserRecordUtil.getUserRecord();
         StatusFlagDTO statusFlagDTO = okrStatusFlagDTO.getStatusFlagDTO();
@@ -78,7 +78,7 @@ public class StatusFlagController {
 
     @PostMapping("/remove")
     @Operation(summary = "删除一条指标")
-    public SystemJsonResponse remove(@Valid @RequestBody OkrStatusFlagRemoveDTO okrStatusFlagRemoveDTO) {
+    public SystemJsonResponse<?> remove(@Valid @RequestBody OkrStatusFlagRemoveDTO okrStatusFlagRemoveDTO) {
         User user = UserRecordUtil.getUserRecord();
         Long statusFlagId = okrStatusFlagRemoveDTO.getId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrStatusFlagRemoveDTO.getScene());
@@ -96,7 +96,7 @@ public class StatusFlagController {
 
     @PostMapping("/update")
     @Operation(summary = "更新一条指标")
-    public SystemJsonResponse update(@Valid @RequestBody OkrStatusFlagUpdateDTO okrStatusFlagUpdateDTO) {
+    public SystemJsonResponse<?> update(@Valid @RequestBody OkrStatusFlagUpdateDTO okrStatusFlagUpdateDTO) {
         // 检查
         User user = UserRecordUtil.getUserRecord();
         StatusFlagUpdateDTO statusFlagUpdateDTO = okrStatusFlagUpdateDTO.getStatusFlagUpdateDTO();

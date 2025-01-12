@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
-import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -43,7 +42,5 @@ public interface UserService extends IService<User> {
     String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto);
 
     void onLoginState(String secret, Long userId);
-
-    LoginVO checkLoginState(String secret);
 
 }

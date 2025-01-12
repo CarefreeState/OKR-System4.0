@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.sse.server;
+package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@Tag(name = "用户 SSE 接口")
 @RequestMapping("/events")
 @RequiredArgsConstructor
 @Intercept(authenticate = false, authorize = false)
@@ -26,7 +25,8 @@ public class SseUserServer {
 
     private final OkrQRCodeService okrQRCodeService;
 
-    @Operation(summary = "网页端微信登录")
+    @Operation(summary = "网页端微信登录（SSE）")
+    @Tag(name = "用户测试接口/微信")
     @GetMapping("/web/wxlogin")
     public SseEmitter connect() {
         // 获得邀请码的密钥

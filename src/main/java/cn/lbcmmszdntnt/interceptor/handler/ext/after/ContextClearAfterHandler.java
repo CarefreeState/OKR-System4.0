@@ -22,16 +22,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ContextClearAfterHandler extends InterceptorHandler {
 
-    @Value("${spring.trace-id}")
-    private String traceId;
-
-    @Value("${spring.trace-uri}")
-    private String uri;
-
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         ThreadLocalMapUtil.removeAll();
-        MDC.remove(traceId);
-        MDC.remove(uri);
+        MDC.clear();
     }
 }

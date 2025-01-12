@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.okr.enums;
+package cn.lbcmmszdntnt.domain.core.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;

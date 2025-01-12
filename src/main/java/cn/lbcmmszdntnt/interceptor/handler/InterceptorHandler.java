@@ -36,6 +36,7 @@ public abstract class InterceptorHandler {
     }
 
     public abstract void action(HttpServletRequest request, HttpServletResponse response, Object handler);
+
     public final void handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
         if(HttpUtil.anyMatchPath(pathPatterns(), uri) && Boolean.TRUE.equals(condition())) {

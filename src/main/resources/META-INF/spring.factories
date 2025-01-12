@@ -1,7 +1,3 @@
-# ??????????
-cn.lbcmmszdntnt.domain.core.service.QuadrantDeadlineService=\
-  cn.lbcmmszdntnt.domain.core.service.impl.QuadrantDeadlineServiceXxlJobImpl
 
-# ??????
 cn.lbcmmszdntnt.domain.media.service.ObjectStorageService=\
   cn.lbcmmszdntnt.domain.media.service.impl.ObjectStorageMinioServiceImpl

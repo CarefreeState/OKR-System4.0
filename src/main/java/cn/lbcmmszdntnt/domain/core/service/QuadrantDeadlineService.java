@@ -14,8 +14,6 @@ import cn.lbcmmszdntnt.domain.core.model.entity.event.quadrant.ThirdQuadrantEven
  */
 public interface QuadrantDeadlineService {
 
-    void clear();
-
     void scheduledComplete(FirstQuadrantEvent firstQuadrantEvent);
 
     void scheduledUpdateSecondQuadrant(SecondQuadrantEvent secondQuadrantEvent);

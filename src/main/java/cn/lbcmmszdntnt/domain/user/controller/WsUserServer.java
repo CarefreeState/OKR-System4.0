@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.websocket.server;
+package cn.lbcmmszdntnt.domain.user.controller;
 
 
 import cn.hutool.extra.spring.SpringUtil;

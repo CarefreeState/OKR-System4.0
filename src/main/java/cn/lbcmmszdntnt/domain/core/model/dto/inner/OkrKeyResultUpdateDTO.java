@@ -1,10 +1,9 @@
 package cn.lbcmmszdntnt.domain.core.model.dto.inner;
 
 
-import cn.lbcmmszdntnt.domain.okr.enums.OkrType;
+import cn.lbcmmszdntnt.domain.core.enums.OkrType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -20,7 +19,7 @@ import lombok.Data;
 public class OkrKeyResultUpdateDTO {
 
     @Schema(description = "场景值")
-    @NotBlank(message = "缺少场景值")
+    @NotNull(message = "缺少场景值")
     private OkrType scene;
 
     @Schema

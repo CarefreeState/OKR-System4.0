@@ -7,6 +7,7 @@ import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreSummaryDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.medal.handler.chain.MedalHandlerChain;
@@ -27,7 +28,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -53,12 +53,12 @@ public class OkrCoreController {
 
     @PostMapping("/create")
     @Operation(summary = "创建一个 OKR")
-    public SystemJsonResponse<Map<String, Object>> createOkr(@Valid @RequestBody OkrOperateDTO okrOperateDTO) {
+    public SystemJsonResponse<OKRCreateVO> createOkr(@Valid @RequestBody OkrOperateDTO okrOperateDTO) {
         // 检测
         User user = UserRecordUtil.getUserRecord();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrOperateDTO.getScene());
-        Map<String, Object> ret = okrOperateService.createOkrCore(user, okrOperateDTO);
-        return SystemJsonResponse.SYSTEM_SUCCESS(ret);
+        OKRCreateVO okrCreateVO = okrOperateService.createOkrCore(user, okrOperateDTO);
+        return SystemJsonResponse.SYSTEM_SUCCESS(okrCreateVO);
     }
 
     @PostMapping("/search")

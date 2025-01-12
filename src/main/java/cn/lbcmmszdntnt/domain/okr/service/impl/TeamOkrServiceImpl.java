@@ -6,6 +6,7 @@ import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
@@ -30,9 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -92,7 +91,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     }
 
     @Override
-    public Map<String, Object> grantTeamForMember(Long teamId, Long managerId, Long userId, String teamName) {
+    public OKRCreateVO grantTeamForMember(Long teamId, Long managerId, Long userId, String teamName) {
         if(managerId.equals(userId)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
@@ -135,10 +134,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         SchedulerThreadPool.schedule(() -> {
             TeamOkrUtil.deleteChildListCache(teamId);
         }, DELAY, DELAY_UNIT);
-        return new HashMap<String, Object>() {{
-            this.put("id", id);
-            this.put("coreId", coreId);
-        }};
+        return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
 
     @Override
@@ -182,7 +178,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     }
 
     @Override
-    public Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
+    public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         String redisKey = TeamOkrUtil.CREATE_CD_FLAG + userId;
         redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
@@ -216,10 +212,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         teamPersonalOkr.setUserId(userId);
         teamPersonalOkrMapper.insert(teamPersonalOkr);
         log.info("用户 {} 新建团队 {} 的 团队个人 OKR {} 内核 {}", userId, teamId, teamPersonalOkr.getId(), coreId2);
-        return new HashMap<String, Object>() {{
-            this.put("id", teamId);
-            this.put("coreId", coreId1);
-        }};
+        return OKRCreateVO.builder().id(teamId).coreId(coreId1).build();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
-import cn.lbcmmszdntnt.common.constants.SuppressWarningsValue;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings(value = SuppressWarningsValue.SPRING_JAVA_INJECTION_POINT_AUTOWIRING_INSPECTION)
 public class OkrQRCodeServiceImpl implements OkrQRCodeService {
 
     private final static String BINDING_CODE_MESSAGE = String.format("请在 %d %s 内前往微信扫码进行绑定！",
@@ -127,8 +125,8 @@ public class OkrQRCodeServiceImpl implements OkrQRCodeService {
 
     @Override
     public LoginQRCodeVO getLoginQRCode(String secret) {
-        // 设置为 "null"
-        redisCache.setObject(QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret, "null",
+        // 设置为 -1
+        redisCache.setObject(QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret, -1,
                 QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
         // 获取一个小程序码
         String mapPath = wxLoginQRCodeService.getQRCode(secret);

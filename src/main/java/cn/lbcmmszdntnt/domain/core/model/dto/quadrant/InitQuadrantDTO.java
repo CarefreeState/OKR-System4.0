@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.model.dto.quadrant;
 
+import cn.lbcmmszdntnt.common.constants.DateTimeConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +24,9 @@ public class InitQuadrantDTO {
     @NotNull(message = "象限 ID 不能为空")
     private Long id;
 
-    @Schema(description = "截止时间")
+    @Schema(description = "截止时间" + DateTimeConstants.DATE_TIME_PATTERN)
     @NotNull(message = "截止时间不能为空")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = DateTimeConstants.DATE_TIME_PATTERN)
     private Date deadline;
 
     @Schema(description = "象限周期")

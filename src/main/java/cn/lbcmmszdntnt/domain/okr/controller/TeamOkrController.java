@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.okr.model.dto.GrantDTO;
 import cn.lbcmmszdntnt.domain.okr.model.dto.TeamUpdateDTO;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -38,7 +38,7 @@ import java.util.Map;
  * Time: 22:19
  */
 @RestController
-@Tag(name = "团队 OKR 测试接口")
+@Tag(name = "OKR/团队 OKR 测试接口")
 @RequestMapping("/team")
 @RequiredArgsConstructor
 @Slf4j
@@ -123,14 +123,14 @@ public class TeamOkrController {
 
     @PostMapping("/grant")
     @Operation(summary = "给成员授权，使其可以扩展一个子团队")
-    public SystemJsonResponse<Map<String, Object>> grantTeamForMember(@Valid @RequestBody GrantDTO grantDTO) {
+    public SystemJsonResponse<OKRCreateVO> grantTeamForMember(@Valid @RequestBody GrantDTO grantDTO) {
         // 获取当前管理员 ID
         User user = UserRecordUtil.getUserRecord();
         Long managerId = user.getId();
         Long userId = grantDTO.getUserId();
         Long teamId = grantDTO.getTeamId();
         String teamName = grantDTO.getTeamName();
-        Map<String, Object> ret = teamOkrService.grantTeamForMember(teamId, managerId, userId, teamName);
+        OKRCreateVO ret = teamOkrService.grantTeamForMember(teamId, managerId, userId, teamName);
         return SystemJsonResponse.SYSTEM_SUCCESS(ret);
     }
 

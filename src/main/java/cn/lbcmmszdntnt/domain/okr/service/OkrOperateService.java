@@ -2,11 +2,10 @@ package cn.lbcmmszdntnt.domain.okr.service;
 
 
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
+import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -18,7 +17,7 @@ import java.util.Map;
 public interface OkrOperateService {
 
     @Transactional
-    Map<String, Object> createOkrCore(User user, OkrOperateDTO okrOperateDTO);
+    OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO);
 
     OkrCoreVO selectAllOfCore(User user, Long coreId);
 
