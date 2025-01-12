@@ -6,7 +6,7 @@ import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagConfig;
 import cn.lbcmmszdntnt.domain.core.model.converter.StatusFlagConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.*;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
-import cn.lbcmmszdntnt.domain.core.model.event.StatusFlagUpdate;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.StatusFlagUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.StatusFlagService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FourthQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;

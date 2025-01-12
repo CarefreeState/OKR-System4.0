@@ -4,7 +4,7 @@ import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrInitQuadrantDTO;
-import cn.lbcmmszdntnt.domain.core.model.event.OkrInitialize;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrInitialize;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;

@@ -1,5 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.service;
 
+import cn.lbcmmszdntnt.domain.medal.enums.MedalType;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -9,6 +11,6 @@ package cn.lbcmmszdntnt.domain.medal.service;
  */
 public interface TermAchievementService {
 
-    void handle(Long userId, Boolean isCompleted, Boolean oldCompleted);
+    MedalType getMedalType();
 
 }

@@ -6,7 +6,7 @@ import cn.lbcmmszdntnt.domain.core.model.converter.FirstQuadrantConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.FirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrFirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.event.OkrInitialize;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrInitialize;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;

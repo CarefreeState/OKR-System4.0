@@ -6,7 +6,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreSummaryDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
-import cn.lbcmmszdntnt.domain.core.model.event.OkrFinish;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrFinish;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;

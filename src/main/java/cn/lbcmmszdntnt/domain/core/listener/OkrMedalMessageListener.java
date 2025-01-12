@@ -2,10 +2,10 @@ package cn.lbcmmszdntnt.domain.core.listener;
 
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.domain.core.constants.FanoutExchangeConstants;
-import cn.lbcmmszdntnt.domain.core.model.event.KeyResultUpdate;
-import cn.lbcmmszdntnt.domain.core.model.event.OkrFinish;
-import cn.lbcmmszdntnt.domain.core.model.event.OkrInitialize;
-import cn.lbcmmszdntnt.domain.core.model.event.TaskUpdate;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.KeyResultUpdate;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrFinish;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrInitialize;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.TaskUpdate;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
@@ -37,8 +37,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class OkrMedalMessageListener {
-
-
 
     private final static int FULL_VALUE = 100;
 
@@ -81,9 +79,21 @@ public class OkrMedalMessageListener {
             value = @Queue(name = FanoutExchangeConstants.TASK_UPDATE_MEDAL_QUEUE)
     ))
     public void termAchievementMedalEventListener(TaskUpdate taskUpdate) {
-        // 任务是否完成，决定是否计数给用户
+        Long userId = taskUpdate.getUserId();
+        Boolean isCompleted = taskUpdate.getIsCompleted();
+        Boolean oldCompleted = taskUpdate.getOldCompleted();
+        // 获得任务对应的勋章类型
         TermAchievementService termAchievementService = teamAchievementServiceFactory.getService(taskUpdate.getTaskType());
-        termAchievementService.handle(taskUpdate.getUserId(), taskUpdate.getIsCompleted(), taskUpdate.getOldCompleted());
+        MedalType medalType = termAchievementService.getMedalType();
+        // 任务是否完成，决定是否计数给用户
+        Long medalId = medalType.getMedalId();
+        UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
+        long credit = Objects.isNull(dbUserMedal) ? 0 : dbUserMedal.getCredit();
+        int increment = Boolean.TRUE.equals(oldCompleted) ? (Boolean.TRUE.equals(isCompleted) ? 0 : -1) : (Boolean.TRUE.equals(isCompleted) ? 1 : 0);
+        if(increment != 0) {
+            credit += increment;
+            userMedalService.saveUserMedal(userId, medalId, dbUserMedal, credit, medalType.getCoefficient());
+        }
     }
 
     // 出类拔萃（超额、提前完成 OKR）

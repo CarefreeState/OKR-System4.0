@@ -8,7 +8,7 @@ import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
-import cn.lbcmmszdntnt.domain.core.model.event.KeyResultUpdate;
+import cn.lbcmmszdntnt.domain.core.model.event.operate.KeyResultUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.KeyResultService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
