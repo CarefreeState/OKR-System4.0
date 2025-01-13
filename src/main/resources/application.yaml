@@ -109,12 +109,6 @@ xxl:
       infoPageList: /jobinfo/pageList
       groupSave: /jobgroup/save
       infoAdd: /jobinfo/add
-      infoStart: /jobinfo/start
-      infoIds: /jobinfo/ids
-      infoStopIds: /jobinfo/stopids
-      infoRemove: /jobinfo/remove
-      infoStop: /jobinfo/stop
-      infoUpdate: /jobinfo/update
 
 
 limit:

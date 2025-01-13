@@ -66,7 +66,7 @@ public class TeamPersonalOkrController {
 
     @GetMapping("/remove/{id}")
     @Operation(summary = "移除成员")
-    public SystemJsonResponse removeMember(@PathVariable("id") @Parameter(description = "团队个人 OKR ID") Long id) {
+    public SystemJsonResponse<?> removeMember(@PathVariable("id") @Parameter(description = "团队个人 OKR ID") Long id) {
         // 查询团队个人 Okr
         TeamPersonalOkr teamPersonalOkr = Db.lambdaQuery(TeamPersonalOkr.class)
                 .eq(TeamPersonalOkr::getId, id)

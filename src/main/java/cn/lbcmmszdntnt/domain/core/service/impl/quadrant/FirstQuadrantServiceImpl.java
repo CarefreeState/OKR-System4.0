@@ -3,11 +3,11 @@ package cn.lbcmmszdntnt.domain.core.service.impl.quadrant;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.event.deadline.FirstQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.FirstQuadrantMapper;
+import cn.lbcmmszdntnt.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
+import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -65,7 +65,7 @@ public class FirstQuadrantServiceImpl extends ServiceImpl<FirstQuadrantMapper, F
         // 发起一个定时任务
         FirstQuadrantEvent event = FirstQuadrantEvent.builder()
                 .coreId(coreId).deadline(deadline).build();
-        QuadrantDeadlineUtil.scheduledComplete(event);
+        QuadrantDeadlineMessageUtil.scheduledComplete(event);
     }
 
     @Override

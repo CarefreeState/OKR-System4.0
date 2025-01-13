@@ -19,7 +19,7 @@ public class MedalUtil {
     public static Integer getLevel(Long credit, Integer coefficient) {
         double base = credit * 1.0 / coefficient;
         base = base < 1 ? 0.5 : base;
-        int level = coefficient == 0 ? Integer.MAX_VALUE : (int) log2(base) + 1;
+        int level = (int) log2(base) + 1;
         log.info("积分 {} 基数 {} 计算等级 -> {}", credit, coefficient, level);
         return level;
     }

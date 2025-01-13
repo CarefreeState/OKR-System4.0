@@ -46,7 +46,6 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
         String redisKey = USER_MEDAL_MAP_CACHE + userId;
         Map<Long, UserMedal> longUserMedalMap = redisMapCache.getMap(redisKey, Long.class, UserMedal.class).orElseGet(() -> {
             Map<Long, UserMedal> userMedalMap = this.lambdaQuery().eq(UserMedal::getUserId, userId)
-                    .ne(UserMedal::getLevel, 0)
                     .isNotNull(UserMedal::getIssueTime)
                     .list()
                     .stream()
@@ -90,6 +89,7 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
             medal.setCredit(newCredit);
             medal.setUserId(userId);
             medal.setLevel(level);
+            medal.setIsRead(Boolean.FALSE);
             if(level.compareTo(0) > 0) {
                 medal.setIssueTime(new Date());
                 log.info("颁布勋章 {} {} 等级 {} -> 用户 {} ", medalId, medalName, level, userId);
@@ -103,33 +103,36 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
         return getUserMedalMap(userId).get(medalId);
     }
 
-    private UserMedalVO userMedalMap(UserMedal userMedal) {
-        UserMedalVO userMedalVO = UserMedalConverter.INSTANCE.userMedalToUserMedalVO(userMedal);
-        Medal medal = medalMap.get(userMedal.getMedalId());
-        UserMedalConverter.INSTANCE.medalMapToUserMedalVO(medal, userMedalVO);
-        return userMedalVO;
-    }
-
     @Override
     public List<UserMedalVO> getUserMedalListAll(Long userId) {
         // 获取灰色
         Map<Long, UserMedalVO> grepMap = medalMap.getGrepMap();
         getUserMedalMap(userId).values()
+                .stream()
+                .filter(userMedal -> Objects.nonNull(userMedal.getLevel()) && userMedal.getLevel().compareTo(0) > 0)
                 .forEach(userMedal -> {
                     Long medalId = userMedal.getMedalId();
                     UserMedalVO userMedalVO = grepMap.get(medalId);
                     UserMedalConverter.INSTANCE.userMedalMapToUserMedalVO(userMedal, userMedalVO);
                     userMedalVO.setUrl(medalMap.get(medalId).getUrl());
                 });
-        return grepMap.values().stream().toList();
+        return grepMap.values().stream()
+                .sorted(Comparator.comparing(UserMedalVO::getMedalId))
+                .toList();
     }
 
     @Override
     public List<UserMedalVO> getUserMedalListUnread(Long userId) {
         return getUserMedalMap(userId).values()
                 .stream()
+                .filter(userMedal -> Objects.nonNull(userMedal.getLevel()) && userMedal.getLevel().compareTo(0) > 0)
                 .filter(userMedal -> !userMedal.getIsRead())
-                .map(this::userMedalMap)
+                .map(userMedal -> {
+                    UserMedalVO userMedalVO = UserMedalConverter.INSTANCE.userMedalToUserMedalVO(userMedal);
+                    Medal medal = medalMap.get(userMedal.getMedalId());
+                    UserMedalConverter.INSTANCE.medalMapToUserMedalVO(medal, userMedalVO);
+                    return userMedalVO;
+                })
                 .sorted(Comparator.comparing(UserMedalVO::getMedalId))
                 .collect(Collectors.toList());
     }

@@ -6,11 +6,11 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreSummaryDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrFinish;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.OkrFinish;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -69,7 +69,7 @@ public class OkrCoreController {
 
     @PostMapping("/celebrate/{day}")
     @Operation(summary = "确定庆祝日")
-    public SystemJsonResponse confirmCelebrateDay(@Valid @RequestBody OkrCoreDTO okrCoreDTO,
+    public SystemJsonResponse<?> confirmCelebrateDay(@Valid @RequestBody OkrCoreDTO okrCoreDTO,
                                                   @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(example = "1", description = "庆祝日（星期）") Integer celebrateDay) {
         User user = InterceptorContext.getUser();
         Long coreId = okrCoreDTO.getCoreId();
@@ -97,14 +97,12 @@ public class OkrCoreController {
             Integer degree = okrCoreSummaryDTO.getDegree();
             Date endTime = okrCoreService.summaryOKR(coreId, summary, degree);
             log.info("成功为 OKR {} 总结 {} 完成度 {}%", coreId, summary, degree);
-            // 开启一个异步线程
-            okrCoreService.checkOverThrows(coreId);
             OkrFinish okrFinish = OkrFinish.builder()
                     .userId(userId)
                     .degree(degree)
                     .isAdvance(endTime.compareTo(new Date()) < 0)
                     .build();
-            OkrCoreUpdateEventUtil.sendOkrFinish(okrFinish);
+            OkrCoreUpdateMessageUtil.sendOkrFinish(okrFinish);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }
@@ -113,7 +111,7 @@ public class OkrCoreController {
 
     @PostMapping("/complete")
     @Operation(summary = "结束 OKR")
-    public SystemJsonResponse complete(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
+    public SystemJsonResponse<?> complete(@Valid @RequestBody OkrCoreDTO okrCoreDTO) {
         // 检测
         Long coreId = okrCoreDTO.getCoreId();
         User user = InterceptorContext.getUser();

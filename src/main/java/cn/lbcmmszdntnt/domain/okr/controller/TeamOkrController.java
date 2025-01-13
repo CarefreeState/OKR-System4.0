@@ -63,7 +63,7 @@ public class TeamOkrController {
 
     @PostMapping("/rename")
     @Operation(summary = "修改团队的名字")
-    public SystemJsonResponse updateName(@Valid @RequestBody TeamUpdateDTO teamUpdateDTO) {
+    public SystemJsonResponse<?> updateName(@Valid @RequestBody TeamUpdateDTO teamUpdateDTO) {
         // 获取当前登录用户
         User user = InterceptorContext.getUser();
         // 判断是不是管理员

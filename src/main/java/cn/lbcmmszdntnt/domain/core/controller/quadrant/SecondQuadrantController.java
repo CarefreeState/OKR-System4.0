@@ -4,9 +4,9 @@ import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrInitQuadrantDTO;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrInitialize;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.OkrInitialize;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -65,7 +65,7 @@ public class SecondQuadrantController {
         if(user.getId().equals(userId)) {
             secondQuadrantService.initSecondQuadrant(initQuadrantDTO);
             log.info("第二象限初始化成功：{}", initQuadrantDTO);
-            OkrCoreUpdateEventUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
+            OkrCoreUpdateMessageUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

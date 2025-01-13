@@ -28,7 +28,7 @@ public class FirstQuadrantDTO {
     @NotBlank(message = "目标不能为空")
     private String objective;
 
-    @Schema(description = "截止时间" + DateTimeConstants.DATE_TIME_PATTERN)
+    @Schema(description = "截止时间 " + DateTimeConstants.DATE_TIME_PATTERN)
     @NotNull(message = "截止时间不能为空")
     @AfterNow
     private Date deadline;

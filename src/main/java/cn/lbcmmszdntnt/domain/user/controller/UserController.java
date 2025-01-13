@@ -146,7 +146,7 @@ public class UserController {
     @PostMapping("/binding/email")
     @Operation(summary = "绑定用户邮箱")
     @Tag(name = "用户测试接口/邮箱")
-    public SystemJsonResponse emailBinding(@Valid @RequestBody EmailBindingDTO emailBindingDTO) {
+    public SystemJsonResponse<?> emailBinding(@Valid @RequestBody EmailBindingDTO emailBindingDTO) {
         String email = emailBindingDTO.getEmail();
         String code = emailBindingDTO.getCode();
         // 获取当前登录的用户
@@ -162,7 +162,7 @@ public class UserController {
     @Operation(summary = "绑定用户微信")
     @Tag(name = "用户测试接口/微信")
     @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse wxBinding(@Valid @RequestBody WxBindingDTO wxBindingDTO) {
+    public SystemJsonResponse<?> wxBinding(@Valid @RequestBody WxBindingDTO wxBindingDTO) {
         Long userId = wxBindingDTO.getUserId();
         String randomCode = wxBindingDTO.getRandomCode();
         String code = wxBindingDTO.getCode();

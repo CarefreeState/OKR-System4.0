@@ -106,8 +106,4 @@ public class JobGroupServiceImpl implements JobGroupService {
         });
     }
 
-    @Override
-    public Integer getJobGroupId() {
-        return getJobGroupOne(0).getId();
-    }
 }

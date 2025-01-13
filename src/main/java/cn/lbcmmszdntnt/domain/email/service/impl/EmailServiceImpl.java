@@ -96,7 +96,7 @@ public class EmailServiceImpl implements EmailService {
                 .build();
         emailMessage.setContent(html);
         emailSender.send(emailMessage);
-        log.info("发送验证码:{} -> email:{}", code, email);
+        log.info("发送验证码：{} -> email:{}", code, email);
     }
 
     @Override

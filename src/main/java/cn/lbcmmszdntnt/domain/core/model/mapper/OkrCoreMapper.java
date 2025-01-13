@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.core.model.mapper;
 
 
-import cn.lbcmmszdntnt.domain.core.handler.event.DeadlineEvent;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
+import cn.lbcmmszdntnt.domain.coredeadline.handler.event.DeadlineEvent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;

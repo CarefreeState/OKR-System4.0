@@ -8,10 +8,10 @@ import cn.lbcmmszdntnt.domain.core.model.dto.inner.KeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.OkrKeyResultUpdateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.KeyResultUpdate;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.KeyResultUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.KeyResultService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -75,7 +75,7 @@ public class KeyResultController {
                 .probability(probability)
                 .oldProbability(0)
                 .build();
-        OkrCoreUpdateEventUtil.sendKeyResultUpdate(keyResultUpdate);
+        OkrCoreUpdateMessageUtil.sendKeyResultUpdate(keyResultUpdate);
         return SystemJsonResponse.SYSTEM_SUCCESS(id);
     }
 
@@ -104,7 +104,7 @@ public class KeyResultController {
                     .probability(probability)
                     .oldProbability(oldProbability)
                     .build();
-            OkrCoreUpdateEventUtil.sendKeyResultUpdate(keyResultUpdate);
+            OkrCoreUpdateMessageUtil.sendKeyResultUpdate(keyResultUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

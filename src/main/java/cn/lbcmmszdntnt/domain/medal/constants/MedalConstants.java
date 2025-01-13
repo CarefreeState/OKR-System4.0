@@ -15,5 +15,4 @@ public interface MedalConstants {
     Long USER_MEDAL_MAP_TIMEOUT = 2L;
     TimeUnit USER_MEDAL_MAP_TIMEUNIT = TimeUnit.DAYS;
 
-
 }

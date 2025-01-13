@@ -2,15 +2,15 @@ package cn.lbcmmszdntnt.domain.core.service.impl.quadrant;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.core.config.OkrCoreConfig;
+import cn.lbcmmszdntnt.domain.core.constants.OkrCoreConstants;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.event.deadline.SecondQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.SecondQuadrantMapper;
+import cn.lbcmmszdntnt.domain.core.model.message.deadline.SecondQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.SecondQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
+import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -82,9 +82,9 @@ public class SecondQuadrantServiceImpl extends ServiceImpl<SecondQuadrantMapper,
         // 发起一个定时任务
         SecondQuadrantEvent event = SecondQuadrantEvent.builder()
                 .coreId(coreId).id(id).cycle(quadrantCycle).deadline(deadline).build();
-        QuadrantDeadlineUtil.scheduledUpdateSecondQuadrant(event);
+        QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(event);
         // 清楚缓存
-        redisCache.deleteObject(OkrCoreConfig.OKR_CORE_ID_MAP + coreId);
+        redisCache.deleteObject(OkrCoreConstants.OKR_CORE_ID_MAP + coreId);
     }
 
     @Override

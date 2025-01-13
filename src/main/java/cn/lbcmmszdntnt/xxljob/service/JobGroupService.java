@@ -16,5 +16,4 @@ public interface JobGroupService {
 
     boolean preciselyCheck();
 
-    Integer getJobGroupId();
 }

@@ -24,7 +24,7 @@ public class InitQuadrantDTO {
     @NotNull(message = "象限 ID 不能为空")
     private Long id;
 
-    @Schema(description = "截止时间" + DateTimeConstants.DATE_TIME_PATTERN)
+    @Schema(description = "截止时间 " + DateTimeConstants.DATE_TIME_PATTERN)
     @NotNull(message = "截止时间不能为空")
     @AfterNow
     private Date deadline;

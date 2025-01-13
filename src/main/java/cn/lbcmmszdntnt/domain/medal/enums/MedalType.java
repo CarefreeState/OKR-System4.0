@@ -15,7 +15,7 @@ import lombok.Getter;
 public enum MedalType {
 
     // 初心启航
-    STAY_TRUE_BEGINNING(1L, 0),
+    STAY_TRUE_BEGINNING(1L, 1),
     // 硕果累累
     HARVEST_ACHIEVEMENT(2L, 60),
     // 出类拔萃

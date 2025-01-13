@@ -22,16 +22,4 @@ public class XxlUrl {
 
     private String infoAdd;
 
-    private String infoStart;
-
-    private String infoIds;
-
-    private String infoStopIds;
-
-    private String infoRemove;
-
-    private String infoStop;
-
-    private String infoUpdate;
-
 }

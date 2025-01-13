@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 /**
  * Created With Intellij IDEA
  * Description:
@@ -23,7 +21,5 @@ public interface MedalConverter {
     @Mapping(target = "medalId", source = "id")
     @Mapping(target = "url", source = "greyUrl")
     UserMedalVO medalToUserMedalVO(Medal medal);
-
-    List<UserMedalVO> medalListToUserMedalVOList(List<Medal> medalList);
 
 }

@@ -32,7 +32,7 @@ public class UserMedalController {
     private final UserMedalService userMedalService;
 
     @GetMapping("/list/all")
-    @Operation(description = "获得用户的所有勋章")
+    @Operation(summary = "获得用户的所有勋章")
     public SystemJsonResponse<List<UserMedalVO>> getAll() {
         Long userId = InterceptorContext.getUser().getId();
         List<UserMedalVO> result = userMedalService.getUserMedalListAll(userId);
@@ -40,7 +40,7 @@ public class UserMedalController {
     }
 
     @GetMapping("/list/unread")
-    @Operation(description = "获得用户的所有未读勋章")
+    @Operation(summary = "获得用户的所有未读勋章")
     public SystemJsonResponse<List<UserMedalVO>> getUnread() {
         Long userId = InterceptorContext.getUser().getId();
         List<UserMedalVO> result = userMedalService.getUserMedalListUnread(userId);
@@ -49,7 +49,7 @@ public class UserMedalController {
     }
 
     @PostMapping("/read/{medalId}")
-    @Operation(description = "用户知晓获得了新勋章")
+    @Operation(summary = "用户知晓获得了新勋章")
     public SystemJsonResponse<?> readUserMedal(@PathVariable("medalId") @Parameter(description = "勋章 ID") Long medalId) {
         Long userId = InterceptorContext.getUser().getId();
         log.info("用户 {} 查看勋章 {}", userId, medalId);

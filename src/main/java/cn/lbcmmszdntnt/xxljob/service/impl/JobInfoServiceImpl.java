@@ -7,10 +7,8 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.xxljob.config.Admin;
-import cn.lbcmmszdntnt.xxljob.config.Executor;
 import cn.lbcmmszdntnt.xxljob.config.XxlUrl;
 import cn.lbcmmszdntnt.xxljob.cookie.CookieUtil;
 import cn.lbcmmszdntnt.xxljob.model.XxlJobInfo;
@@ -31,8 +29,6 @@ public class JobInfoServiceImpl implements JobInfoService {
     private final Admin admin;
 
     private final XxlUrl xxlUrl;
-
-    private final Executor executor;
 
     @Override
     public List<XxlJobInfo> getJobInfo(Integer jobGroupId, String executorHandler) {
@@ -68,70 +64,6 @@ public class JobInfoServiceImpl implements JobInfoService {
         }else {
             throw new GlobalServiceException("add jobInfo error!");
         }
-    }
-
-    @Override
-    public void startJob(Integer jobId) {
-        log.warn("开始任务 {}", jobId);
-        HttpRequest.post(admin.getAddresses() + xxlUrl.getInfoStart())
-                .form("id", jobId)
-                .cookie(CookieUtil.getCookie())
-                .execute();
-    }
-
-    @Override
-    public void updateJob(XxlJobInfo xxlJobInfo) {
-        log.warn("更新任务 {}", xxlJobInfo);
-        HttpRequest.post(admin.getAddresses() + xxlUrl.getInfoUpdate())
-                .form(BeanUtil.beanToMap(xxlJobInfo))
-                .cookie(CookieUtil.getCookie())
-                .execute();
-    }
-
-    @Override
-    public void stopJob(Integer jobId) {
-        log.warn("停止任务 {}", jobId);
-        HttpRequest.post(admin.getAddresses() + xxlUrl.getInfoStop())
-                .form("id", jobId)
-                .cookie(CookieUtil.getCookie())
-                .execute();
-    }
-
-    private void remove(List<Object> ids) {
-        String url = admin.getAddresses() + xxlUrl.getInfoRemove();
-        String cookie = CookieUtil.getCookie();
-        IOThreadPool.operateBatch(ids, object -> {
-            HttpRequest.post(url)
-                    .form("id", object)
-                    .cookie(cookie)
-                    .execute();
-        });
-    }
-
-    @Override
-    public void removeAll(String executorHandler) {
-        String body = HttpRequest.post(admin.getAddresses() + xxlUrl.getInfoIds())
-                .form("executorHandler", executorHandler)
-                .form("title", executor.getTitle())
-                .form("appName", executor.getAppname())
-                .cookie(CookieUtil.getCookie())
-                .execute().body();
-        List<Object> ids = JsonUtil.analyzeJsonField(body, "content", List.class);
-        log.info("删除任务 {}", ids);
-        remove(ids);
-    }
-
-    @Override
-    public void removeStoppedJob(String executorHandler) {
-        String body = HttpRequest.post(admin.getAddresses() + xxlUrl.getInfoStopIds())
-                .form("executorHandler", executorHandler)
-                .form("title", executor.getTitle())
-                .form("appName", executor.getAppname())
-                .cookie(CookieUtil.getCookie())
-                .execute().body();
-        List<Object> ids = JsonUtil.analyzeJsonField(body, "content", List.class);
-        log.info("删除任务 {}", ids);
-        remove(ids);
     }
 
 }

@@ -21,7 +21,8 @@ public interface FanoutExchangeConstants {
     String STATUS_FLAG_UPDATE_DAY_RECORD_QUEUE = "statusflag.update.dayrecord.queue";
 
     String OKR_FINISH_FANOUT = "okr.finish.fanout";
-    String OKR_FINISH_MEDAL_QUEUE = "okr.finish.medal.queue";
+    String OKR_HARVEST_MEDAL_QUEUE = "okr.harvest.medal.queue";
+    String OKR_STANDOUT_MEDAL_QUEUE = "okr.standout.medal.queue";
 
     String OKR_INITIALIZE_FANOUT = "okr.initialize.fanout";
     String OKR_INITIALIZE_MEDAL_QUEUE = "okr.initialize.medal.queue";

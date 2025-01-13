@@ -5,9 +5,9 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.core.factory.TaskServiceFactory;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.*;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.TaskUpdate;
-import cn.lbcmmszdntnt.domain.core.service.TaskService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.TaskUpdate;
+import cn.lbcmmszdntnt.domain.core.service.inner.TaskService;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -135,7 +135,7 @@ public class TaskController {
                     .isCompleted(isCompleted)
                     .oldCompleted(oldCompleted)
                     .build();
-            OkrCoreUpdateEventUtil.sendTaskUpdate(taskUpdate);
+            OkrCoreUpdateMessageUtil.sendTaskUpdate(taskUpdate);
         } else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

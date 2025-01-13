@@ -32,7 +32,7 @@ public class UserMedalPageOutConfig {
 
     private final static int TRIGGER_STATUS = 1;
 
-    private final static String CRON = "0 0 0 * * ?";
+    private final static String CRON = "0 0 0 * * ? *"; // 每天 0 点
 
     private final RedisCache redisCache;
 

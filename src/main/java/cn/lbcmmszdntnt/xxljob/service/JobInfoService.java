@@ -10,14 +10,4 @@ public interface JobInfoService {
 
     Integer addJob(XxlJobInfo xxlJobInfo);
 
-    void startJob(Integer jobId);
-
-    void updateJob(XxlJobInfo xxlJobInfo);
-
-    void stopJob(Integer jobId);
-
-    void removeAll(String executorHandler);
-
-    void removeStoppedJob(String executorHandler);
-
 }

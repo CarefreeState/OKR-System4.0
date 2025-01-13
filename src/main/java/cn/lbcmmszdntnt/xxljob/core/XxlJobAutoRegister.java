@@ -8,7 +8,7 @@ import cn.lbcmmszdntnt.xxljob.service.JobInfoService;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.MethodIntrospector;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 这个类搭配 XxlRegister 使用，是初始化型的 注解
@@ -28,7 +27,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class XxlJobAutoRegister implements ApplicationListener<ApplicationReadyEvent>{
+public class XxlJobAutoRegister implements ApplicationListener<ApplicationStartedEvent>{
 
     private final ApplicationContext applicationContext;
 
@@ -37,7 +36,7 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationReadyE
     private final JobInfoService jobInfoService;
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void onApplicationEvent(ApplicationStartedEvent event) {
         //注册执行器
         addJobGroup();
         //注册任务
@@ -63,15 +62,15 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationReadyE
                 if (executeMethod.isAnnotationPresent(XxlRegister.class)) {
                     XxlRegister xxlRegister = executeMethod.getAnnotation(XxlRegister.class);
                     List<XxlJobInfo> jobInfo = jobInfoService.getJobInfo(xxlJobGroup.getId(), xxlJob.value());
+                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxlJob, xxlRegister);
                     if (!jobInfo.isEmpty()) {
                         //因为是模糊查询，需要再判断一次
-                        Optional<XxlJobInfo> first = jobInfo.stream()
-                                .filter(xxlJobInfo -> xxlJobInfo.getExecutorHandler().equals(xxlJob.value()))
-                                .findFirst();
-                        if (first.isPresent())
+                        boolean isPresent = jobInfo.stream()
+                                .anyMatch(info -> info.getExecutorHandler().equals(xxlJob.value()));
+                        if (isPresent) {
                             continue;
+                        }
                     }
-                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxlJob, xxlRegister);
                     jobInfoService.addJob(xxlJobInfo);
                 }
             }

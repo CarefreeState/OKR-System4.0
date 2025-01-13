@@ -2,14 +2,14 @@ package cn.lbcmmszdntnt.domain.core.controller.inner;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagConfig;
+import cn.lbcmmszdntnt.domain.core.config.StatusFlagConfig;
 import cn.lbcmmszdntnt.domain.core.model.converter.StatusFlagConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.inner.*;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.StatusFlagUpdate;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.StatusFlagUpdate;
 import cn.lbcmmszdntnt.domain.core.service.inner.StatusFlagService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FourthQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -63,7 +63,7 @@ public class StatusFlagController {
             // 插入
             id = statusFlagService.addStatusFlag(statusFlag);
             StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().userId(userId).coreId(coreId).build();
-            OkrCoreUpdateEventUtil.sendStatusFlagUpdate(statusFlagUpdate);
+            OkrCoreUpdateMessageUtil.sendStatusFlagUpdate(statusFlagUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }
@@ -105,7 +105,7 @@ public class StatusFlagController {
         if(user.getId().equals(userId)) {
             statusFlagService.updateStatusFlag(statusFlag);
             StatusFlagUpdate statusFlagUpdate = StatusFlagUpdate.builder().userId(userId).coreId(coreId).build();
-            OkrCoreUpdateEventUtil.sendStatusFlagUpdate(statusFlagUpdate);
+            OkrCoreUpdateMessageUtil.sendStatusFlagUpdate(statusFlagUpdate);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

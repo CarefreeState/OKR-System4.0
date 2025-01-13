@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.core.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.domain.core.config.OkrCoreConfig;
+import cn.lbcmmszdntnt.domain.core.constants.OkrCoreConstants;
 import cn.lbcmmszdntnt.domain.core.model.converter.OkrCoreConverter;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
@@ -85,11 +85,11 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
 
     @Override
     public OkrCore getOkrCore(Long coreId) {
-        String redisKey = OkrCoreConfig.OKR_CORE_ID_MAP + coreId;
+        String redisKey = OkrCoreConstants.OKR_CORE_ID_MAP + coreId;
         return redisCache.getObject(redisKey, OkrCore.class).orElseGet(() -> {
             OkrCore okrCore = this.lambdaQuery().eq(OkrCore::getId, coreId).oneOpt().orElseThrow(() ->
                     new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS));
-            redisCache.setObject(redisKey, okrCore, OkrCoreConfig.OKR_CORE_MAP_TTL, OkrCoreConfig.OKR_CORE_MAP_UNIT);
+            redisCache.setObject(redisKey, okrCore, OkrCoreConstants.OKR_CORE_MAP_TTL, OkrCoreConstants.OKR_CORE_MAP_UNIT);
             return okrCore;
         });
     }
@@ -110,7 +110,7 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
 
     @Override
     public void removeOkrCoreCache(Long coreId) {
-        redisCache.deleteObject(OkrCoreConfig.OKR_CORE_ID_MAP + coreId);
+        redisCache.deleteObject(OkrCoreConstants.OKR_CORE_ID_MAP + coreId);
     }
 
     @Override

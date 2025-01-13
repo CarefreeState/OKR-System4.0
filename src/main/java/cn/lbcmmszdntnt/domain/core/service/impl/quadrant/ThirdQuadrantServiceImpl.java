@@ -2,15 +2,15 @@ package cn.lbcmmszdntnt.domain.core.service.impl.quadrant;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.core.config.OkrCoreConfig;
+import cn.lbcmmszdntnt.domain.core.constants.OkrCoreConstants;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.ThirdQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.event.deadline.ThirdQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.ThirdQuadrantMapper;
+import cn.lbcmmszdntnt.domain.core.model.message.deadline.ThirdQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.ThirdQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.ThirdQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineUtil;
+import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -81,9 +81,9 @@ public class ThirdQuadrantServiceImpl extends ServiceImpl<ThirdQuadrantMapper, T
         // 发起一个定时任务
         ThirdQuadrantEvent event = ThirdQuadrantEvent.builder()
                 .coreId(coreId).id(id).cycle(quadrantCycle).deadline(deadline).build();
-        QuadrantDeadlineUtil.scheduledUpdateThirdQuadrant(event);
+        QuadrantDeadlineMessageUtil.scheduledUpdateThirdQuadrant(event);
         // 清楚缓存
-        redisCache.deleteObject(OkrCoreConfig.OKR_CORE_ID_MAP + coreId);
+        redisCache.deleteObject(OkrCoreConstants.OKR_CORE_ID_MAP + coreId);
     }
 
     @Override

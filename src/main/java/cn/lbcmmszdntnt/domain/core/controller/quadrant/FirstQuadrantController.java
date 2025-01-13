@@ -6,9 +6,9 @@ import cn.lbcmmszdntnt.domain.core.model.converter.FirstQuadrantConverter;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.FirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrFirstQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
-import cn.lbcmmszdntnt.domain.core.model.event.operate.OkrInitialize;
+import cn.lbcmmszdntnt.domain.core.model.message.operate.OkrInitialize;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
-import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateEventUtil;
+import cn.lbcmmszdntnt.domain.core.util.OkrCoreUpdateMessageUtil;
 import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
@@ -59,7 +59,7 @@ public class FirstQuadrantController {
         if(user.getId().equals(userId)) {
             firstQuadrantService.initFirstQuadrant(firstQuadrant);
             log.info("第一象限初始化成功：{}", firstQuadrantDTO);
-            OkrCoreUpdateEventUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
+            OkrCoreUpdateMessageUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

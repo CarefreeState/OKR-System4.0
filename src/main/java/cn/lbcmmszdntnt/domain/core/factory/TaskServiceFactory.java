@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.core.factory;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.enums.TaskType;
-import cn.lbcmmszdntnt.domain.core.service.TaskService;
+import cn.lbcmmszdntnt.domain.core.service.inner.TaskService;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
