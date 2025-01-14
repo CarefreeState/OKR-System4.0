@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.sse.util;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.sse.session.SseSessionMapper;
 import cn.lbcmmszdntnt.websocket.session.WsSessionMapper;
 import io.jsonwebtoken.lang.Collections;
@@ -33,32 +34,32 @@ public class SseMessageSender {
         };
     }
 
-    private static void sendMessage(SseEmitter sseEmitter, String message, Consumer<IOException> handleException) {
+    private static <T> void sendMessage(SseEmitter sseEmitter, T message, Consumer<IOException> handleException) {
         if(Objects.isNull(sseEmitter)) {
             log.warn(GlobalServiceStatusCode.SSE_CONNECTION_NOT_EXIST.toString());
             return;
         }
         try {
-            sseEmitter.send(message, MEDIA_TYPE);
+            sseEmitter.send(JsonUtil.toJson(message), MEDIA_TYPE);
         } catch (IOException e) {
             handleException.accept(e);
         }
     }
 
-    public static void sendMessage(String sessionKey, String message) {
+    public static <T> void sendMessage(String sessionKey, T message) {
         log.info("服务器 -> [{}] text: {}", sessionKey, message);
         SseSessionMapper.consumeKey(sessionKey, sseEmitter -> {
             sendMessage(sseEmitter, message, handleException(sessionKey));
         });
     }
 
-    public static void sendAllMessage(String prefix, Function<String, String> function) {
+    public static <T> void sendAllMessage(String prefix, Function<String, T> function) {
         SseSessionUtil.getSessionKeys(prefix).stream().parallel().forEach(sessionKey -> {
             sendMessage(sessionKey, function.apply(sessionKey));
         });
     }
 
-    public static void sendAllMessage(List<String> sessionKeys, Function<String, String> function) {
+    public static <T> void sendAllMessage(List<String> sessionKeys, Function<String, T> function) {
         if (Collections.isEmpty(sessionKeys)) {
             return;
         }

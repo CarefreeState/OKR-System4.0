@@ -19,8 +19,6 @@ public class XxlJobConfig {
 
     private Executor executor;
 
-    private XxlUrl url;
-
     @Bean
     public XxlJobSpringExecutor xxlJobExecutor() {
         XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
@@ -43,11 +41,6 @@ public class XxlJobConfig {
     @Bean
     public Executor executor() {
         return executor;
-    }
-
-    @Bean
-    public XxlUrl xxlUrl() {
-        return url;
     }
 
 }

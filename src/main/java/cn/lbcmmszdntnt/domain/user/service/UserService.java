@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.user.service;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Optional;
 */
 public interface UserService extends IService<User> {
 
-    String getUserFlag(String code);
+    JsCode2SessionVO getUserFlag(String code);
 
     List<String> getPermissions(Long userId);
 

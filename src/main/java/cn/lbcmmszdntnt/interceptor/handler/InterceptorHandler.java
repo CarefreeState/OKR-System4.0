@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.handler;
 
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -39,7 +39,7 @@ public abstract class InterceptorHandler {
 
     public final void handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        if(HttpUtil.anyMatchPath(pathPatterns(), uri) && Boolean.TRUE.equals(condition())) {
+        if(HttpRequestUtil.anyMatchPath(pathPatterns(), uri) && Boolean.TRUE.equals(condition())) {
             action(request, response, handler);
         }
         doNext(request, response, handler);

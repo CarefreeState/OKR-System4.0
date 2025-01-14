@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
@@ -34,7 +33,7 @@ public class SseUserServer {
         LoginQRCodeVO loginQRCode = okrQRCodeService.getLoginQRCode();
         // 连接并发送一条信息
         return SseSessionUtil.createConnect(timeout, SSE_USER_SERVER + loginQRCode.getSecret(),
-                () -> JsonUtil.analyzeData(loginQRCode));
+                () -> loginQRCode);
     }
 
 }

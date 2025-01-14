@@ -1,10 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.model.dto;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.codec.Base64;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.Security;
 import java.util.Arrays;
-import java.util.Map;
 
 @Schema(description = "微信小程序登录数据")
 @Data
@@ -43,18 +38,6 @@ public class WxLoginDetailDTO {
     @Schema(description = "signature")
     @NotBlank(message = "signature 不能为空")
     private String signature;
-
-    public User transToUser() {
-        User user = new User();
-        Map<String, Object> data = JsonUtil.analyzeJson(this.rawData, Map.class);
-        user.setNickname((String) data.get("nickdescription"));
-        user.setPhoto((String) data.get("avatarUrl"));
-        return user;
-    }
-
-    public static WxLoginDetailDTO create(Map<?, ?> data) {
-        return BeanUtil.mapToBean(data, WxLoginDetailDTO.class, false, new CopyOptions());
-    }
 
     public String getUserInfoByEncryptedData(String sessionKey){
         // 被加密的数据

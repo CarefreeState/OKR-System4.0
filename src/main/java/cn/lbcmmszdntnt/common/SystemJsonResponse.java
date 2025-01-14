@@ -19,7 +19,7 @@ public class SystemJsonResponse<T> implements Serializable {
 
     @JsonInclude
     @Schema(description = "状态码")
-    private int code;
+    private Integer code;
 
     @JsonInclude
     @Schema(description = "描述语")
@@ -29,13 +29,13 @@ public class SystemJsonResponse<T> implements Serializable {
     @Schema(nullable = true)
     private T data;
 
-    private SystemJsonResponse(int code, String msg, T data) {
+    private SystemJsonResponse(Integer code, String msg, T data) {
         this.code = code;
         Optional.ofNullable(msg).ifPresent(m -> this.message = m);
         Optional.ofNullable(data).ifPresent(d -> this.data = d);
     }
 
-    private SystemJsonResponse(int code, String msg) {
+    private SystemJsonResponse(Integer code, String msg) {
         this(code, msg, null);
     }
 
@@ -45,8 +45,8 @@ public class SystemJsonResponse<T> implements Serializable {
      *
      * @return 成功状态码
      */
-    public static SystemJsonResponse SYSTEM_SUCCESS() {
-        return new SystemJsonResponse(GlobalServiceStatusCode.SYSTEM_SUCCESS.getCode(),
+    public static SystemJsonResponse<?> SYSTEM_SUCCESS() {
+        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SUCCESS.getCode(),
                 GlobalServiceStatusCode.SYSTEM_SUCCESS.getMessage());
     }
 
@@ -63,30 +63,13 @@ public class SystemJsonResponse<T> implements Serializable {
     }
 
     /**
-     * 重定向
-     * @return
-     */
-    public static SystemJsonResponse SYSTEM_REDIRECT() {
-        return new SystemJsonResponse(GlobalServiceStatusCode.NEED_REDIRECT.getCode(),
-                GlobalServiceStatusCode.NEED_REDIRECT.getMessage());
-    }
-
-    /**
-     * 重定向
-     */
-    public static <E> SystemJsonResponse SYSTEM_REDIRECT(E data) {
-        return new SystemJsonResponse(GlobalServiceStatusCode.NEED_REDIRECT.getCode(),
-                GlobalServiceStatusCode.NEED_REDIRECT.getMessage(), data);
-    }
-
-    /**
      * 错误信息返回
      * {@link GlobalServiceStatusCode#SYSTEM_SERVICE_FAIL}
      *
      * @return SystemJsonResponse
      */
-    public static SystemJsonResponse SYSTEM_FAIL() {
-        return new SystemJsonResponse(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getCode(),
+    public static SystemJsonResponse<?> SYSTEM_FAIL() {
+        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getCode(),
                 GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getMessage());
     }
 
@@ -96,8 +79,8 @@ public class SystemJsonResponse<T> implements Serializable {
      *
      * @return SystemJsonResponse
      */
-    public static SystemJsonResponse SERVICE_ERROR() {
-        return new SystemJsonResponse(GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getCode(),
+    public static SystemJsonResponse<?> SERVICE_ERROR() {
+        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getCode(),
                 GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getMessage());
     }
 
@@ -108,8 +91,8 @@ public class SystemJsonResponse<T> implements Serializable {
      * @param code 自定义状态码 {@link GlobalServiceStatusCode}
      * @return code对应的错误信息
      */
-    public static SystemJsonResponse CUSTOMIZE_ERROR(GlobalServiceStatusCode code) {
-        return new SystemJsonResponse(code.getCode(), code.getMessage());
+    public static SystemJsonResponse<?> CUSTOMIZE_ERROR(GlobalServiceStatusCode code) {
+        return new SystemJsonResponse<>(code.getCode(), code.getMessage());
     }
 
     /**
@@ -120,8 +103,8 @@ public class SystemJsonResponse<T> implements Serializable {
      * @param msg 自定义异常信息
      * @return code对应的错误信息
      */
-    public static SystemJsonResponse CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode code, String msg) {
-        return new SystemJsonResponse(code.getCode(), Optional.ofNullable(msg).orElseGet(code::getMessage));
+    public static SystemJsonResponse<?> CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode code, String msg) {
+        return new SystemJsonResponse<>(code.getCode(), Optional.ofNullable(msg).orElseGet(code::getMessage));
     }
 
 }

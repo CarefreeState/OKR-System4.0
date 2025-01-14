@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.xxljob.cookie;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
+import cn.lbcmmszdntnt.xxljob.util.XxlJobRequestUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,10 +24,11 @@ public class XxlJobCookie {
 
     private String cookie;
 
+    private long expireIn;//有效期限
+
     volatile private static XxlJobCookie XXL_JOB_COOKIE = null;
 
     private XxlJobCookie() {
-
     }
 
     private static void clearCookie() {
@@ -35,22 +36,21 @@ public class XxlJobCookie {
     }
 
     private static void setCookie() {
-        if(XXL_JOB_COOKIE == null) {
+        if(Objects.isNull(XXL_JOB_COOKIE)) {
             XXL_JOB_COOKIE = new XxlJobCookie();
         }
-        XXL_JOB_COOKIE.setCookie(CookieUtil.login());
-        // 在 2 小时后清除 Cookie
-        SchedulerThreadPool.schedule(XxlJobCookie::clearCookie, TIMEOUT, UNIT);
+        XXL_JOB_COOKIE.setCookie(XxlJobRequestUtil.login());
+        XXL_JOB_COOKIE.setExpireIn(System.currentTimeMillis() + UNIT.toMillis(TIMEOUT));
     }
 
-    private static boolean isExpired() {
-       return Objects.isNull(XXL_JOB_COOKIE.getCookie());
+    private boolean isExpired() {
+       return Objects.isNull(XXL_JOB_COOKIE.getCookie()) || System.currentTimeMillis() > this.getExpireIn();
     }
 
     public static XxlJobCookie getXxlJobCookie() {
-        if(XXL_JOB_COOKIE == null || isExpired()) {
+        if(Objects.isNull(XXL_JOB_COOKIE) || XXL_JOB_COOKIE.isExpired()) {
             synchronized (XxlJobCookie.class) {
-                if(XXL_JOB_COOKIE == null || isExpired()) {
+                if(Objects.isNull(XXL_JOB_COOKIE) || XXL_JOB_COOKIE.isExpired()) {
                     setCookie();
                 }
             }

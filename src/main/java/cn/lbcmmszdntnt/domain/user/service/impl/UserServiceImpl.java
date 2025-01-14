@@ -1,8 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
@@ -15,14 +13,19 @@ import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
-import cn.lbcmmszdntnt.wxtoken.TokenUtil;
+import cn.lbcmmszdntnt.wxtoken.model.dto.JsCode2SessionDTO;
+import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
+import cn.lbcmmszdntnt.wxtoken.util.WxHttpRequestUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,13 +66,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private final EmailService emailService;
 
     @Override
-    public String getUserFlag(String code) {
-        return HttpUtil.doGet("https://api.weixin.qq.com/sns/jscode2session", new HashMap<>() {{
-            this.put("appid", List.of(TokenUtil.APP_ID));
-            this.put("secret", List.of(TokenUtil.APP_SECRET));
-            this.put("js_code", List.of(code));
-            this.put("grant_type", List.of("authorization_code"));
-        }});
+    public JsCode2SessionVO getUserFlag(String code) {
+        return WxHttpRequestUtil.jsCode2Session(JsCode2SessionDTO.builder().jsCode(code).build());
     }
 
     @Override
@@ -170,10 +168,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public void bindingWx(Long userId, String randomCode, String code) {
         // 验证以下验证码
         wxBindingService.checkSecret(userId, randomCode);
-        String resultJson = getUserFlag(code);
-        Map<String, Object> response = JsonUtil.analyzeJson(resultJson, Map.class);
-        String openid = (String) response.get("openid");
-        String unionid = (String) response.get("unionid");
+        JsCode2SessionVO userFlag = getUserFlag(code);
+        String openid = userFlag.getOpenid();
+        String unionid = userFlag.getUnionid();
         if(Objects.isNull(openid)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.WX_CODE_NOT_VALID);
         }

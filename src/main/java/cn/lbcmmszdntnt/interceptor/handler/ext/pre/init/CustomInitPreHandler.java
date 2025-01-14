@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.init;
 
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
 import cn.lbcmmszdntnt.interceptor.config.CustomInterceptConfig;
 import cn.lbcmmszdntnt.interceptor.config.properties.CustomInterceptProperties;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
@@ -29,7 +29,7 @@ public class CustomInitPreHandler extends InterceptorHandler {
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String requestURI = request.getRequestURI();
         for(CustomInterceptProperties intercept : customInterceptConfig.getList()) {
-            if(HttpUtil.anyMatchPath(intercept.getUrls(), requestURI)) {
+            if(HttpRequestUtil.anyMatchPath(intercept.getUrls(), requestURI)) {
                 // 找第一个匹配的参数设置到线程变量里
                 InterceptorContext.setInterceptProperties(intercept.getProperties());
                 break;

@@ -1,15 +1,14 @@
 package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.auth.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.domain.auth.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.domain.user.model.vo.WxCode2SessionVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,10 +39,10 @@ public class WxLoginServiceImpl implements LoginService {
         }
         // 1. 构造请求 + 发起请求 -> code2Session
         String code = wxLoginDTO.getCode();
-        String resultJson = userService.getUserFlag(code);
+        ;
+        JsCode2SessionVO userFlag = userService.getUserFlag(code);
         // 2.  解析
-        WxCode2SessionVO wxCode2SessionVO = JsonUtil.parse(resultJson, WxCode2SessionVO.class);
-        String openId = wxCode2SessionVO.getOpenId();
+        String openId = userFlag.getOpenid();
         if(Objects.isNull(openId)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.WX_CODE_NOT_VALID);
         }
@@ -52,7 +51,7 @@ public class WxLoginServiceImpl implements LoginService {
         // 4. 尝试插入数据库
         // todo: 多个 openid 用 unionid 去判断是否是同一个用户（需要的时候再去写）
         user.setOpenid(openId);
-        user.setUnionid(wxCode2SessionVO.getUnionId());
+        user.setUnionid(userFlag.getUnionid());
         userService.getUserByOpenid(openId)
                 .ifPresentOrElse(dbUser -> {
                     user.setId(dbUser.getId());

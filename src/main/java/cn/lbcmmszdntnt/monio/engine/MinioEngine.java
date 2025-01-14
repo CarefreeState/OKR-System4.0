@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.monio.engine;
 
 
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
+import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
 import cn.lbcmmszdntnt.monio.config.MinioConfig;
 import io.minio.*;
 import io.minio.http.Method;
@@ -58,7 +58,7 @@ public class MinioEngine {
         // 查看文件地址
         String objectUrl = getObjectUrl(fileName);
         // 判断是否隐藏
-        return Boolean.TRUE.equals(hidden) ? HttpUtil.hiddenQueryString(objectUrl) : objectUrl;
+        return Boolean.TRUE.equals(hidden) ? HttpRequestUtil.hiddenQueryString(objectUrl) : objectUrl;
     }
 
     /**
@@ -79,7 +79,7 @@ public class MinioEngine {
      */
     public void preview(String fileName, HttpServletResponse response) throws Exception {
         byte[] bytes = load(fileName);
-        HttpUtil.returnBytes(bytes, response);
+        HttpRequestUtil.returnBytes(bytes, response);
     }
 
     /**
@@ -87,7 +87,7 @@ public class MinioEngine {
      */
     public void download(String downloadName, String fileName, HttpServletResponse response) throws Exception {
         byte[] bytes = load(fileName);
-        HttpUtil.returnBytes(downloadName, bytes, response);
+        HttpRequestUtil.returnBytes(downloadName, bytes, response);
     }
 
     /**

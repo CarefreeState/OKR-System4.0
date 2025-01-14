@@ -1,7 +1,10 @@
 package cn.lbcmmszdntnt.common.util.web;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
@@ -10,7 +13,6 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,16 +21,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class HttpUtil {
+public class HttpRequestUtil {
 
-    private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
-    public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, JSON_CONTENT_TYPE);
+    public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
 
     public final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
@@ -45,9 +45,13 @@ public class HttpUtil {
         return String.format("%s://%s", request.getScheme(), request.getHeader(HttpHeaders.HOST));
     }
 
-    public static String getBaseUrl(HttpServletRequest request, String... uris) {
+    public static String getBaseUrl(String domain, String... uris) {
         String uri = Arrays.stream(uris).filter(StringUtils::hasText).collect(Collectors.joining());
-        return getHost(request) + uri;
+        return domain + uri;
+    }
+
+    public static String getBaseUrl(HttpServletRequest request, String... uris) {
+        return getBaseUrl(getHost(request), uris);
     }
 
     public static String buildUrl(String baseUrl, Map<String, List<String>> queryParams, Object... uriVariableValues) {
@@ -73,40 +77,6 @@ public class HttpUtil {
 
     public static String hiddenQueryString(String url) {
         return StringUtils.hasText(url) && url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
-    }
-
-    public static String doGet(String httpUrl) {
-        return doGet(httpUrl, null);
-    }
-
-    public static String doGet(String httpUrl, Map<String, List<String>> params) {
-        return HttpRequest.get(buildUrl(httpUrl, params))
-                .execute()
-                .body();
-    }
-
-    public static String doPostJsonString(String httpUrl, String json) {
-        return HttpRequest.post(httpUrl)
-                .body(json, JSON_CONTENT_TYPE)
-                .execute()
-                .body();
-    }
-
-    public static byte[] doPostJsonBytes(String httpUrl, String json) {
-        return HttpRequest.post(httpUrl)
-                .body(json, JSON_CONTENT_TYPE)
-                .execute()
-                .bodyBytes();
-    }
-
-    public static String doPostJsonBase64(String url, String json) {
-        return Base64.encodeBase64String(doPostJsonBytes(url, json));
-    }
-
-    public static InputStream getFileInputStream(String fileUrl) throws IOException {
-        return HttpRequest.get(fileUrl)
-                .execute()
-                .bodyStream();
     }
 
     public static String encodeString(String str) {
@@ -138,29 +108,45 @@ public class HttpUtil {
         returnBytes(bytes, response);
     }
 
-    public static <R, T> HttpRequest getJsonRequest(String url, String method, T requestBody, Map<String, String> headers) {
+    public static <T, R> R jsonRequest(String url, String method, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
+        try(HttpResponse execute = jsonRequest(url, method, requestBody, headers)) {
+            String respJson = execute.body();
+            // 转换并返回
+            return JsonUtil.parse(respJson, responseClazz);
+        }
+    }
+
+    public static <T> HttpResponse jsonRequest(String url, String method, T requestBody, Map<String, String> headers) {
         // 准备参数
         Method requestMethod = Method.valueOf(method.toUpperCase());
         headers = Optional.ofNullable(headers).orElseGet(Map::of);
         // 发出请求
-        HttpRequest httpRequest = cn.hutool.http.HttpUtil.createRequest(requestMethod, url)
+        HttpRequest httpRequest = HttpUtil.createRequest(requestMethod, url)
                 .headerMap(headers, Boolean.TRUE)
                 .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE);
         if(Objects.nonNull(requestBody)) {
             String reqJson = JsonUtil.toJson(requestBody);
             httpRequest = httpRequest.body(reqJson);
         }
-        return httpRequest;
+        return httpRequest.execute();
     }
 
-    public static <R, T> R jsonRequest(String url, String method, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
-        String respJson = getJsonRequest(url, method, requestBody, headers).execute().body();
-        // 转换并返回
-        return JsonUtil.parse(respJson, responseClazz);
+    public static <T, R> R formRequest(String url, String method, T formData, Class<R> responseClazz, Map<String, String> headers, String cookie) {
+        try(HttpResponse execute = formRequest(url, method, formData, headers, cookie)) {
+            String respJson = execute.body();
+            // 转换并返回
+            return JsonUtil.parse(respJson, responseClazz);
+        }
     }
 
-    public static <T> byte[] jsonRequest(String url, String method, T requestBody, Map<String, String> headers) {
-        return getJsonRequest(url, method, requestBody, headers).execute().bodyBytes();
+    public static <T> HttpResponse formRequest(String url, String method, T formData, Map<String, String> headers, String cookie) {
+        Method requestMethod = Method.valueOf(method.toUpperCase());
+        headers = Optional.ofNullable(headers).orElseGet(Map::of);
+        return HttpUtil.createRequest(requestMethod, url)
+                .headerMap(headers, Boolean.TRUE)
+                .form(BeanUtil.beanToMap(formData))
+                .cookie(cookie)
+                .execute();
     }
 
 }

@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
 import cn.lbcmmszdntnt.domain.auth.factory.LoginServiceFactory;
 import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
@@ -133,9 +132,8 @@ public class UserController {
         userService.onLoginState(secret, user.getId());//如果不是微信用户，但是有 openid，说明这个用户等同于微信登录
         // 发送已确认的通知
         SystemJsonResponse<?> systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
-        String message = JsonUtil.toJson(systemJsonResponse);
-        WsMessageSender.sendMessageToOne(WsUserServer.WEB_SOCKET_USER_SERVER + secret, message);
-        SseMessageSender.sendMessage(SseUserServer.SSE_USER_SERVER + secret, message);
+        WsMessageSender.sendMessageToOne(WsUserServer.WEB_SOCKET_USER_SERVER + secret, systemJsonResponse);
+        SseMessageSender.sendMessage(SseUserServer.SSE_USER_SERVER + secret, systemJsonResponse);
         return systemJsonResponse;
     }
 

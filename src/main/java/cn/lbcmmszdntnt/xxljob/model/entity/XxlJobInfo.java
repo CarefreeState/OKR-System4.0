@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.xxljob.model;
+package cn.lbcmmszdntnt.xxljob.model.entity;
 
 import lombok.*;
 

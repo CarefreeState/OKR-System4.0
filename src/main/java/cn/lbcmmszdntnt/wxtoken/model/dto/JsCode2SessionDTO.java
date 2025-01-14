@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
  */
 @Data
 @Builder
-public class JsCodeSessionDTO {
+public class JsCode2SessionDTO {
 
     @JsonProperty("js_code")
     private String jsCode;
@@ -22,7 +22,7 @@ public class JsCodeSessionDTO {
     @JsonProperty("grant_type")
     private String grantType;
 
-    public JsCodeSessionDTO(String jsCode, String grantType) {
+    public JsCode2SessionDTO(String jsCode, String grantType) {
         this.jsCode = jsCode;
         this.grantType = StringUtils.hasText(grantType) ? grantType : "authorization_code";
     }

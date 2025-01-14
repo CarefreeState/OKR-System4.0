@@ -1,19 +1,13 @@
 package cn.lbcmmszdntnt.xxljob.service.impl;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
-import cn.lbcmmszdntnt.xxljob.config.Admin;
 import cn.lbcmmszdntnt.xxljob.config.Executor;
-import cn.lbcmmszdntnt.xxljob.config.XxlUrl;
-import cn.lbcmmszdntnt.xxljob.cookie.CookieUtil;
-import cn.lbcmmszdntnt.xxljob.model.XxlJobGroup;
+import cn.lbcmmszdntnt.xxljob.model.dto.GroupPageListDTO;
+import cn.lbcmmszdntnt.xxljob.model.dto.GroupSaveDTO;
+import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
 import cn.lbcmmszdntnt.xxljob.service.JobGroupService;
+import cn.lbcmmszdntnt.xxljob.util.XxlJobRequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,11 +29,7 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     private final static TimeUnit XXL_JOB_GROUP_TIMEUNIT = TimeUnit.DAYS;
 
-    private final Admin admin;
-
     private final Executor executor;
-
-    private final XxlUrl xxlUrl;
 
     private final RedisCache redisCache;
 
@@ -48,24 +37,17 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     public List<XxlJobGroup> getJobGroup() {
-        String url = admin.getAddresses() + xxlUrl.getGroupPageList();
-        HttpResponse response = HttpRequest.post(url)
-                .form("appname", executor.getAppname())
-                .form("title", executor.getTitle())
-                .cookie(CookieUtil.getCookie())
-                .execute();
-        String body = response.body();
-        JSONArray array = JsonUtil.analyzeJsonField(body, "data", JSONArray.class);
-        List<XxlJobGroup> list = array.stream()
-                .map(o -> JSONUtil.toBean((JSONObject) o, XxlJobGroup.class))
-                .collect(Collectors.toList());
-        return list;
+        GroupPageListDTO groupPageListDTO = GroupPageListDTO.builder()
+                .appname(executor.getAppname())
+                .title(executor.getTitle())
+                .build();
+        return XxlJobRequestUtil.groupPageList(groupPageListDTO);
     }
 
     @Override
     public XxlJobGroup getJobGroupOne(int index) {
         addJobGroup();
-        return getJobGroup().get(0);
+        return getJobGroup().getFirst();
     }
 
     @Override
@@ -80,16 +62,15 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     public void autoRegisterGroup() {
-        String url = admin.getAddresses() + xxlUrl.getGroupSave();
         String appname = executor.getAppname();
         String title = executor.getTitle();
-        HttpRequest.post(url)
-                .form("appname", appname)
-                .form("title", title)
-                .form("addressType", executor.getAddressType())
-                .form("addressList",  executor.getAddressList())
-                .cookie(CookieUtil.getCookie())
-                .execute();
+        GroupSaveDTO groupSaveDTO = GroupSaveDTO.builder()
+                .appname(appname)
+                .title(title)
+                .addressType(executor.getAddressType())
+                .addressList(executor.getAddressList())
+                .build();
+        XxlJobRequestUtil.groupSave(groupSaveDTO);
         String redisKey = String.format(XXL_JOB_GROUP, appname, title);
         redisCache.deleteObject(redisKey);
     }

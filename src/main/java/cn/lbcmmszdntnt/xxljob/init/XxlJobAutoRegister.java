@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.xxljob.init;
 
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
-import cn.lbcmmszdntnt.xxljob.model.XxlJobGroup;
-import cn.lbcmmszdntnt.xxljob.model.XxlJobInfo;
+import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
+import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobInfo;
 import cn.lbcmmszdntnt.xxljob.service.JobGroupService;
 import cn.lbcmmszdntnt.xxljob.service.JobInfoService;
 import com.xxl.job.core.handler.annotation.XxlJob;

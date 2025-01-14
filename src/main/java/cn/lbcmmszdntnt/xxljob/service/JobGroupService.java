@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.xxljob.service;
 
-import cn.lbcmmszdntnt.xxljob.model.XxlJobGroup;
+import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
 
 import java.util.List;
 

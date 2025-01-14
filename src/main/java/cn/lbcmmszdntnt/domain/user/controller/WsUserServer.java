@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.user.controller;
 
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
@@ -43,7 +42,7 @@ public class WsUserServer {
         }
         WsSessionMapper.put(sessionKey, session);
         // 发送：path, secret
-        WsMessageSender.sendMessage(session, JsonUtil.analyzeData(loginQRCode));
+        WsMessageSender.sendMessage(session, loginQRCode);
 //        SessionUtil.refuse("拒绝连接");
     }
 

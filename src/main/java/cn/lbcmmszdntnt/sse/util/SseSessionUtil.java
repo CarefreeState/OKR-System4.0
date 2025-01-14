@@ -33,12 +33,11 @@ public class SseSessionUtil {
         SseSessionMapper.put(sessionKey, sseEmitter);
     }
 
-    public static void replyMessage(String sessionKey, Supplier<String> messageSupplier) {
+    public static <T> void replyMessage(String sessionKey, Supplier<T> messageSupplier) {
         SseMessageSender.sendMessage(sessionKey, DEFAULT_MESSAGE);
         if(Objects.nonNull(messageSupplier)) {
             IOThreadPool.submit(() -> {
-                String message = messageSupplier.get();
-                SseMessageSender.sendMessage(sessionKey, message);
+                SseMessageSender.sendMessage(sessionKey, messageSupplier.get());
             });
         }
     }
@@ -51,7 +50,7 @@ public class SseSessionUtil {
         return sseEmitter;
     }
 
-    public static SseEmitter createConnect(long timeout, String sessionKey, Supplier<String> messageSupplier) {
+    public static <T> SseEmitter createConnect(long timeout, String sessionKey, Supplier<T> messageSupplier) {
         // 超时时间设置为 timeout ms
         SseEmitter sseEmitter = new SseEmitter(timeout);
         log.warn("{} 成功建立连接，将于 {} ms 后断开连接，即 {}", sessionKey, timeout,

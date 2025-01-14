@@ -79,16 +79,6 @@ medal:
     threshold: 60
 
 
-xxl:
-  job:
-    url:
-      login: /login
-      groupPageList: /jobgroup/pageList
-      infoPageList: /jobinfo/pageList
-      groupSave: /jobgroup/save
-      infoAdd: /jobinfo/add
-
-
 limit:
   time:
     second: 86400
@@ -187,8 +177,6 @@ wx:
 
 web:
   invite:
-    scene-key: teamId
-    secret: secret
     page: ${spring.domain}/pages/invite   # 页面
     width: 500           # 图片大小
     line-color: # 颜色
