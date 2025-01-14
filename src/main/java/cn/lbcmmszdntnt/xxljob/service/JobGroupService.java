@@ -12,8 +12,4 @@ public interface JobGroupService {
 
     void addJobGroup();
 
-    void autoRegisterGroup();
-
-    boolean preciselyCheck();
-
 }

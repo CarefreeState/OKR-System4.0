@@ -38,42 +38,30 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationStarte
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         //注册执行器
-        addJobGroup();
-        //注册任务
-        addJobInfo();
-    }
-
-    //自动注册执行器
-    private void addJobGroup() {
         jobGroupService.addJobGroup();
-    }
-
-    private void addJobInfo() {
+        //注册任务
         XxlJobGroup xxlJobGroup = jobGroupService.getJobGroupOne(0);
         String[] beanDefinitionNames = applicationContext.getBeanNamesForType(Object.class, Boolean.FALSE, Boolean.TRUE);
         for (String beanDefinitionName : beanDefinitionNames) {
             Object bean = applicationContext.getBean(beanDefinitionName);
             Map<Method, XxlJob> annotatedMethods = MethodIntrospector.selectMethods(bean.getClass(),
                     (MethodIntrospector.MetadataLookup<XxlJob>) method -> AnnotatedElementUtils.findMergedAnnotation(method, XxlJob.class));
-            for (Map.Entry<Method, XxlJob> methodXxlJobEntry : annotatedMethods.entrySet()) {
-                Method executeMethod = methodXxlJobEntry.getKey();
-                XxlJob xxlJob = methodXxlJobEntry.getValue();
+            annotatedMethods.forEach((executeMethod, xxljob) -> {
                 //自动注册
                 if (executeMethod.isAnnotationPresent(XxlRegister.class)) {
                     XxlRegister xxlRegister = executeMethod.getAnnotation(XxlRegister.class);
-                    List<XxlJobInfo> jobInfo = jobInfoService.getJobInfo(xxlJobGroup.getId(), xxlJob.value());
-                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxlJob, xxlRegister);
+                    List<XxlJobInfo> jobInfo = jobInfoService.getJobInfo(xxlJobGroup.getId(), xxljob.value());
+                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxljob, xxlRegister);
                     if (!jobInfo.isEmpty()) {
                         //因为是模糊查询，需要再判断一次
                         boolean isPresent = jobInfo.stream()
-                                .anyMatch(info -> info.getExecutorHandler().equals(xxlJob.value()));
-                        if (isPresent) {
-                            continue;
-                        }
+                                .anyMatch(info -> info.getExecutorHandler().equals(xxljob.value()));
+                        // 无需新增
+                        if (isPresent) return;
                     }
                     jobInfoService.addJob(xxlJobInfo);
                 }
-            }
+            });
         }
     }
 

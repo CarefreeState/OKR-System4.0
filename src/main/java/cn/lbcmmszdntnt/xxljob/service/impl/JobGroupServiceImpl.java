@@ -21,17 +21,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class JobGroupServiceImpl implements JobGroupService {
 
-    private final static String XXL_JOB_GROUP = "xxlJobGroup:%s:%s";
-
     private final static String XXL_JOB_GROUP_LOCK = "xxlJobGroupLock:%s:%s";
 
-    private final static Long XXL_JOB_GROUP_TTL = 1L;
-
-    private final static TimeUnit XXL_JOB_GROUP_TIMEUNIT = TimeUnit.DAYS;
-
     private final Executor executor;
-
-    private final RedisCache redisCache;
 
     private final RedisLock redisLock;
 
@@ -46,45 +38,25 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     public XxlJobGroup getJobGroupOne(int index) {
-        addJobGroup();
-        return getJobGroup().getFirst();
+        return getJobGroup().get(index);
     }
 
     @Override
     public void addJobGroup() {
         String lock = String.format(XXL_JOB_GROUP_LOCK, executor.getAppname(), executor.getTitle());
         redisLock.tryLockDoSomething(lock, () -> {
-            if (Boolean.FALSE.equals(preciselyCheck())) {
-                autoRegisterGroup();
+            if (getJobGroup().stream().noneMatch(Objects::nonNull)) {
+                String appname = executor.getAppname();
+                String title = executor.getTitle();
+                GroupSaveDTO groupSaveDTO = GroupSaveDTO.builder()
+                        .appname(appname)
+                        .title(title)
+                        .addressType(executor.getAddressType())
+                        .addressList(executor.getAddressList())
+                        .build();
+                XxlJobRequestUtil.groupSave(groupSaveDTO);
             }
         }, () -> {});
-    }
-
-    @Override
-    public void autoRegisterGroup() {
-        String appname = executor.getAppname();
-        String title = executor.getTitle();
-        GroupSaveDTO groupSaveDTO = GroupSaveDTO.builder()
-                .appname(appname)
-                .title(title)
-                .addressType(executor.getAddressType())
-                .addressList(executor.getAddressList())
-                .build();
-        XxlJobRequestUtil.groupSave(groupSaveDTO);
-        String redisKey = String.format(XXL_JOB_GROUP, appname, title);
-        redisCache.deleteObject(redisKey);
-    }
-
-    @Override
-    public boolean preciselyCheck() {
-        String appname = executor.getAppname();
-        String title = executor.getTitle();
-        String redisKey = String.format(XXL_JOB_GROUP, appname, title);
-        return redisCache.getObject(redisKey, Boolean.class).orElseGet(() -> {
-            boolean flag = getJobGroup().stream().anyMatch(Objects::nonNull);
-            redisCache.setObject(redisKey, flag, XXL_JOB_GROUP_TTL, XXL_JOB_GROUP_TIMEUNIT);
-            return flag;
-        });
     }
 
 }
