@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.xxljob.service.impl;
 
-import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.xxljob.config.Executor;
 import cn.lbcmmszdntnt.xxljob.model.dto.GroupPageListDTO;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j

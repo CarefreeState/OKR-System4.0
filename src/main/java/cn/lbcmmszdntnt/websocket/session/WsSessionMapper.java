@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.websocket.session;
 
 
-import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.common.util.session.SessionMap;
 import jakarta.websocket.Session;
 
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  */
 public class WsSessionMapper {
 
-    private final static WsSessionMap SESSION_MAP = SpringUtil.getBean(WsSessionMap.class);
+    private final static SessionMap<Session> SESSION_MAP = new SessionMap<>();
 
     public static void put(String sessionKey, Session webSocketService) {
         SESSION_MAP.put(sessionKey, webSocketService);

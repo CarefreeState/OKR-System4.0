@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.sql.BadSqlUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
 import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
@@ -33,6 +34,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -64,12 +66,24 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     @Override
     public List<TeamOkr> selectChildTeams(Long id) {
-        return teamOkrMapper.selectChildTeams(id);
+        return BadSqlUtil.tryGetSomething(
+                () -> teamOkrMapper.queryTeamTree(id),
+                Boolean.TRUE,
+                // 创建存储过程
+                teamOkrMapper::createPrepareTeamTreeProcedure,
+                teamOkrMapper::creatQueryTeamTreeProcedure
+        );
     }
 
     @Override
     public TeamOkr findRootTeam(Long id) {
-        return teamOkrMapper.findRootTeam(id).orElseThrow(() ->
+        TeamOkr teamOkr = BadSqlUtil.tryGetSomething(
+                () -> teamOkrMapper.findTeamRoot(id),
+                Boolean.TRUE,
+                // 创建存储过程
+                teamOkrMapper::createFindTeamRootProcedure
+        );
+        return Optional.ofNullable(teamOkr).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.TEAM_NOT_EXISTS));
     }
 

@@ -8,7 +8,7 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="coreId" column="core_id" jdbcType="BIGINT"/>
             <result property="recordDate" column="record_date" jdbcType="DATE"/>
-            <result property="credit1" column="credit1" jdbcType="DECIMAL"/>
+            <result property="credit1" column="credit1" jdbcType="DOUBLE"/>
             <result property="credit2" column="credit2" jdbcType="INTEGER"/>
             <result property="credit3" column="credit3" jdbcType="INTEGER"/>
             <result property="credit4" column="credit4" jdbcType="INTEGER"/>

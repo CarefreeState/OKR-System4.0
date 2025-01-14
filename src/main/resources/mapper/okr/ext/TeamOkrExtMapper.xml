@@ -22,12 +22,91 @@
         <association property="manager" resultMap="cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="u_"/>
     </resultMap>
 
-    <select id="selectChildTeams" resultMap="BaseResultMap" >
-        call GetTreeNodes(#{id,jdbcType=BIGINT})
+    <update id="createFindTeamRootProcedure">
+        create procedure `find_team_root` (in start_id bigint)
+        begin
+            declare current_id bigint;
+            declare parent_id bigint;
+
+            set current_id = start_id;
+            set parent_id = null;
+
+            node_loop: loop
+
+                select t.parent_team_id into parent_id
+                from team_okr t
+                where t.id = current_id and t.is_deleted = 0;
+
+                if parent_id is not null then
+                    set current_id = parent_id;
+                else
+                    leave node_loop;
+                end if;
+
+            end loop;
+
+            select t.id, t.parent_team_id, t.team_name
+            from team_okr t
+            where t.id = current_id and t.is_deleted = 0;
+
+        end
+    </update>
+
+    <update id="creatQueryTeamTreeProcedure">
+        create procedure `query_team_tree` (in root_id bigint)
+        begin
+
+            drop temporary table if exists `temp_team_nodes`;
+            create temporary table `temp_team_nodes` (
+                 `id` bigint, `parent_team_id` bigint, `team_name` varchar(32)
+            );
+
+            set max_sp_recursion_depth = 255;
+            call prepare_team_tree(root_id);
+
+            select t.id, t.parent_team_id, t.team_name from temp_team_nodes t order by t.id;
+            drop temporary table if exists `temp_team_nodes`;
+
+        end
+    </update>
+
+    <update id="createPrepareTeamTreeProcedure">
+        create procedure `prepare_team_tree` (in root_id bigint)
+        begin
+
+            declare done bit default false;
+            declare current_id bigint;
+            -- 游标
+            declare cur cursor for
+                select t.id
+                from team_okr t
+                where t.parent_team_id = root_id and is_deleted = 0;
+            declare continue handler for not found set done = true;
+
+            -- 前序遍历
+            insert into temp_team_nodes
+            select t.id, t.parent_team_id, t.team_name
+            from team_okr t
+            where t.id = root_id and t.is_deleted = 0;
+
+            open cur;
+            read_loop: loop
+                fetch cur into current_id;
+                if done then
+                    leave read_loop;
+                end if;
+                call prepare_team_tree(current_id);
+            end loop;
+            close cur;
+        end
+    </update>
+
+    <select id="queryTeamTree" statementType="CALLABLE" resultMap="BaseResultMap" >
+        call query_team_tree(#{id,jdbcType=BIGINT})
     </select>
 
-    <select id="findRootTeam" resultMap="BaseResultMap">
-        call find_root_node(#{id,jdbcType=BIGINT})
+    <select id="findTeamRoot" statementType="CALLABLE" resultMap="BaseResultMap">
+        call find_team_root(#{id,jdbcType=BIGINT})
     </select>
 
     <select id="getTeamOkrList" parameterType="java.lang.Long" resultMap="TeamListMap">
@@ -45,9 +124,9 @@
 
     <select id="selectKeyResultsByTeamId" resultMap="KeyResultsMap">
         select
-        t.id, t.core_id, t.team_name, t.parent_team_id, t.manager_id, t.create_time, o.is_over, o.degree,
-        k.id k_id, k.first_quadrant_id k_first_quadrant_id,
-        k.content k_content, k.probability k_probability
+            t.id, t.core_id, t.team_name, t.parent_team_id, t.manager_id, t.create_time, o.is_over, o.degree,
+            k.id k_id, k.first_quadrant_id k_first_quadrant_id,
+            k.content k_content, k.probability k_probability
         from
         team_okr t, okr_core o,
         first_quadrant f left join key_result k on f.id = k.first_quadrant_id

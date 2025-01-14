@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.sse.session;
 
-import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.common.util.session.SessionMap;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  */
 public class SseSessionMapper {
 
-    private final static SseSessionMap SESSION_MAP = SpringUtil.getBean(SseSessionMap.class);
+    private final static SessionMap<SseEmitter> SESSION_MAP = new SessionMap<>();
 
     public static void put(String sessionKey, SseEmitter sseEmitter) {
         SESSION_MAP.put(sessionKey, sseEmitter);

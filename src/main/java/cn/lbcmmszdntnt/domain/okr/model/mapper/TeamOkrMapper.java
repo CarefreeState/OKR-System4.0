@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
 * @author 马拉圈
@@ -17,13 +16,14 @@ import java.util.Optional;
 */
 public interface TeamOkrMapper extends BaseMapper<TeamOkr> {
 
-    List<TeamOkr> selectChildTeams(@Param("id") Long id);
-
-    Optional<TeamOkr> findRootTeam(@Param("id") Long id);
-
+    List<TeamOkr> queryTeamTree(@Param("id") Long id);
+    TeamOkr findTeamRoot(@Param("id") Long id);
     List<TeamOkrVO> getTeamOkrList(@Param("id") Long id);
-
     List<TeamOkrStatisticVO> selectKeyResultsByTeamId(@Param("ids") List<Long> ids);
+
+    void createFindTeamRootProcedure();
+    void creatQueryTeamTreeProcedure();
+    void createPrepareTeamTreeProcedure();
 
 }
 

@@ -41,8 +41,10 @@ public class ClearDigitalResourceXxlJobConfig {
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
             author = AUTHOR, triggerStatus = RIGGER_STATUS, jobDesc = "【固定任务】清除不活跃的资源")
     private void clearDigitalResource() {
-        List<DigitalResource> list = digitalResourceService.list();
         long now = System.currentTimeMillis();
+        List<DigitalResource> list = digitalResourceService.lambdaQuery()
+                .ge(DigitalResource::getActiveLimit, 0L)
+                .list();
         IOThreadPool.operateBatch(list, digitalResource -> {
             if(digitalResource.getActiveLimit().compareTo(now - digitalResource.getUpdateTime().getTime()) <= 0) {
                 digitalResourceService.removeResource(digitalResource.getCode());

@@ -21,7 +21,7 @@ public class DayRecord extends BaseIncrIDEntity implements Serializable {
     @TableField(jdbcType = JdbcType.DATE)
     private Date recordDate;
 
-    @TableField(jdbcType = JdbcType.DECIMAL)
+    @TableField(jdbcType = JdbcType.DOUBLE)
     private Double credit1;
 
     private Integer credit2;
