@@ -10,7 +10,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface DigitalResourceService extends IService<DigitalResource> {
 
-    DigitalResource createResource(String type, String originalName, String fileName);
+    DigitalResource createResource(String originalName, String fileName, Long activeLimit);
+    DigitalResource createResource(String originalName, String fileName);
+
+    void removeResource(String code);
 
     DigitalResource getResourceByCode(String code);
+    String getFileName(String code);
 }

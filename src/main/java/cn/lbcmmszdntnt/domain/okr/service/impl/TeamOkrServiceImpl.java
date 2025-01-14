@@ -173,7 +173,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             redisCache.deleteObject(TeamOkrUtil.TEAM_ID_NAME_MAP + teamId);
             // 2. 删除邀请码的缓存
             // (如果经常修改，那么这个团队一直都在本地只有一个小程序码，如果一个月内一次修改都没有，那么应该也不会重新获取邀请码，即使有，每个月多一张无伤大雅)
-            okrQRCodeService.deleteTeamNameCache(teamId);
+            okrQRCodeService.deleteTeamNameQRCodeCache(teamId);
         });
     }
 

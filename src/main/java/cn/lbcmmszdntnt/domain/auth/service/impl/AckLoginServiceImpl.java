@@ -4,7 +4,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.auth.model.dto.AckLoginDTO;
 import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.auth.service.LoginService;
-import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
+import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -37,7 +37,7 @@ public class AckLoginServiceImpl implements LoginService {
         if(Objects.isNull(ackLoginDTO)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
         }
-        String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + ackLoginDTO.getSecret();
+        String redisKey = QRCodeConstants.WX_LOGIN_QR_CODE_MAP + ackLoginDTO.getSecret();
         return redisCache.getObject(redisKey, Long.class).map(uid -> {
             if(uid.compareTo(0L) <= 0) {
                 throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);

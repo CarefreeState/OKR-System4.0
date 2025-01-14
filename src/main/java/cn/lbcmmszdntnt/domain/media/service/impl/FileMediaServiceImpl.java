@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.domain.media.service.impl;
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
-import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
@@ -13,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import static cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants.DEFAULT_ACTIVE_LIMIT;
 
 /**
  * Created With Intellij IDEA
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class FileMediaServiceImpl implements FileMediaService {
+public final class FileMediaServiceImpl implements FileMediaService {
 
     @Value("${resource.compression.threshold}")
     private Integer compressionThreshold;
@@ -34,35 +35,45 @@ public class FileMediaServiceImpl implements FileMediaService {
     private final ObjectStorageService objectStorageService;
 
     @Override
-    public DigitalResource analyzeCode(String code) {
-        return digitalResourceService.getResourceByCode(code);
+    public String analyzeCode(String code) {
+        return digitalResourceService.getFileName(code);
     }
 
     @Override
     public void preview(String code, HttpServletResponse response) {
-        DigitalResource resource = analyzeCode(code);
-        objectStorageService.preview(resource.getFileName(), response);
+        objectStorageService.preview(analyzeCode(code), response);
     }
 
-    @Override
-    public void download(String code, HttpServletResponse response) {
-        DigitalResource resource = analyzeCode(code);
-        objectStorageService.download(resource.getOriginalName(), resource.getFileName(), response);
-    }
+
 
     @Override
     public byte[] load(String code) {
-        DigitalResource resource = analyzeCode(code);
-        return objectStorageService.load(resource.getFileName());
+        return objectStorageService.load(analyzeCode(code));
     }
 
     @Override
-    public String uploadFile(String type, MultipartFile file) {
-        return uploadFile(type, FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    public void remove(String code) {
+        objectStorageService.remove(analyzeCode(code));
+        digitalResourceService.removeResource(code);
     }
 
     @Override
-    public String uploadFile(String type, String originalName, byte[] data) {
+    public String uploadFile(MultipartFile file) {
+        return uploadFile(file, DEFAULT_ACTIVE_LIMIT);
+    }
+
+    @Override
+    public String uploadFile(MultipartFile file, Long activeLimit) {
+        return uploadFile(FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file), activeLimit);
+    }
+
+    @Override
+    public String uploadFile(String originalName, byte[] data) {
+        return uploadFile(originalName, data, DEFAULT_ACTIVE_LIMIT);
+    }
+
+    @Override
+    public String uploadFile(String originalName, byte[] data, Long activeLimit) {
         // 判断文件类型
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
@@ -77,16 +88,26 @@ public class FileMediaServiceImpl implements FileMediaService {
             suffix = FileResourceUtil.getSuffix(originalName);
         }
         String fileName = objectStorageService.upload(originalName, data);
-        return digitalResourceService.createResource(type, originalName, fileName).getCode();
+        return digitalResourceService.createResource(originalName, fileName, activeLimit).getCode();
     }
 
     @Override
-    public String uploadImage(String type, MultipartFile file) {
-        return uploadImage(type, FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file));
+    public String uploadImage(MultipartFile file) {
+        return uploadImage(file, DEFAULT_ACTIVE_LIMIT);
     }
 
     @Override
-    public String uploadImage(String type, String originalName, byte[] data) {
+    public String uploadImage(MultipartFile file, Long activeLimit) {
+        return uploadImage(FileResourceUtil.getOriginalName(file), MediaUtil.getBytes(file), activeLimit);
+    }
+
+    @Override
+    public String uploadImage(String originalName, byte[] data) {
+        return uploadImage(originalName, data, DEFAULT_ACTIVE_LIMIT);
+    }
+
+    @Override
+    public String uploadImage(String originalName, byte[] data, Long activeLimit) {
         // 判断文件类型
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
@@ -103,6 +124,6 @@ public class FileMediaServiceImpl implements FileMediaService {
             suffix = FileResourceUtil.getSuffix(originalName);
         }
         String fileName = objectStorageService.upload(originalName, data);
-        return digitalResourceService.createResource(type, originalName, fileName).getCode();
+        return digitalResourceService.createResource(originalName, fileName, activeLimit).getCode();
     }
 }

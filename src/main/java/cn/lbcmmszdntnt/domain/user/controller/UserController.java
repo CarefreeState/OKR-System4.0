@@ -18,7 +18,9 @@ import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
+import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
+import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
@@ -60,6 +62,10 @@ public class UserController {
     private final OkrQRCodeService okrQRCodeService;
 
     private final EmailService emailService;
+
+    private final UserPhotoService userPhotoService;
+
+    private final WxBindingService wxBindingService;
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
@@ -104,9 +110,8 @@ public class UserController {
     @Tag(name = "用户测试接口/微信")
     public SystemJsonResponse<String> wxIdentifyCheck() {
         Long userId = InterceptorContext.getUser().getId();
-        String randomCode = IdentifyingCodeValidator.getIdentifyingCode();
         // 生成一个小程序检查码
-        String mapPath = okrQRCodeService.getBindingQRCode(userId, randomCode);
+        String mapPath = okrQRCodeService.getBindingQRCode(userId, wxBindingService.getSecret(userId));
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
 
@@ -177,7 +182,7 @@ public class UserController {
         User user = InterceptorContext.getUser();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
-        String mapPath = userService.tryUploadPhoto(multipartFile, userId, originPhoto);
+        String mapPath = userPhotoService.tryUploadPhoto(multipartFile, userId, originPhoto);
         // 删除记录
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }

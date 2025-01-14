@@ -20,6 +20,7 @@ public interface UserConstants {
     String DEFAULT_PHOTO1 = "media/static/default1.png";
     String DEFAULT_PHOTO2 = "media/static/default2.png";
     String DEFAULT_PHOTO3 = "media/static/default3.png";
+    String USER_PHOTO_LOCK = "userPhotoLock:";
 
     List<String> DEFAULT_PHOTO_LIST = List.of(DEFAULT_PHOTO, DEFAULT_PHOTO1, DEFAULT_PHOTO2, DEFAULT_PHOTO3);
 

@@ -1,7 +1,5 @@
 package cn.lbcmmszdntnt.common.util.media;
 
-import cn.lbcmmszdntnt.common.util.web.HttpUtil;
-import cn.lbcmmszdntnt.config.WebMvcConfiguration;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -24,12 +22,10 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -42,11 +38,13 @@ import java.util.regex.Pattern;
 @Slf4j
 public class MediaUtil {
 
+    public final static String TEMP_RESOURCE_PATH = "./temp/"; // 临时文件夹的文件都是用完就删的，所以我就觉得这个变量没必要写在配置文件里了
+
     public static final String SUFFIX = "png";
 
     public static final String UTF_8 = StandardCharsets.UTF_8.toString();
 
-    private static final Pattern HTTP_PATTERN = Pattern.compile("^(http|https)://.*$");
+    private static final Pattern HTTP_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
     private final static Tika TIKA = new Tika();
 
@@ -54,11 +52,6 @@ public class MediaUtil {
     public final static String COMPRESS_FORMAT_SUFFIX = "." + COMPRESS_FORMAT_NAME; // 压缩图片格式
     public final static float COMPRESS_SCALE = 1.0f; // 压缩图片大小
     public final static float COMPRESS_QUALITY = 0.5f; // 压缩图片质量
-
-    // 获取UUID
-    public static String getUUID_32() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
 
     public static byte[] compressImage(byte[] bytes) {
         try(InputStream inputStream = getInputStream(bytes);
@@ -75,104 +68,7 @@ public class MediaUtil {
         }
     }
 
-    public static String getUniqueImageName() {
-        //拼接
-        return String.format("%s.%s", getUUID_32(), SUFFIX);
-    }
-
-    public static String getLocalFilePath(String mapPath) {
-        return WebMvcConfiguration.ROOT + mapPath;
-    }
-
-    public static String getLocalFileName(String mapPath) {
-        return mapPath.substring(mapPath.lastIndexOf("/") + 1);
-    }
-
-    public static void tryCreateFile(String savePath, String filePath) {
-        File directory = new File(savePath);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new GlobalServiceException(e.getMessage());
-            }
-        }
-    }
-
-    /**
-     * 输入流转字节流
-     */
-    public static byte[] inputStreamToByte(InputStream in) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int ch;
-        while ((ch = in.read(buffer)) != -1) {
-            byteArrayOutputStream.write(buffer, 0, ch);
-        }
-        byte data[] = byteArrayOutputStream.toByteArray();
-        byteArrayOutputStream.close();
-        return data;
-    }
-
-    public static String saveImage(byte[] imageData) {
-        String savePath = WebMvcConfiguration.ROOT + WebMvcConfiguration.MAP_ROOT;
-        String fileName = getUniqueImageName();
-        String filePath = savePath + fileName;
-        String mapPath = WebMvcConfiguration.MAP_ROOT + fileName;
-        saveFile(savePath, filePath, imageData);
-        log.info("图片保存成功 {}", filePath);
-        return mapPath;
-    }
-
-    public static String saveImage(byte[] imageData, String extraPath) {
-        if(!StringUtils.hasText(extraPath)) {
-            return saveImage(imageData);
-        }
-        String mapBasePath = WebMvcConfiguration.MAP_ROOT + extraPath;
-        String savePath = WebMvcConfiguration.ROOT + mapBasePath;
-        String fileName = getUniqueImageName();
-        String filePath = savePath + fileName;
-        String mapPath = mapBasePath + fileName;
-        saveFile(savePath, filePath, imageData);
-        log.info("图片保存成功 {}", filePath);
-        return mapPath;
-    }
-
-    public static void saveFile(String savePath, String filePath, String url) {
-        MediaUtil.tryCreateFile(savePath, filePath);
-        try(InputStream inputStream = HttpUtil.getFileInputStream(url);
-            OutputStream outputStream = Files.newOutputStream(Paths.get(filePath))) {
-            byte[] data  = MediaUtil.inputStreamToByte(inputStream);
-            outputStream.write(data);
-            outputStream.flush();
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
-    }
-
-    public static void saveFile(String savePath, String filePath, byte[] data) {
-        MediaUtil.tryCreateFile(savePath, filePath);
-        try(OutputStream outputStream = Files.newOutputStream(Paths.get(filePath))) {
-            outputStream.write(data);
-            outputStream.flush();
-        } catch (IOException e) {
-            throw new GlobalServiceException(e.getMessage());
-        }
-    }
-
-    public static void deleteFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            file.delete();
-            log.warn("删除文件 {}", path);
-        }
-    }
-
-    public static byte[] getCustomColorQRCodeByteArray(String url, int width, int height) {
+    public static byte[] getUrlQRCodeBytes(String url, int width, int height) {
         // 配置生成二维码的参数
         Map<EncodeHintType, String> hintMap = new HashMap<>();
         hintMap.put(EncodeHintType.CHARACTER_SET, UTF_8);
@@ -202,10 +98,6 @@ public class MediaUtil {
         } catch (IOException | WriterException e) {
             throw new GlobalServiceException(e.getMessage());
         }
-    }
-
-    public static InputStream getCustomColorQRCodeInputStream(String url, int width, int height) {
-        return new ByteArrayInputStream(getCustomColorQRCodeByteArray(url, width, height));
     }
 
     public static boolean isHttpUrl(String url) {
@@ -275,6 +167,39 @@ public class MediaUtil {
             return getContentType(inputStream);
         } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    private static FileOutputStream createAndGetFileOutputStream(File file) throws IOException {
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        return new FileOutputStream(file);
+    }
+
+    public static String getTempFilePath(String suffix) {
+        String tempResourcePath = TEMP_RESOURCE_PATH;
+        File tempDir = new File(tempResourcePath);
+        if(!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+        return tempResourcePath + FileResourceUtil.getSimpleFileName(suffix);
+    }
+
+    public static <T> T createTempFileGetSomething(String originalName, byte[] data, Function<File, T> converter) {
+        String fileNameSuffix = FileResourceUtil.getSuffix(originalName);
+        // 获取即将创建的临时文件的路径
+        String tempFilePath = getTempFilePath(fileNameSuffix);
+        File tempFile = new File(tempFilePath);
+        // 创建并写入，应用后删除
+        try (FileOutputStream outputStream = createAndGetFileOutputStream(tempFile)) {
+            outputStream.write(data);
+            outputStream.flush();
+            return converter.apply(tempFile);
+        }  catch (IOException e) {
+            throw new GlobalServiceException(e.getMessage());
+        } finally {
+            tempFile.delete();
         }
     }
 }

@@ -1,13 +1,11 @@
 package cn.lbcmmszdntnt.domain.media.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
+import cn.lbcmmszdntnt.common.base.BaseIncrIDEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 资源表
@@ -15,22 +13,12 @@ import java.util.Date;
  */
 @TableName(value ="digital_resource")
 @Data
-public class DigitalResource implements Serializable {
-    /**
-     * 资源 id
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class DigitalResource extends BaseIncrIDEntity implements Serializable {
 
     /**
      * 资源码
      */
     private String code;
-
-    /**
-     * 资源类型
-     */
-    private String type;
 
     /**
      * 上传时的文件名
@@ -43,24 +31,9 @@ public class DigitalResource implements Serializable {
     private String fileName;
 
     /**
-     * 乐观锁
+     * 最后一次更新时间 update_time 必须在活跃时间限制（距离当前时间 active_limit(ms) 的时间戳内），小于 0 代表不限制
      */
-    private Integer version;
-
-    /**
-     * 伪删除标记
-     */
-    private Boolean isDeleted;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private Long activeLimit;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

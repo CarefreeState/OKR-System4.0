@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.media.service;
 
-import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,14 +12,19 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface FileMediaService {
 
-    DigitalResource analyzeCode(String code);
+    String analyzeCode(String code);
     void preview(String code, HttpServletResponse response);
-    void download(String code, HttpServletResponse response);
     byte[] load(String code);
 
-    String uploadFile(String type, MultipartFile file);
-    String uploadFile(String type, String originalName, byte[] data);
-    String uploadImage(String type, MultipartFile file);
-    String uploadImage(String type, String originalName, byte[] data);
+    void remove(String code);
+
+    String uploadFile(MultipartFile file);
+    String uploadFile(MultipartFile file, Long activeLimit);
+    String uploadFile(String originalName, byte[] data);
+    String uploadFile(String originalName, byte[] data, Long activeLimit);
+    String uploadImage(MultipartFile file);
+    String uploadImage(MultipartFile file, Long activeLimit);
+    String uploadImage(String originalName, byte[] data);
+    String uploadImage(String originalName, byte[] data, Long activeLimit);
 
 }

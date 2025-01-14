@@ -21,22 +21,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     public static String ROOT;
 
-    public static String STATIC_PATH;
-
-    public static String INVITE_PATH;
-
-    public static String BINDING_PATH;
-
-    public static String SWAGGER_PATH;
-
-    public static String LOGIN_PATH;
-
-    public static String PHOTO_PATH;
-
-    public static String COMMON_PATH;
-
-    public static String MEDAL_PATH;
-
     /**
      * 配置静态访问资源
      * @param registry
@@ -67,46 +51,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Value("${media.root}")
     private void setROOT(String root) {
         ROOT = root;
-    }
-
-    @Value("${media.static}")
-    private void setSTATIC_PATH(String staticPath) {
-        STATIC_PATH = staticPath;
-    }
-
-    @Value("${media.invite}")
-    private void setINVITE_PATH(String invitePath) {
-        INVITE_PATH = invitePath;
-    }
-
-    @Value("${media.binding}")
-    private void setBINDING_PATH(String bindingPath) {
-        BINDING_PATH = bindingPath;
-    }
-
-    @Value("${media.swagger}")
-    private void setSWAGGER_PATH(String swaggerPath) {
-        SWAGGER_PATH = swaggerPath;
-    }
-
-    @Value("${media.login}")
-    private void setLOGIN_PATH(String loginPath) {
-        LOGIN_PATH = loginPath;
-    }
-
-    @Value("${media.photo}")
-    private void setPHOTO_PATH(String photoPath) {
-        PHOTO_PATH = photoPath;
-    }
-
-    @Value("${media.common}")
-    private void setCOMMON_PATH(String commonPath) {
-        COMMON_PATH = commonPath;
-    }
-
-    @Value("${media.medal}")
-    private void setMEDAL_PATH(String medalPath) {
-        MEDAL_PATH = medalPath;
     }
 
 }

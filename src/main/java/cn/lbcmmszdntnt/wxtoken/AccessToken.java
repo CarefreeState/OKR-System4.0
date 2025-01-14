@@ -1,9 +1,11 @@
 package cn.lbcmmszdntnt.wxtoken;
 
+import cn.lbcmmszdntnt.wxtoken.model.dto.AccessTokenDTO;
+import cn.lbcmmszdntnt.wxtoken.model.vo.AccessTokenVO;
+import cn.lbcmmszdntnt.wxtoken.util.WxHttpRequestUtil;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -33,9 +35,9 @@ public class AccessToken {
         if(ACCESS_TOKEN == null) {
             ACCESS_TOKEN = new AccessToken();
         }
-        Map<String, Object> map = TokenUtil.getAccessTokenMap();
-        ACCESS_TOKEN.setToken((String) map.get("access_token"));
-        ACCESS_TOKEN.setExpireIn((Integer) map.get("expires_in"));
+        AccessTokenVO accessTokenVO = WxHttpRequestUtil.accessToken(AccessTokenDTO.builder().build());
+        ACCESS_TOKEN.setToken(accessTokenVO.getAccessToken());
+        ACCESS_TOKEN.setExpireIn(accessTokenVO.getExpiresIn());
     }
 
     public static AccessToken getAccessToken() {

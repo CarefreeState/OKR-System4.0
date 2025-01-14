@@ -2,6 +2,8 @@ package cn.lbcmmszdntnt.common.util.web;
 
 
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.Method;
+import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -9,14 +11,11 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 public class HttpUtil {
 
     private final static String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+    public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, JSON_CONTENT_TYPE);
 
     public final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
@@ -79,8 +79,8 @@ public class HttpUtil {
         return doGet(httpUrl, null);
     }
 
-    public static String doGet(String httpUrl, Map<String, List<String>> map) {
-        return HttpRequest.get(buildUrl(httpUrl, map))
+    public static String doGet(String httpUrl, Map<String, List<String>> params) {
+        return HttpRequest.get(buildUrl(httpUrl, params))
                 .execute()
                 .body();
     }
@@ -107,21 +107,6 @@ public class HttpUtil {
         return HttpRequest.get(fileUrl)
                 .execute()
                 .bodyStream();
-    }
-
-    @Nullable
-    public static ServletRequestAttributes getAttributes() {
-        return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-    }
-
-    @Nullable
-    public static HttpServletRequest getRequest() {
-        return Optional.ofNullable(getAttributes()).map(ServletRequestAttributes::getRequest).orElse(null);
-    }
-
-    @Nullable
-    public static HttpServletResponse getResponse() {
-        return Optional.ofNullable(getAttributes()).map(ServletRequestAttributes::getResponse).orElse(null);
     }
 
     public static String encodeString(String str) {
@@ -151,6 +136,31 @@ public class HttpUtil {
         // 在设置内容类型之前设置下载的文件名称
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; fileName=%s", encodeString(downloadName)));
         returnBytes(bytes, response);
+    }
+
+    public static <R, T> HttpRequest getJsonRequest(String url, String method, T requestBody, Map<String, String> headers) {
+        // 准备参数
+        Method requestMethod = Method.valueOf(method.toUpperCase());
+        headers = Optional.ofNullable(headers).orElseGet(Map::of);
+        // 发出请求
+        HttpRequest httpRequest = cn.hutool.http.HttpUtil.createRequest(requestMethod, url)
+                .headerMap(headers, Boolean.TRUE)
+                .headerMap(JSON_CONTENT_TYPE_HEADER, Boolean.TRUE);
+        if(Objects.nonNull(requestBody)) {
+            String reqJson = JsonUtil.toJson(requestBody);
+            httpRequest = httpRequest.body(reqJson);
+        }
+        return httpRequest;
+    }
+
+    public static <R, T> R jsonRequest(String url, String method, T requestBody, Class<R> responseClazz, Map<String, String> headers) {
+        String respJson = getJsonRequest(url, method, requestBody, headers).execute().body();
+        // 转换并返回
+        return JsonUtil.parse(respJson, responseClazz);
+    }
+
+    public static <T> byte[] jsonRequest(String url, String method, T requestBody, Map<String, String> headers) {
+        return getJsonRequest(url, method, requestBody, headers).execute().bodyBytes();
     }
 
 }

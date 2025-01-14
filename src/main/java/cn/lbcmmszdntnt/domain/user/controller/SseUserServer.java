@@ -1,7 +1,8 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
-import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
+import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
+import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
@@ -21,7 +22,7 @@ public class SseUserServer {
 
     public final static String SSE_USER_SERVER = "SseUserServer:";
 
-    private final static long timeout = QRCodeConfig.WX_LOGIN_QR_CODE_UNIT.toMillis(QRCodeConfig.WX_LOGIN_QR_CODE_TTL);
+    private final static long timeout = QRCodeConstants.WX_LOGIN_QR_CODE_UNIT.toMillis(QRCodeConstants.WX_LOGIN_QR_CODE_TTL);
 
     private final OkrQRCodeService okrQRCodeService;
 
@@ -30,10 +31,10 @@ public class SseUserServer {
     @GetMapping("/web/wxlogin")
     public SseEmitter connect() {
         // 获得邀请码的密钥
-        String secret = okrQRCodeService.getSecretCode();
+        LoginQRCodeVO loginQRCode = okrQRCodeService.getLoginQRCode();
         // 连接并发送一条信息
-        return SseSessionUtil.createConnect(timeout, SSE_USER_SERVER + secret,
-                () -> JsonUtil.analyzeData(okrQRCodeService.getLoginQRCode(secret)));
+        return SseSessionUtil.createConnect(timeout, SSE_USER_SERVER + loginQRCode.getSecret(),
+                () -> JsonUtil.analyzeData(loginQRCode));
     }
 
 }

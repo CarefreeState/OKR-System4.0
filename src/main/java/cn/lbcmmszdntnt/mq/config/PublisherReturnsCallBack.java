@@ -26,6 +26,9 @@ public class PublisherReturnsCallBack implements RabbitTemplate.ReturnsCallback 
 
     @PostConstruct
     public void init() {
+        // 设置统一的 publisher-returns（confirm 也可以设置统一的，但最好还是在发送时设置在 future 里）
+        // rabbitTemplate 的 publisher-returns 同一时间只能存在一个
+        // 因为 publisher confirm 后，其实 exchange 有没有转发成功，publisher 没必要每次发送都关注这个 exchange 的内部职责，更多的是“系统与 MQ 去约定”
         rabbitTemplate.setReturnsCallback(this);
     }
 

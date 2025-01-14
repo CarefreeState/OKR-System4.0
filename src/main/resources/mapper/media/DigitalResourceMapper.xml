@@ -7,9 +7,9 @@
     <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="code" column="code" jdbcType="CHAR"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="originalName" column="original_name" jdbcType="VARCHAR"/>
             <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="activeLimit" column="active_limit" jdbcType="BIGINT"/>
             <result property="version" column="version" jdbcType="INTEGER"/>
             <result property="isDeleted" column="is_deleted" jdbcType="BIT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -17,8 +17,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,code,type,original_name,
-        file_name,version,is_deleted,
+        id,code,original_name,
+        file_name,active_limit,version,is_deleted,
         create_time,update_time
     </sql>
 </mapper>

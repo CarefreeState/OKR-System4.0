@@ -1,16 +1,19 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.model.mapper.DigitalResourceMapper;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
+import cn.lbcmmszdntnt.domain.media.util.DigitalResourceUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Date;
 
 /**
 * @author 马拉圈
@@ -22,15 +25,30 @@ import java.util.UUID;
 public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMapper, DigitalResource>
     implements DigitalResourceService{
 
+    private final RedisCache redisCache;
+
     @Override
-    public DigitalResource createResource(String type, String originalName, String fileName) {
+    public DigitalResource createResource(String originalName, String fileName, Long activeLimit) {
         DigitalResource digitalResource = new DigitalResource();
-        digitalResource.setCode(UUID.randomUUID().toString().replace("-", ""));
+        digitalResource.setCode(DigitalResourceUtil.getCode());
         digitalResource.setOriginalName(originalName);
         digitalResource.setFileName(fileName);
-        digitalResource.setType(type);
+        digitalResource.setActiveLimit(activeLimit);
         this.save(digitalResource);
         return digitalResource;
+    }
+
+    @Override
+    public DigitalResource createResource(String originalName, String fileName) {
+        return createResource(originalName, fileName, -1L);
+    }
+
+    @Override
+    public void removeResource(String code) {
+        this.lambdaUpdate()
+                .eq(DigitalResource::getCode, code)
+                .remove();
+        redisCache.deleteObject(FileMediaConstants.CODE_RESOURCE_MAP + code);
     }
 
     @Override
@@ -38,15 +56,23 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         return this.lambdaQuery()
                 .eq(DigitalResource::getCode, code)
                 .oneOpt()
-                .map(resource -> {
-                    // 以 updateTime 字段作为最近访问时间的标识
-                    this.lambdaUpdate()
-                            .eq(DigitalResource::getId, resource.getId())
-                            .set(DigitalResource::getUpdateTime, LocalDateTime.now())
-                            .update();
-                    return resource;
-                })
                 .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_EXISTS));
+    }
+
+    @Override
+    public String getFileName(String code) {
+        IOThreadPool.submit(() -> {
+            this.lambdaUpdate()
+                    .eq(DigitalResource::getCode, code)
+                    .set(DigitalResource::getUpdateTime, new Date())
+                    .update();
+        });
+        String redisKey = FileMediaConstants.CODE_RESOURCE_MAP + code;
+        return redisCache.getObject(redisKey, String.class).orElseGet(() -> {
+            String fileName = getFileName(code);
+            redisCache.setObject(redisKey, fileName, FileMediaConstants.CODE_RESOURCE_MAP_TIMEOUT, FileMediaConstants.CODE_RESOURCE_MAP_TIMEUNIT);
+            return fileName;
+        });
     }
 
 }

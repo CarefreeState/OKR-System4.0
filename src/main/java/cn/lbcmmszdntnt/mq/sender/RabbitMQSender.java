@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.mq.sender;
 
-import cn.hutool.core.util.IdUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.ThreadPoolUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -29,12 +29,14 @@ public class RabbitMQSender {
 
     private final static Executor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ");
 
+    private final RabbitTemplate rabbitTemplate;
+
     private final static Function<Throwable, ? extends CorrelationData.Confirm> ON_FAILURE = ex -> {
         log.error("处理 ack 回执失败, {}", ex.getMessage());
         return null;
     };
 
-    private static MessagePostProcessor delayMessagePostProcessor(long delay) {
+    private MessagePostProcessor delayMessagePostProcessor(long delay) {
         return message -> {
             // 小于 0 也是立即执行
             message.getMessageProperties().setDelay((int) Math.max(delay, 0));
@@ -42,12 +44,14 @@ public class RabbitMQSender {
         };
     };
 
-    private final RabbitTemplate rabbitTemplate;
+    private CorrelationData newCorrelationData() {
+        return new CorrelationData(UUID.randomUUID().toString().replace("-", ""));
+    }
 
     private <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
         log.info("准备发送消息，exchange: {}, routingKey: {}, msg: {}, delay: {}s, maxRetries: {}",
                 exchange, routingKey, msg, TimeUnit.MILLISECONDS.toSeconds(delay), maxRetries);
-        CorrelationData correlationData = new CorrelationData(IdUtil.randomUUID());
+        CorrelationData correlationData = newCorrelationData();
         MessagePostProcessor delayMessagePostProcessor = delayMessagePostProcessor(delay);
         correlationData.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(new Consumer<>() {
 
@@ -66,7 +70,7 @@ public class RabbitMQSender {
                         }
                         retryCount++;
                         log.warn("开始第 {} 次重试", retryCount);
-                        CorrelationData cd = new CorrelationData(IdUtil.randomUUID());
+                        CorrelationData cd = newCorrelationData();
                         cd.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(this, EXECUTOR);
                         rabbitTemplate.convertAndSend(exchange, routingKey, msg, delayMessagePostProcessor, cd);
                     }

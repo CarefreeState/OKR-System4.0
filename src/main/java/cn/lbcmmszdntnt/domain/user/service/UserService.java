@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.domain.user.service;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +37,6 @@ public interface UserService extends IService<User> {
     void bindingEmail(Long userId, String email, String code, String recordEmail);
 
     void bindingWx(Long userId, String randomCode, String code);
-
-    String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto);
 
     void onLoginState(String secret, Long userId);
 

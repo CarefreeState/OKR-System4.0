@@ -10,6 +10,7 @@ import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
+import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
@@ -50,6 +51,8 @@ public class TeamOkrController {
     private final MemberService memberService;
 
     private final OkrQRCodeService okrQRCodeService;
+
+    private final TeamInviteService teamInviteService;
 
     @GetMapping("/list")
     @Operation(summary = "获取管理的团队 OKR 列表")
@@ -148,7 +151,7 @@ public class TeamOkrController {
         // 检测管理者身份
         teamOkrService.checkManager(teamId, managerId);
         // 进行操作
-        String path = okrQRCodeService.getInviteQRCodeLock(teamId, TeamOkrUtil.getTeamName(teamId), QRCodeType.get(type));
+        String path = okrQRCodeService.getInviteQRCode(teamId, TeamOkrUtil.getTeamName(teamId), teamInviteService.getSecret(teamId), QRCodeType.get(type));
         return SystemJsonResponse.SYSTEM_SUCCESS(path);
     }
 

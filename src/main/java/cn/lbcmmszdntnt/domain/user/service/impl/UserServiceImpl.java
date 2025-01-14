@@ -5,26 +5,22 @@ import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpUtil;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
-import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
-import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
-import cn.lbcmmszdntnt.domain.qrcode.service.WxBindingQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
+import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
-import cn.lbcmmszdntnt.redis.lock.RedisLock;
-import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
 import cn.lbcmmszdntnt.wxtoken.TokenUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -48,8 +44,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final static String ID_USER_MAP = "idUserMap:";
 
-    private final static String USER_PHOTO_LOCK = "userPhotoLock:";
-
     private final static Long EMAIL_USER_TTL = 2L;
 
     private final static Long WX_USER_TTL = 2L;
@@ -64,15 +58,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private final RedisCache redisCache;
 
-    private final RedisLock redisLock;
-
-    private final RedisLockProperties redisLockProperties;
-
-    private final WxBindingQRCodeService wxBindingQRCodeService;
+    private final WxBindingService wxBindingService;
 
     private final EmailService emailService;
-
-    private final FileMediaService fileMediaService;
 
     @Override
     public String getUserFlag(String code) {
@@ -181,7 +169,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void bindingWx(Long userId, String randomCode, String code) {
         // 验证以下验证码
-        wxBindingQRCodeService.checkParams(userId, randomCode);
+        wxBindingService.checkSecret(userId, randomCode);
         String resultJson = getUserFlag(code);
         Map<String, Object> response = JsonUtil.analyzeJson(resultJson, Map.class);
         String openid = (String) response.get("openid");
@@ -206,41 +194,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         log.info("用户 {} 成功绑定 微信 {}", userId, openid);
     }
 
-    private String uploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto) {
-        // 删除原头像（哪怕是字符串是网络路径/非法，只要本地没有完全对应上，就不算存在本地）
-//        String originSavePath = MediaUtil.getLocalFilePath(originPhoto);
-//        IOThreadPool.submit(() -> {
-//            MediaUtil.deleteFile(originSavePath);
-//        });
-        // todo: 补充删除文件的业务
-        // 下载头像到本地
-        String code = fileMediaService.uploadImage("photo", multipartFile);
-        // 修改数据库
-        this.lambdaUpdate()
-                .set(User::getPhoto, code)
-                .eq(User::getId, userId)
-                .update();
-        deleteUserAllCache(userId);
-        return code;
-    }
-
-    @Override
-    public String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto) {
-        String lock = USER_PHOTO_LOCK + userId;
-        return redisLock.tryLockGetSomething(lock, 0L, redisLockProperties.getTimeout(), TimeUnit.SECONDS,
-                () -> uploadPhoto(multipartFile, userId, originPhoto),
-                () -> {
-                    throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);
-                });
-    }
-
     @Override
     public void onLoginState(String secret, Long userId) {
-        String redisKey = QRCodeConfig.WX_LOGIN_QR_CODE_MAP + secret;
+        String redisKey = QRCodeConstants.WX_LOGIN_QR_CODE_MAP + secret;
         redisCache.getObject(redisKey, Long.class).ifPresentOrElse(uid -> {
             if (uid.compareTo(0L) <= 0) {
                 redisCache.setObject(redisKey, JwtUtil.createJwt(JWT_SUBJECT, userId),
-                        QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
+                        QRCodeConstants.WX_LOGIN_QR_CODE_TTL, QRCodeConstants.WX_LOGIN_QR_CODE_UNIT);
             }
         }, () -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID);

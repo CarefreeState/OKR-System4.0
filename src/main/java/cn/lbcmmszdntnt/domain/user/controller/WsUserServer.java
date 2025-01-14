@@ -4,7 +4,7 @@ package cn.lbcmmszdntnt.domain.user.controller;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
-import cn.lbcmmszdntnt.domain.qrcode.config.QRCodeConfig;
+import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
@@ -32,7 +32,7 @@ public class WsUserServer {
     public void onOpen(Session session) throws DeploymentException {
         SchedulerThreadPool.schedule(() -> {
             WsSessionUtil.close(session);
-        }, QRCodeConfig.WX_LOGIN_QR_CODE_TTL, QRCodeConfig.WX_LOGIN_QR_CODE_UNIT);
+        }, QRCodeConstants.WX_LOGIN_QR_CODE_TTL, QRCodeConstants.WX_LOGIN_QR_CODE_UNIT);
         // 获得邀请码
         LoginQRCodeVO loginQRCode = OKR_QR_CODE_SERVICE.getLoginQRCode();
         // 获得在 Redis 的键

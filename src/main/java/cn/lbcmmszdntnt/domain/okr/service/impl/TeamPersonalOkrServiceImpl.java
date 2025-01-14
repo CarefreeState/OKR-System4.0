@@ -13,11 +13,10 @@ import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
-import cn.lbcmmszdntnt.domain.qrcode.factory.InviteQRCodeServiceFactory;
-import cn.lbcmmszdntnt.domain.qrcode.service.InviteQRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
@@ -47,9 +46,9 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
 
     private final MemberService memberService;
 
-    private final RedisCache redisCache;
+    private final TeamInviteService teamInviteService;
 
-    private final InviteQRCodeServiceFactory inviteQRCodeServiceFactory;
+    private final RedisCache redisCache;
 
     @Override
     public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
@@ -57,8 +56,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
         Long teamId = okrOperateDTO.getTeamOkrId();
         String secret = okrOperateDTO.getSecret();
         QRCodeType type = Optional.ofNullable(okrOperateDTO.getType()).orElse(QRCodeConstants.DEFAULT_QRCODE_TYPE);
-        InviteQRCodeService inviteQRCodeService = inviteQRCodeServiceFactory.getService(type);
-        inviteQRCodeService.checkParams(teamId, secret);
+        teamInviteService.checkSecret(teamId, secret);
         // 获取用户 ID（受邀者）
         Long userId = user.getId();
         // 判断是否可以加入团队

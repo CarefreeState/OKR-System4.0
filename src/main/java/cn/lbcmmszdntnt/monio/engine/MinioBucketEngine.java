@@ -1,14 +1,9 @@
 package cn.lbcmmszdntnt.monio.engine;
 
-import cn.lbcmmszdntnt.monio.config.MinioConfig;
-import cn.lbcmmszdntnt.monio.enums.MinioPolicyTemplate;
-import cn.lbcmmszdntnt.monio.template.DefaultPolicyTemplate;
-import cn.lbcmmszdntnt.template.engine.TextEngine;
 import io.minio.*;
 import io.minio.messages.Bucket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,11 +18,7 @@ import java.util.List;
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class MinioBucketEngine implements InitializingBean {
-
-    private final TextEngine textEngine;
-
-    private final MinioConfig minioConfig;
+public class MinioBucketEngine {
 
     private final MinioClient minioClient;
 
@@ -88,17 +79,4 @@ public class MinioBucketEngine implements InitializingBean {
         return minioClient.listBuckets();
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // 如果不存在，则初始化桶
-        String bucketName = minioConfig.getBucketName();
-        // 设置规则：所有人都能读（否则就只能获取）
-        DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
-                .bucketName(bucketName)
-                .build();
-        String policy = textEngine.builder()
-                .append(MinioPolicyTemplate.ALLOW_ALL_GET.getTemplate(), policyTemplate)
-                .build();
-        tryMakeBucket(bucketName, policy);
-    }
 }

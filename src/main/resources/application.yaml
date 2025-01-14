@@ -34,14 +34,6 @@ mybatis-plus:
 
 media:
   map: media/
-  static: static/
-  binding: binding/
-  swagger: swagger/
-  login: login/
-  photo: photo/
-  invite: invite/
-  common: common/
-  medal: medal/
 
 okr:
   service:
@@ -60,10 +52,10 @@ okr:
         action: actionServiceImpl
         priority1: priorityNumberOneServiceImpl
         priority2: priorityNumberTwoServiceImpl
-    invite-qrcode-service:
+    qrcode-provider:
       map:
-        wx: wxInviteQRCodeServiceImpl
-        web: webInviteQRCodeServiceImpl
+        wx: wxQRCodeProviderImpl
+        web: webQRCodeProviderImpl
     team-achievement-service:
       map:
         action: longTermAchievementServiceImpl
@@ -85,20 +77,6 @@ medal:
       - color: "#000002"
         credit: 20
     threshold: 60
-
-
-font:
-  path: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
-  board: /static/board.png
-  text:
-    color:
-      r: 43
-      g: 90
-      b: 103
-    common: "[come on]"
-    invite: "[invite]"
-    binding: "[BINDING]"
-    login: "[LOGIN]"
 
 
 xxl:
@@ -147,3 +125,73 @@ secure:
           permit:
           authenticate: false
           authorize: false
+
+
+font:
+  path: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
+  board: /static/board.png
+  text:
+    line-color:
+      red: 43
+      green: 90
+      blue: 103
+    common: "[come on]"
+    invite: "[invite]"
+    binding: "[BINDING]"
+    login: "[LOGIN]"
+
+wx:
+  common:
+    check-path: false     # 是否检测是否发布以及是否存在
+    env-version: ${okr.wx.env-version}  # 版本
+    width: 500           # 图片大小
+    auto_color: false    # 颜色是否默认
+    line-color: # 颜色
+      red: 20
+      green: 133
+      blue: 238
+    is-hyaline: false    # 透明底
+  invite:
+    page: pages/invite   # 页面
+    check-path: false     # 是否检测是否发布以及是否存在
+    env-version: ${okr.wx.env-version}  # 版本
+    width: 500           # 图片大小
+    auto_color: false    # 颜色是否默认
+    line-color:           # 颜色
+      red: 20
+      green: 133
+      blue: 238
+    is-hyaline: false    # 透明底
+  binding:
+    page: pages/binding   # 页面
+    check-path: false     # 是否检测是否发布以及是否存在
+    env-version: ${okr.wx.env-version}  # 版本
+    width: 500          # 图片大小
+    auto_color: false    # 颜色是否默认
+    line-color: # 颜色
+      red: 0
+      green: 0
+      blue: 0
+    is-hyaline: false    # 透明底
+  login:
+    page: pages/confirm   # 页面
+    check-path: false     # 是否检测是否发布以及是否存在
+    env-version: ${okr.wx.env-version}  # 版本
+    width: 500          # 图片大小
+    auto_color: false    # 颜色是否默认
+    line-color: # 颜色
+      red: 0
+      green: 0
+      blue: 0
+    is-hyaline: false    # 透明底
+
+web:
+  invite:
+    scene-key: teamId
+    secret: secret
+    page: ${spring.domain}/pages/invite   # 页面
+    width: 500           # 图片大小
+    line-color: # 颜色
+      red: 20
+      green: 133
+      blue: 238

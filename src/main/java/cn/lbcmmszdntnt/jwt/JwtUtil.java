@@ -144,6 +144,7 @@ public class JwtUtil {
     // 解析并无感刷新
     public static <T> T parseJwtData(String jwt, T data, HttpServletResponse response) {
         Claims claims = parseJwt(jwt);
+        // map -(灌入)-> data
         data = BeanUtil.fillBeanWithMap(claims.get(CUSTOM_CLAIMS_KEY, Map.class), data, Boolean.TRUE);
         String subject = claims.getSubject();
         if(Objects.nonNull(response) && judgeApproachExpiration(claims)) {

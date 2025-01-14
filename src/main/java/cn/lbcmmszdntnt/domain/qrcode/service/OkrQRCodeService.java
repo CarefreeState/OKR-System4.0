@@ -12,19 +12,12 @@ import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
  */
 public interface OkrQRCodeService {
 
-    String getInviteQRCode(Long teamId, String teamName, QRCodeType type);
+    String getInviteQRCode(Long teamId, String teamName, String secret, QRCodeType type);
+    void deleteTeamNameQRCodeCache(Long teamId);
 
-    String getInviteQRCodeLock(Long teamId, String teamName, QRCodeType type);
-
-    void deleteTeamNameCache(Long teamId);
-
-    String getBindingQRCode(Long userId, String randomCode);
-
-    String getSecretCode();
+    String getBindingQRCode(Long userId, String secret);
 
     LoginQRCodeVO getLoginQRCode();
-
-    LoginQRCodeVO getLoginQRCode(String secret);
 
     String getCommonQRCode();
 
