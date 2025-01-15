@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.provider;
 
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -8,6 +9,12 @@ package cn.lbcmmszdntnt.domain.qrcode.provider;
  * Time: 15:14
  */
 public interface QRCodeProvider {
+
+    interface QRCodeProcessor {
+        byte[] process(byte[] bytes);
+    }
+
+    <T> String getQRCode(T params, String scene, Long activeLimit, QRCodeProcessor strategy);
 
     String getInviteQRCode(Long teamId, String teamName, String secret);
     String getCommonQRCode();

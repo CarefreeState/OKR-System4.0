@@ -9,7 +9,7 @@ import cn.lbcmmszdntnt.domain.auth.service.LoginService;
 import cn.lbcmmszdntnt.domain.email.service.EmailService;
 import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
@@ -58,7 +58,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private final OkrQRCodeService okrQRCodeService;
+    private final QRCodeService QRCodeService;
 
     private final EmailService emailService;
 
@@ -110,7 +110,7 @@ public class UserController {
     public SystemJsonResponse<String> wxIdentifyCheck() {
         Long userId = InterceptorContext.getUser().getId();
         // 生成一个小程序检查码
-        String mapPath = okrQRCodeService.getBindingQRCode(userId, wxBindingService.getSecret(userId));
+        String mapPath = QRCodeService.getBindingQRCode(userId, wxBindingService.getSecret(userId));
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
 
@@ -120,7 +120,7 @@ public class UserController {
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginQRCodeVO> wxLoginCheck() {
         // 生成一个小程序检查码
-        LoginQRCodeVO result = okrQRCodeService.getLoginQRCode();
+        LoginQRCodeVO result = QRCodeService.getLoginQRCode();
         return SystemJsonResponse.SYSTEM_SUCCESS(result);
     }
 

@@ -14,7 +14,7 @@ import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
@@ -50,7 +50,7 @@ public class TeamOkrController {
 
     private final MemberService memberService;
 
-    private final OkrQRCodeService okrQRCodeService;
+    private final QRCodeService QRCodeService;
 
     private final TeamInviteService teamInviteService;
 
@@ -151,7 +151,7 @@ public class TeamOkrController {
         // 检测管理者身份
         teamOkrService.checkManager(teamId, managerId);
         // 进行操作
-        String path = okrQRCodeService.getInviteQRCode(teamId, TeamOkrUtil.getTeamName(teamId), teamInviteService.getSecret(teamId), QRCodeType.get(type));
+        String path = QRCodeService.getInviteQRCode(teamId, TeamOkrUtil.getTeamName(teamId), teamInviteService.getSecret(teamId), QRCodeType.get(type));
         return SystemJsonResponse.SYSTEM_SUCCESS(path);
     }
 

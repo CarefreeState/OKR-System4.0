@@ -71,12 +71,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public List<String> getPermissions(Long userId) {
-        // todo: 权限获取的业务
-        return Collections.emptyList();
-    }
-
-    @Override
     public Optional<User> getUserById(Long id) {
         String redisKey = ID_USER_MAP + id;
         return Optional.ofNullable(redisCache.getObject(redisKey, User.class).orElseGet(() -> {

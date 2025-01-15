@@ -21,7 +21,7 @@ import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
@@ -62,7 +62,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     private final MemberService memberService;
 
-    private final OkrQRCodeService okrQRCodeService;
+    private final QRCodeService QRCodeService;
 
     @Override
     public List<TeamOkr> selectChildTeams(Long id) {
@@ -187,7 +187,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             redisCache.deleteObject(TeamOkrUtil.TEAM_ID_NAME_MAP + teamId);
             // 2. 删除邀请码的缓存
             // (如果经常修改，那么这个团队一直都在本地只有一个小程序码，如果一个月内一次修改都没有，那么应该也不会重新获取邀请码，即使有，每个月多一张无伤大雅)
-            okrQRCodeService.deleteTeamNameQRCodeCache(teamId);
+            QRCodeService.deleteTeamNameQRCodeCache(teamId);
         });
     }
 

@@ -1,13 +1,15 @@
 package cn.lbcmmszdntnt.domain.qrcode.provider.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
 import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
+import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.config.FontTextConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.WxQRCodeConfig;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
-import cn.lbcmmszdntnt.domain.qrcode.service.impl.WxQRCodeServiceImpl;
 import cn.lbcmmszdntnt.wxtoken.model.dto.WxQRCode;
+import cn.lbcmmszdntnt.wxtoken.util.WxHttpRequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,15 +37,24 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
 
     private final WxQRCodeConfig wxQRCodeConfig;
 
-    private final WxQRCodeServiceImpl qrCodeService;
+    private final FileMediaService fileMediaService;
 
     private final FontTextConfig fontTextConfig;
+
+    @Override
+    public <T> String getQRCode(T params, String scene, Long activeLimit, QRCodeProcessor strategy) {
+        WxQRCode wxQRCode = params instanceof WxQRCode qrCode ? qrCode : BeanUtil.copyProperties(params, WxQRCode.class);
+        wxQRCode.setScene(scene);
+        byte[] bytes = WxHttpRequestUtil.wxQrcode(wxQRCode);
+        bytes = strategy.process(bytes);
+        return fileMediaService.uploadImage(QRCodeConstants.DEFAULT_ORIGINAL_NAME, bytes, activeLimit);
+    }
 
     @Override
     public String getInviteQRCode(Long teamId, String teamName, String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getInvite();
         String scene = String.format("teamId=%d&secret=%s", teamId, secret);
-        return qrCodeService.getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     teamName,
@@ -57,7 +68,7 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     public String getCommonQRCode() {
         WxQRCode qrCode = wxQRCodeConfig.getCommon();
         String scene = "you=nice";
-        return qrCodeService.getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     COMMON_CODE_MESSAGE,
@@ -71,7 +82,7 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     public String getLoginQRCode(String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getLogin();
         String scene = String.format("secret=%s", secret);
-        return qrCodeService.getQRCode(qrCode, scene, LOGIN_CODE_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, LOGIN_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     LOGIN_CODE_MESSAGE,
@@ -85,7 +96,7 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     public String getBindingQRCode(Long userId, String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getBinding();
         String scene = String.format("userId=%d&secret=%s", userId, secret);
-        return qrCodeService.getQRCode(qrCode, scene, BINDING_CODE_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, BINDING_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     BINDING_CODE_MESSAGE,

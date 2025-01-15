@@ -5,7 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.websocket.session.WsSessionMapper;
 import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
@@ -25,7 +25,7 @@ public class WsUserServer {
 
     public final static String WEB_SOCKET_USER_SERVER = "WebWxLoginServer:";
 
-    private final static OkrQRCodeService OKR_QR_CODE_SERVICE = SpringUtil.getBean(OkrQRCodeService.class);
+    private final static QRCodeService OKR_QR_CODE_SERVICE = SpringUtil.getBean(QRCodeService.class);
 
     @OnOpen
     public void onOpen(Session session) throws DeploymentException {

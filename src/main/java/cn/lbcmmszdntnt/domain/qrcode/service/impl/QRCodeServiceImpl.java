@@ -9,7 +9,7 @@ import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.QRCodeProviderFactory;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
@@ -29,8 +29,7 @@ import java.util.Arrays;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class OkrQRCodeServiceImpl implements OkrQRCodeService {
-
+public class QRCodeServiceImpl implements QRCodeService {
 
     private final RedisCache redisCache;
 

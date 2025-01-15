@@ -17,8 +17,6 @@ public interface UserService extends IService<User> {
 
     JsCode2SessionVO getUserFlag(String code);
 
-    List<String> getPermissions(Long userId);
-
     Optional<User> getUserById(Long id);
 
     Optional<User> getUserByEmail(String email);

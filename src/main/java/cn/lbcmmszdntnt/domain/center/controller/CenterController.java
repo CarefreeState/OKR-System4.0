@@ -4,7 +4,7 @@ package cn.lbcmmszdntnt.domain.center.controller;
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
-import cn.lbcmmszdntnt.domain.qrcode.service.OkrQRCodeService;
+import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
@@ -34,7 +34,7 @@ public class CenterController {
 
     private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
 
-    private final OkrQRCodeService okrQRCodeService;
+    private final QRCodeService QRCodeService;
 
     private final FileMediaService fileMediaService;
 
@@ -43,7 +43,7 @@ public class CenterController {
     @Intercept(authenticate = false, authorize = false)
     public void fileMedia(@PathVariable(value = "code", required = false) @Parameter(description = "资源码") String code,
                           HttpServletResponse response)  {
-        fileMediaService.preview(StringUtils.hasText(code) ? code : okrQRCodeService.getCommonQRCode(), response);
+        fileMediaService.preview(StringUtils.hasText(code) ? code : QRCodeService.getCommonQRCode(), response);
     }
 
     @GetMapping("/jwt/{userId}")

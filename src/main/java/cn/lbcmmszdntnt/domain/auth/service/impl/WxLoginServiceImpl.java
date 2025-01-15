@@ -49,7 +49,6 @@ public class WxLoginServiceImpl implements LoginService {
         // 3. 构造用户对象
         User user = new User();
         // 4. 尝试插入数据库
-        // todo: 多个 openid 用 unionid 去判断是否是同一个用户（需要的时候再去写）
         user.setOpenid(openId);
         user.setUnionid(userFlag.getUnionid());
         userService.getUserByOpenid(openId)
