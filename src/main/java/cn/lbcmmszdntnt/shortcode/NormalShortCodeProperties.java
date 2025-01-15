@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.shortcode;
+package cn.lbcmmszdntnt.shortcode;
 
 import lombok.Getter;
 import lombok.Setter;

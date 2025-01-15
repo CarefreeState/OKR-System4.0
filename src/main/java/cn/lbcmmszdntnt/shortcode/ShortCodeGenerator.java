@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.shortcode;
+package cn.lbcmmszdntnt.shortcode;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;

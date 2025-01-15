@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.shortcode.NormalShortCodeGenerator;
+import cn.lbcmmszdntnt.shortcode.NormalShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;

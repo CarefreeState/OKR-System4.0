@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.shortcode;
+package cn.lbcmmszdntnt.shortcode;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
