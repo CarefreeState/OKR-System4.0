@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Intercept
 public class SecondQuadrantController {
 
-    @Value("${limit.time.second}")
+    @Value("${quadrant-cycle.limit.second}")
     private Integer secondQuadrantCycle;
 
     private final SecondQuadrantService secondQuadrantService;

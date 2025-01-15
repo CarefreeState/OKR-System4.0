@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.record.config;
 
 import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.record.constants.DayRecordConstants;
 import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import cn.lbcmmszdntnt.domain.record.service.DayRecordService;

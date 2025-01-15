@@ -29,16 +29,13 @@ public class DeadlineDeadlineEventHandlerChain extends DeadlineEventHandler {
 
     private final ThirdQuadrantDeadlineEventHandler thirdQuadrantEventHandler;
 
-    private DeadlineEventHandler initHandlerChain() {
-        firstQuadrantEventHandler.setNextHandler(secondQuadrantEventHandler);
-        secondQuadrantEventHandler.setNextHandler(thirdQuadrantEventHandler);
-        return firstQuadrantEventHandler;
-    }
-
     @PostConstruct
     public void doPostConstruct() {
-        this.setNextHandler(initHandlerChain());
+        firstQuadrantEventHandler.setNextHandler(secondQuadrantEventHandler);
+        secondQuadrantEventHandler.setNextHandler(thirdQuadrantEventHandler);
+        this.setNextHandler(firstQuadrantEventHandler);
     }
+
     @Override
     public void handle(DeadlineEvent deadlineEvent, long nowTimestamp) {
         super.doNextHandler(deadlineEvent, nowTimestamp);

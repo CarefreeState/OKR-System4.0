@@ -1,8 +1,9 @@
 package cn.lbcmmszdntnt.domain.qrcode.config;
 
 import cn.lbcmmszdntnt.wxtoken.model.dto.LineColor;
-import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,10 +17,11 @@ import java.util.Optional;
  * Date: 2024-03-31
  * Time: 1:26
  */
+@Getter
+@Setter
 @Configuration
-@Data
 @ConfigurationProperties(prefix = "font.text")
-public class FontTextConfig implements InitializingBean {
+public class FontTextConfig {
 
     private LineColor lineColor;
 
@@ -33,8 +35,8 @@ public class FontTextConfig implements InitializingBean {
 
     private Color color;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    @PostConstruct
+    public void init() {
         this.color = Optional.ofNullable(color).orElseGet(lineColor::color);
     }
 }

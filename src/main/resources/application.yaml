@@ -6,6 +6,7 @@ spring:
     active: @profiles.active@
   trace-id: @trace.id.name@
   trace-uri: @trace.uri.name@
+  trace-method: @trace.uri.method@
 
 # 日志配置
 logging:
@@ -31,9 +32,6 @@ mybatis-plus:
       update-strategy: not_null #更新策略:只更新非空字段
       insert-strategy: not_null #插入策略:为空走默认值
   db-type: MYSQL # 分页时指定数据库类型
-
-media:
-  map: media/
 
 okr:
   service:
@@ -67,28 +65,34 @@ okr:
         priority1: dayRecordServiceSecondImpl
         priority2: dayRecordServiceSecondImpl
 
-medal:
-  status-flag:
-    status-flag-properties:
-      - color: "#000000"
-        credit: 80
-      - color: "#000001"
-        credit: 50
-      - color: "#000002"
-        credit: 20
-    threshold: 60
+status-flag:
+  properties:
+    - color: "#000000"
+      credit: 80
+    - color: "#000001"
+      credit: 50
+    - color: "#000002"
+      credit: 20
+  threshold: 60
 
-limit:
-  time:
+quadrant-cycle:
+  limit:
     second: 86400
     multiple: 2
+
 resource:
+  local:
+    patten: /media/** # 路由前缀
+    location: file:D:/media/ # 本地存储的根路径
   compression:
     threshold: 65536
   upload:
     max-file-size: 20
     max-request-size: 100
     data-unit: megabytes
+  static:
+    font: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
+    board: /static/board.png
 
 secure:
   custom:
@@ -114,10 +118,7 @@ secure:
           authenticate: false
           authorize: false
 
-
 font:
-  path: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
-  board: /static/board.png
   text:
     line-color:
       red: 43
@@ -128,56 +129,58 @@ font:
     binding: "[BINDING]"
     login: "[LOGIN]"
 
-wx:
-  common:
-    check-path: false     # 是否检测是否发布以及是否存在
-    env-version: ${okr.wx.env-version}  # 版本
-    width: 500           # 图片大小
-    auto_color: false    # 颜色是否默认
-    line-color: # 颜色
-      red: 20
-      green: 133
-      blue: 238
-    is-hyaline: false    # 透明底
-  invite:
-    page: pages/invite   # 页面
-    check-path: false     # 是否检测是否发布以及是否存在
-    env-version: ${okr.wx.env-version}  # 版本
-    width: 500           # 图片大小
-    auto_color: false    # 颜色是否默认
-    line-color:           # 颜色
-      red: 20
-      green: 133
-      blue: 238
-    is-hyaline: false    # 透明底
-  binding:
-    page: pages/binding   # 页面
-    check-path: false     # 是否检测是否发布以及是否存在
-    env-version: ${okr.wx.env-version}  # 版本
-    width: 500          # 图片大小
-    auto_color: false    # 颜色是否默认
-    line-color: # 颜色
-      red: 0
-      green: 0
-      blue: 0
-    is-hyaline: false    # 透明底
-  login:
-    page: pages/confirm   # 页面
-    check-path: false     # 是否检测是否发布以及是否存在
-    env-version: ${okr.wx.env-version}  # 版本
-    width: 500          # 图片大小
-    auto_color: false    # 颜色是否默认
-    line-color: # 颜色
-      red: 0
-      green: 0
-      blue: 0
-    is-hyaline: false    # 透明底
+qrcode:
+  wx:
+    common:
+      check-path: false     # 是否检测是否发布以及是否存在
+      env-version: ${okr.wx.env-version}  # 版本
+      width: 500           # 图片大小
+      auto_color: false    # 颜色是否默认
+      line-color: # 颜色
+        red: 20
+        green: 133
+        blue: 238
+      is-hyaline: false    # 透明底
+    invite:
+      page: pages/invite   # 页面
+      check-path: false     # 是否检测是否发布以及是否存在
+      env-version: ${okr.wx.env-version}  # 版本
+      width: 500           # 图片大小
+      auto_color: false    # 颜色是否默认
+      line-color: # 颜色
+        red: 20
+        green: 133
+        blue: 238
+      is-hyaline: false    # 透明底
+    binding:
+      page: pages/binding   # 页面
+      check-path: false     # 是否检测是否发布以及是否存在
+      env-version: ${okr.wx.env-version}  # 版本
+      width: 500          # 图片大小
+      auto_color: false    # 颜色是否默认
+      line-color: # 颜色
+        red: 0
+        green: 0
+        blue: 0
+      is-hyaline: false    # 透明底
+    login:
+      page: pages/confirm   # 页面
+      check-path: false     # 是否检测是否发布以及是否存在
+      env-version: ${okr.wx.env-version}  # 版本
+      width: 500          # 图片大小
+      auto_color: false    # 颜色是否默认
+      line-color: # 颜色
+        red: 0
+        green: 0
+        blue: 0
+      is-hyaline: false    # 透明底
+  web:
+    invite:
+      page: ${spring.domain}/pages/invite   # 页面
+      width: 500           # 图片大小
+      line-color: # 颜色
+        red: 20
+        green: 133
+        blue: 238
 
-web:
-  invite:
-    page: ${spring.domain}/pages/invite   # 页面
-    width: 500           # 图片大小
-    line-color: # 颜色
-      red: 20
-      green: 133
-      blue: 238
+

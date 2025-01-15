@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
+import cn.lbcmmszdntnt.common.shortcode.NormalShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TeamInviteServiceImpl implements TeamInviteService {
 
+    private final NormalShortCodeGenerator normalShortCodeGenerator;
+
     @Override
     public String getSecret(Long teamId) {
-        return ShortCodeUtil.getShortCode(String.format("teamId=%d", teamId));
+        return normalShortCodeGenerator.convert(String.format("teamId=%d", teamId));
     }
 
     @Override

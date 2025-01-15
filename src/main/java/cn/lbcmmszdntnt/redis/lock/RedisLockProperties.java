@@ -1,9 +1,6 @@
 package cn.lbcmmszdntnt.redis.lock;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Data;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,10 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 2024-10-13
  * Time: 0:34
  */
-@Configuration
-@Setter
-@Getter
-@ConfigurationProperties(prefix = "spring.data.redisson.lock")
+@Data
 public class RedisLockProperties {
 
     private Long wait;

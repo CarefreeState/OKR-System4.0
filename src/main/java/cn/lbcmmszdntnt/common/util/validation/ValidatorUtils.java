@@ -9,10 +9,10 @@ import java.util.Set;
 
 public class ValidatorUtils {
 
-	private static final Validator validator = SpringUtil.getBean(Validator.class);
+	private final static Validator VALIDATOR = SpringUtil.getBean(Validator.class);
 
 	public static <T> void validate(T object, Class<?>... groups) {
-		Set<ConstraintViolation<T>> validate = validator.validate(object, groups);
+		Set<ConstraintViolation<T>> validate = VALIDATOR.validate(object, groups);
 		if (!validate.isEmpty()) {
 			String message = String.format("请求对象:'%s'", object.toString());
 			throw new ConstraintViolationException(message, validate);

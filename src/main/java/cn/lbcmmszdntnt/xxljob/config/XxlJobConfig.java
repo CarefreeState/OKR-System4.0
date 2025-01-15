@@ -7,10 +7,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Setter
 @Getter
+@Setter
 @Configuration
-@ConfigurationProperties(prefix = "xxl.job")
+@ConfigurationProperties(prefix = "okr.xxl-job")
 public class XxlJobConfig {
 
     private Admin admin;

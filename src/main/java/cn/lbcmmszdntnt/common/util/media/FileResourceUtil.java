@@ -3,12 +3,12 @@ package cn.lbcmmszdntnt.common.util.media;
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
+import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.UUID;
 
 import static cn.lbcmmszdntnt.common.enums.FileResourceType.*;
 
@@ -112,7 +112,7 @@ public class FileResourceUtil {
 
     public static String getSimpleFileName(String suffix) {
         checkSuffix(suffix);
-        return UUID.randomUUID().toString().replace("-", "") + suffix;
+        return UUIDUtil.uuid32() + suffix;
     }
 
     public static String getFileNameBySuffix(String filename, String suffix) {

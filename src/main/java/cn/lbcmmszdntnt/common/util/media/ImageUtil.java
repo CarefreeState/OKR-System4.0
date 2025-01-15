@@ -1,12 +1,12 @@
 package cn.lbcmmszdntnt.common.util.media;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.config.ResourceStaticConfig;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.freewayso.image.combiner.ImageCombiner;
 import com.freewayso.image.combiner.enums.OutputFormat;
 import com.freewayso.image.combiner.enums.ZoomMode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,9 +18,7 @@ import java.io.InputStream;
 @Slf4j
 public class ImageUtil {
 
-    private final static String DEFAULT_FONT = "宋体";
-    private final static String FONT_PATH = SpringUtil.getProperty("font.path");
-    private final static String BOARD_PATH = SpringUtil.getProperty("font.board");
+    private final static ResourceStaticConfig RESOURCE_STATIC_CONFIG = SpringUtil.getBean(ResourceStaticConfig.class);
     private final static double MAX_PX_RATE = 0.213;
     private final static double REFER_WIDTH_RATE = 0.800;
     private final static double REFER_HEIGHT_RATE = 0.333;
@@ -31,16 +29,13 @@ public class ImageUtil {
     private final static double REFER_HEIGHT = REFER_HEIGHT_RATE * IMAGE_SIZE;
 
     public static Font getFont(float fontSize){
-        Font font = new Font(DEFAULT_FONT, Font.BOLD, (int)fontSize); // 默认字体
-        ClassPathResource classPathResource = new ClassPathResource(FONT_PATH);
-        try (InputStream inputStream = classPathResource.getInputStream()) {
+        try (InputStream inputStream = MediaUtil.getInputStream(RESOURCE_STATIC_CONFIG.getFontBytes())) {
             Font tempFont = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             //当参数为 float 类型，才是设置文字大小
-            font = tempFont.deriveFont(fontSize);
+            return tempFont.deriveFont(fontSize);
         } catch (IOException | FontFormatException e) {
             throw new GlobalServiceException(e.getMessage());
         }
-        return font;
     }
 
     public static byte[] pressText(String text, byte[] bytes, Color color, Font font, int x, int y) throws IOException {
@@ -58,7 +53,7 @@ public class ImageUtil {
         graphics.dispose();
         // 输出到文件流
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ImageIO.write(image, MediaUtil.SUFFIX, outputStream);
+            ImageIO.write(image, MediaUtil.DEFAULT_SUFFIX, outputStream);
             outputStream.flush();
             return outputStream.toByteArray();
         }
@@ -129,8 +124,7 @@ public class ImageUtil {
 
     public static byte[] signatureWrite(byte[] bytes, String text, String flag, Color textColor, Color flagColor) {
         try {
-            ClassPathResource classPathResource = new ClassPathResource(BOARD_PATH);
-            byte[] mergedImage = mergeImage(bytes, MediaUtil.getBytes(classPathResource.getInputStream()),
+            byte[] mergedImage = mergeImage(bytes, RESOURCE_STATIC_CONFIG.getBoardBytes(),
                     125, 250, 500, 500);
             mergedImage = signatureFancy(flag, flagColor, mergedImage);
             return writeFancy(text, textColor, mergedImage);

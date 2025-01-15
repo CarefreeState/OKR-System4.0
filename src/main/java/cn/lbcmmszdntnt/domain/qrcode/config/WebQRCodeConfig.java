@@ -1,7 +1,8 @@
 package cn.lbcmmszdntnt.domain.qrcode.config;
 
 import cn.lbcmmszdntnt.domain.qrcode.model.dto.WebQRCode;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,9 +13,10 @@ import org.springframework.context.annotation.Configuration;
  * Date: 2025-01-14
  * Time: 16:00
  */
-@Data
+@Getter
+@Setter
 @Configuration
-@ConfigurationProperties(prefix = "web")
+@ConfigurationProperties(prefix = "qrcode.web")
 public class WebQRCodeConfig {
 
     private WebQRCode invite;

@@ -1,12 +1,11 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
-import cn.lbcmmszdntnt.domain.qrcode.bloomfilter.LoginSecretCodeBloomFilter;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.QRCodeProviderFactory;
+import cn.lbcmmszdntnt.domain.qrcode.generator.LoginShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
@@ -35,7 +34,7 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     private final RedisLock redisLock;
 
-    private final LoginSecretCodeBloomFilter loginSecretCodeBloomFilter;
+    private final LoginShortCodeGenerator loginShortCodeGenerator;
 
     private final QRCodeProviderFactory qrCodeProviderFactory;
 
@@ -76,11 +75,7 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Override
     public LoginQRCodeVO getLoginQRCode() {
-        String secret = null;
-        do {
-            secret = ShortCodeUtil.getShortCode(ShortCodeUtil.getSalt());
-        } while (loginSecretCodeBloomFilter.contains(secret));
-        loginSecretCodeBloomFilter.add(secret);
+        String secret = loginShortCodeGenerator.convert();
         QRCodeProvider provider = qrCodeProviderFactory.getProvider(QRCodeType.WX);
         // 设置为 -1
         redisCache.setObject(QRCodeConstants.WX_LOGIN_QR_CODE_MAP + secret, -1,

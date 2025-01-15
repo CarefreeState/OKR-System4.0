@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.media.config;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;

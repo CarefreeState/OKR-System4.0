@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.redis.config;
 
+import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.redisson.Redisson;
@@ -19,10 +20,10 @@ import java.util.Optional;
  * Date: 2024-04-03
  * Time: 10:55
  */
-@Configuration
-@Setter
 @Getter
-@ConfigurationProperties(prefix = "spring.data.redisson")
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = "okr.redisson")
 public class RedissonConfig {
 
     private String url;
@@ -30,6 +31,8 @@ public class RedissonConfig {
     private String password;
 
     private Integer database;
+
+    private RedisLockProperties lock;
 
     @Bean
     public RedissonClient redisson() {
@@ -43,5 +46,9 @@ public class RedissonConfig {
         return Redisson.create(config);
     }
 
+    @Bean
+    public RedisLockProperties redisLockProperties() {
+        return this.lock;
+    }
 
 }

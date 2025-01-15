@@ -4,6 +4,7 @@ import cn.lbcmmszdntnt.domain.coredeadline.service.OkrCoreDeadlineService;
 import cn.lbcmmszdntnt.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class OkrCoreDeadlineXxlJobConfig {
 
     private final static String AUTHOR = "macaku";
@@ -31,7 +33,9 @@ public class OkrCoreDeadlineXxlJobConfig {
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
             author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】检查 OKR 截止时间")
     public void checkDeadline() {
+        log.warn("--> --> --> --> 开始检查 OKR 截止时间 --> --> --> -->");
         okrCoreDeadlineService.checkDeadline();
+        log.warn("<-- <-- <-- <-- <-- 检查完毕成功 <-- <-- <-- <-- <--");
     }
 
 }

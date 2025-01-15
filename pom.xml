@@ -23,6 +23,7 @@
 		<spring.application.version>${version}</spring.application.version>
 		<trace.id.name>traceId</trace.id.name>
 		<trace.uri.name>uri</trace.uri.name>
+		<trace.uri.method>method</trace.uri.method>
 	</properties>
 
 	<profiles>

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.util.thread.timer;
+package cn.lbcmmszdntnt.common.util.juc.timer;
 
 import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;

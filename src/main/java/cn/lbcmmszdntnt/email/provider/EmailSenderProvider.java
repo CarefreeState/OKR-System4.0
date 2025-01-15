@@ -6,6 +6,7 @@ import cn.lbcmmszdntnt.email.config.EmailSenderConfig;
 import cn.lbcmmszdntnt.email.config.EmailSenderProperties;
 import cn.lbcmmszdntnt.email.provider.strategy.ProvideStrategy;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -33,6 +34,15 @@ public class EmailSenderProvider implements InitializingBean {
 
     private ProvideStrategy provideStrategy;
 
+    @PostConstruct
+    public void init() {
+        // 初始化获取发送器实现的策略
+        this.provideStrategy = SpringUtil.getBean(
+                emailSenderConfig.getStrategy() + ProvideStrategy.BASE_NAME,
+                ProvideStrategy.class
+        );
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         // 构造邮件发送器实现
@@ -54,11 +64,6 @@ public class EmailSenderProvider implements InitializingBean {
         if(CollectionUtils.isEmpty(this.senderList)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.EMAIL_SENDER_NOT_EXISTS);
         }
-        // 初始化获取发送器实现的策略
-        this.provideStrategy = SpringUtil.getBean(
-                emailSenderConfig.getStrategy() + ProvideStrategy.BASE_NAME,
-                ProvideStrategy.class
-        );
     }
 
     public JavaMailSenderImpl provide() {

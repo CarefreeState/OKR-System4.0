@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.after;
 
-import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.common.util.juc.treadlocal.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

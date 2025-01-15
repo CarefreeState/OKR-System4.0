@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.interceptor.context;
 
-import cn.lbcmmszdntnt.common.util.thread.local.ThreadLocalMapUtil;
+import cn.lbcmmszdntnt.common.util.juc.treadlocal.ThreadLocalMapUtil;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.interceptor.config.properties.InterceptProperties;
 

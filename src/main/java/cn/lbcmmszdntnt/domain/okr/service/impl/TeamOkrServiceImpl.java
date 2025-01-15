@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.common.util.sql.BadSqlUtil;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
-import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;

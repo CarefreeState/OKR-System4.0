@@ -19,13 +19,13 @@ public class AccessToken {
 
     private long expireIn;//有效期限
 
-    volatile private static AccessToken ACCESS_TOKEN = null;
+    private volatile static AccessToken ACCESS_TOKEN = null;
 
     private AccessToken() {
     }
 
     public boolean isExpired() {
-        return Objects.isNull(token) || System.currentTimeMillis() > this.getExpireIn();
+        return Objects.isNull(this.token) || System.currentTimeMillis() > this.expireIn;
     }
 
     private static void setAccessToken() {

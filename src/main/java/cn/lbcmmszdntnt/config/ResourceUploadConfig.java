@@ -17,9 +17,9 @@ import org.springframework.util.unit.DataUnit;
  * Date: 2024-09-23
  * Time: 15:46
  */
-@Configuration
 @Getter
 @Setter
+@Configuration
 @ConfigurationProperties(prefix = "resource.upload")
 public class ResourceUploadConfig {
 

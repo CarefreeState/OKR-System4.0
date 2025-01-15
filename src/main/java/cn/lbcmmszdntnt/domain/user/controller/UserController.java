@@ -52,6 +52,7 @@ import java.io.IOException;
 @Intercept
 public class UserController {
 
+    private final static String LOGIN_HEADER = "Login-Type";
     private final static String JWT_SUBJECT = "登录认证";
 
     private final LoginServiceFactory loginServiceFactory;
@@ -71,7 +72,7 @@ public class UserController {
     @Tag(name = "用户测试接口/登录")
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> login(
-            @RequestHeader("Login-Type") @Parameter(example = "Rl0p0r", schema = @Schema(
+            @RequestHeader(LOGIN_HEADER) @Parameter(example = "Rl0p0r", schema = @Schema(
                     type = "string",
                     description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、Z-1_rf 授权登录",
                     allowableValues = {"Rl0p0r", "r6Vsr0", "Z-1_rf"})

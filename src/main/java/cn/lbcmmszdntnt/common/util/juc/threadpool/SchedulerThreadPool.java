@@ -1,10 +1,10 @@
-package cn.lbcmmszdntnt.common.util.thread.pool;
+package cn.lbcmmszdntnt.common.util.juc.threadpool;
 
-import cn.lbcmmszdntnt.common.util.thread.ext.CustomScheduledExecutor;
-import cn.lbcmmszdntnt.common.util.thread.timer.TimerUtil;
+import cn.lbcmmszdntnt.common.util.juc.timer.TimerUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -14,31 +14,20 @@ import java.util.function.Supplier;
 public class SchedulerThreadPool {
 
     private static final AtomicLong THEAD_ID = new AtomicLong(1);
-
     private static final int SYSTEM_CORE_SIZE = Runtime.getRuntime().availableProcessors();
-
     private static final int CORE_POOL_SIZE = SYSTEM_CORE_SIZE * 2 + 1;
-
     private static final int MAXIMUM_POOL_SIZE = SYSTEM_CORE_SIZE * 3;
-
     private static final int KEEP_ALIVE_TIME = 3;
-
     private static final TimeUnit KEEP_ALIVE_TIMEUNIT = TimeUnit.SECONDS;
-
     private static final BlockingDeque<Runnable> BLOCKING_DEQUE = null; // null 代表使用默认的阻塞队列
-
     private static final ThreadFactory THREAD_FACTORY = r -> new Thread(r, "OKR-System-Thread-Scheduler-IO" + THEAD_ID.getAndIncrement());
-
     private static final RejectedExecutionHandler REJECTED_EXECUTION_HANDLER = new ThreadPoolExecutor.CallerRunsPolicy();
-
     private static final ScheduledExecutorService THREAD_POOL;
-
     private static final int AWAIT_TIME = 5;
-
     private static final TimeUnit AWAIT_TIMEUNIT = TimeUnit.SECONDS;
 
     static {
-        THREAD_POOL = new CustomScheduledExecutor(
+        THREAD_POOL = new CustomSchedulerExecutor(
                 CORE_POOL_SIZE,
                 MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME,
@@ -140,5 +129,23 @@ public class SchedulerThreadPool {
 
     public static void remove(Runnable task) {
         ((ScheduledThreadPoolExecutor) THREAD_POOL).remove(task);
+    }
+
+    public static class CustomSchedulerExecutor extends ScheduledThreadPoolExecutor {
+
+        private final BlockingQueue<Runnable> customQueue;
+
+        public CustomSchedulerExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                       BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+            super(corePoolSize, threadFactory, handler);
+            this.setMaximumPoolSize(maximumPoolSize);
+            this.setKeepAliveTime(keepAliveTime, unit);
+            this.customQueue = Optional.ofNullable(workQueue).orElseGet(super::getQueue);
+        }
+
+        @Override
+        public BlockingQueue<Runnable> getQueue() {
+            return customQueue;
+        }
     }
 }

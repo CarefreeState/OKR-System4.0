@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.coredeadline.service.impl;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.chain.DeadlineDeadlineEventHandlerChain;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.event.DeadlineEvent;

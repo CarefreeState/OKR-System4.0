@@ -4,7 +4,8 @@ package cn.lbcmmszdntnt.domain.core.factory;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.enums.TaskType;
 import cn.lbcmmszdntnt.domain.core.service.inner.TaskService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,9 +18,10 @@ import java.util.Map;
  * Date: 2024-09-05
  * Time: 16:40
  */
+@Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "okr.service.task-service")
-@Data
 public class TaskServiceFactory {
 
     private Map<TaskType, String> map;

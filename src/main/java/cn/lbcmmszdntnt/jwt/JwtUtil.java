@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.jwt;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,26 +19,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class JwtUtil {
 
-    // 设置秘钥明文
-    private static final JwtProperties JWT_PROPERTIES = SpringUtil.getBean(JwtProperties.class);
-
-    public static final String JWT_NAME = JWT_PROPERTIES.getTokenName();
-
-    public static final String JWT_KEY = JWT_PROPERTIES.getSecretKey();
-
-    private static final String APPLICATION_NAME = SpringUtil.getProperty("spring.application.name");
-
-    public static final Long JWT_TTL = JWT_PROPERTIES.getTtl();
-
-    public static final Long JWT_REFRESH_TIME = JWT_PROPERTIES.getRefreshTime();
-
-    public static final TimeUnit JWT_UNIT = TimeUnit.DAYS;
-
-    private static final String CUSTOM_CLAIMS_KEY = "custom";
+    private final static JwtProperties JWT_PROPERTIES = SpringUtil.getBean(JwtProperties.class);
 
     // 生成加密后的秘钥 secretKey
     public static SecretKey generalKey() {
-        byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);
+        byte[] encodedKey = Base64.getDecoder().decode(JWT_PROPERTIES.getSecretKey());
         return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 
@@ -47,7 +33,7 @@ public class JwtUtil {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         if (Objects.isNull(ttlMillis) || Objects.isNull(timeUnit)) { // 只有其中一个也等于没有
-            ttlMillis = JWT_UNIT.toMillis(JwtUtil.JWT_TTL);
+            ttlMillis = JWT_PROPERTIES.getUnit().toMillis(JWT_PROPERTIES.getTtl());
         } else {
             ttlMillis = timeUnit.toMillis(ttlMillis);
         }
@@ -55,7 +41,7 @@ public class JwtUtil {
         Date expDate = new Date(expMillis);
 
         Map<String, Object> customClaims = new HashMap<>();
-        customClaims.put(CUSTOM_CLAIMS_KEY, BeanUtil.beanToMap(claims));
+        customClaims.put(JWT_PROPERTIES.getCustomKey(), BeanUtil.beanToMap(claims));
         return Jwts.builder()
                 // 设置自定义载荷
                 .setClaims(customClaims)
@@ -64,7 +50,7 @@ public class JwtUtil {
                 // 主题，可以是 JSON 数据
                 .setSubject(subject)
                 // 签发者
-                .setIssuer(APPLICATION_NAME)
+                .setIssuer(JWT_PROPERTIES.getApplicationName())
                 // 签发时间
                 .setIssuedAt(now)
                 //使用 HS256 对称加密算法签名, 第二个参数为秘钥
@@ -73,17 +59,13 @@ public class JwtUtil {
                 .setExpiration(expDate);
     }
 
-    public static String getUUID(){
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
     public static <T> String createJwt(String subject, T claims, Long ttlMillis, String id, TimeUnit timeUnit) {
         JwtBuilder builder = getJwtBuilder(subject, claims, ttlMillis, id, timeUnit);
         return builder.compact();
     }
 
     public static <T> String createJwt(String subject, T claims, Long ttlMillis, TimeUnit timeUnit) {
-        return createJwt(subject, claims, ttlMillis, getUUID(), timeUnit);
+        return createJwt(subject, claims, ttlMillis, UUIDUtil.uuid32(), timeUnit);
     }
 
     public static <T> String createJwt(String subject, T claims) {
@@ -134,7 +116,7 @@ public class JwtUtil {
     }
 
     public static boolean judgeApproachExpiration(Claims claims) {
-        return getJwtTTL(claims) < JWT_UNIT.toMillis(JWT_REFRESH_TIME);
+        return getJwtTTL(claims) < JWT_PROPERTIES.getUnit().toMillis(JWT_PROPERTIES.getRefreshTime());
     }
 
     public static boolean judgeApproachExpiration(String jwt) {
@@ -145,20 +127,20 @@ public class JwtUtil {
     public static <T> T parseJwtData(String jwt, T data, HttpServletResponse response) {
         Claims claims = parseJwt(jwt);
         // map -(灌入)-> data
-        data = BeanUtil.fillBeanWithMap(claims.get(CUSTOM_CLAIMS_KEY, Map.class), data, Boolean.TRUE);
+        data = BeanUtil.fillBeanWithMap(claims.get(JWT_PROPERTIES.getCustomKey(), Map.class), data, Boolean.TRUE);
         String subject = claims.getSubject();
         if(Objects.nonNull(response) && judgeApproachExpiration(claims)) {
-            response.setHeader(JWT_NAME, createJwt(subject, data));
+            response.setHeader(JWT_PROPERTIES.getTokenName(), createJwt(subject, data));
         }
         return data;
     }
 
     public static String getJwtFromHeader(HttpServletRequest request) {
-        return request.getHeader(JWT_NAME);
+        return request.getHeader(JWT_PROPERTIES.getTokenName());
     }
 
     public static String getJwtFromParameter(HttpServletRequest request) {
-        return request.getParameter(JWT_NAME);
+        return request.getParameter(JWT_PROPERTIES.getTokenName());
     }
 
 }

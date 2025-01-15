@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.domain.medal.config;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.medal.constants.MedalConstants;
 import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;
 import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;

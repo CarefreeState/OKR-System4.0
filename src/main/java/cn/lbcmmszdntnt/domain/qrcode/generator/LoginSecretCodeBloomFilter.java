@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.bloomfilter;
+package cn.lbcmmszdntnt.domain.qrcode.generator;
 
 import cn.lbcmmszdntnt.redis.bloomfilter.RedisBloomFilter;
 import lombok.extern.slf4j.Slf4j;

@@ -22,7 +22,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "okr.request.cors")
+@ConfigurationProperties(prefix = "okr.cors")
 public class CorsFilter implements Filter {
 
     private String allowOrigin;
@@ -38,7 +38,7 @@ public class CorsFilter implements Filter {
     private String allowCredentials;
 
     @PostConstruct
-    public void doPostConstruct() {
+    public void init() {
         allowOriginSet = new HashSet<>();
         Optional.ofNullable(allowOrigin)
                 .stream()

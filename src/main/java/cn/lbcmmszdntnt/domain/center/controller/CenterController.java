@@ -5,7 +5,6 @@ import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
-import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.jwt.JwtUtil;
@@ -48,7 +47,7 @@ public class CenterController {
 
     @GetMapping("/jwt/{userId}")
     @Operation(summary = "测试阶段获取用户的 token")
-    @Intercept(permit = {UserType.MANAGER})
+    @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
         // 构造 token
         TokenVO tokenVO = TokenVO.builder().userId(userId).build();

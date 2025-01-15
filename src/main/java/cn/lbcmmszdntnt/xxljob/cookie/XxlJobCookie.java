@@ -26,13 +26,9 @@ public class XxlJobCookie {
 
     private long expireIn;//有效期限
 
-    volatile private static XxlJobCookie XXL_JOB_COOKIE = null;
+    private volatile static XxlJobCookie XXL_JOB_COOKIE = null;
 
     private XxlJobCookie() {
-    }
-
-    private static void clearCookie() {
-        XXL_JOB_COOKIE.setCookie(null);
     }
 
     private static void setCookie() {
@@ -44,7 +40,7 @@ public class XxlJobCookie {
     }
 
     private boolean isExpired() {
-       return Objects.isNull(XXL_JOB_COOKIE.getCookie()) || System.currentTimeMillis() > this.getExpireIn();
+       return Objects.isNull(this.cookie) || System.currentTimeMillis() > this.expireIn;
     }
 
     public static XxlJobCookie getXxlJobCookie() {

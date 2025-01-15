@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.util.thread.pool;
+package cn.lbcmmszdntnt.common.util.juc.threadpool;
 
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,17 @@ import java.util.function.Consumer;
 public class ThreadPoolUtil {
 
     /**
-     * CPU 核数
+     * 系统 CPU 核数
      */
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     /**
-     * IO 处理线程数
+     * IO 核心线程数
      */
-    private static final int IO_MAX = Math.max(2, 2 * CPU_COUNT);
+    private static final int IO_CORE = Math.max(3, 2 * CPU_COUNT + 1);
+    /**
+     * IO 最大线程数
+     */
+    private static final int IO_MAX = Math.max(3, 3 * CPU_COUNT); // 最大线程数
     /**
      * 空闲线程最大保活时限，单位为秒
      */
@@ -34,7 +38,40 @@ public class ThreadPoolUtil {
     /**
      * 有界阻塞队列容量上限
      */
-    private static final int QUEUE_SIZE = 10000;
+    private static final int QUEUE_SIZE = 10_000;
+
+    public static class ShutdownHookThread extends Thread {
+        private volatile boolean hasShutdown = false;
+        private final Callable<?> callback;
+
+        /**
+         * 创建标准钩子线程异步处理关闭线程池逻辑
+         * @param name
+         * @param callback 回调钩子方法
+         */
+        public ShutdownHookThread(String name, Callable<?> callback) {
+            super("JVM关闭, 触发钩子函数处理(" + name + ")");
+            this.callback = callback;
+        }
+
+        @Override
+        public void run() {
+            synchronized (this) {
+                log.info(getName() + " 线程开始运转...");
+                if (!this.hasShutdown) {
+                    this.hasShutdown = true;
+                    long beginTime = System.currentTimeMillis();
+                    try {
+                        this.callback.call();
+                    } catch (Exception e) {
+                        log.error(getName() + " 线程出现异常：", e.getMessage());
+                    }
+                    long consumingTimeTotal = System.currentTimeMillis() - beginTime;
+                    log.info(getName() + " 耗时(s): " + consumingTimeTotal);
+                }
+            }
+        }
+    }
 
     /**
      * <p>看到一些开源代码是将线程池设置成懒汉式，只有等代码需要用到线程池再加载，
@@ -54,7 +91,7 @@ public class ThreadPoolUtil {
         private final AtomicInteger NUM = new AtomicInteger(0);
 
         private final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
-                IO_MAX,
+                IO_CORE,
                 IO_MAX,
                 KEEP_ALIVE_SECOND,
                 TimeUnit.SECONDS,
@@ -128,7 +165,7 @@ public class ThreadPoolUtil {
     }
 
     public static <T> void operateBatch(List<T> dataList, Consumer<T> consumer,
-                                        int defaultTaskNumber, int corePoolSize, ExecutorService threadPool) {
+                                        int defaultTaskNumber, ThreadPoolExecutor threadPool) {
         if(CollectionUtils.isEmpty(dataList)) {
             return;
         }
@@ -139,18 +176,21 @@ public class ThreadPoolUtil {
         while (taskNumber * threadNumber < size) {
             threadNumber++;
         }
-        if(threadNumber > corePoolSize) {
-            threadNumber = corePoolSize;
+        // 控制线程数在核心线程数以内
+        int core_size = threadPool.getCorePoolSize();
+        if(threadNumber > core_size) {
+            threadNumber = core_size;
             taskNumber = size / threadNumber;
         }
+        // 保证整体任务数达到待处理的数据数
         while (taskNumber * threadNumber < size) {
             taskNumber++;
         }
-        log.info("启动 {} 个线程，每个线程处理 {} 个任务", threadNumber, taskNumber);
+        log.info("启动 {} 个线程，每个线程处理 {} 个任务，共需处理 {} 个数据", threadNumber, taskNumber, size);
         CountDownLatch latch = new CountDownLatch(threadNumber);
         for (int i = 0; i < size; i += taskNumber) {
-            final int from = i;
-            final int to = Math.min(i + taskNumber, size);
+            int from = i;
+            int to = Math.min(i + taskNumber, size);
             threadPool.submit(() -> {
                 log.info("分段操作 [{}, {})", from, to);
                 dataList.subList(from, to).forEach(consumer);

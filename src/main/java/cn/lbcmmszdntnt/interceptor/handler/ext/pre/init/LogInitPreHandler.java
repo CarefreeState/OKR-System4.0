@@ -28,11 +28,15 @@ public class LogInitPreHandler extends InterceptorHandler {
     @Value("${spring.trace-uri}")
     private String uri;
 
+    @Value("${spring.trace-method}")
+    private String method;
+
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String requestId = IdUtil.objectId();
         MDC.put(traceId, requestId);
         MDC.put(uri, request.getRequestURI());
+        MDC.put(method, request.getMethod());
         response.setHeader(traceId, requestId);
     }
 }

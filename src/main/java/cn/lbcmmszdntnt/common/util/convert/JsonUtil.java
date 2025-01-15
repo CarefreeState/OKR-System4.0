@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.common.util.convert;
 
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -63,11 +62,6 @@ public class JsonUtil {
         } catch (JsonProcessingException e) {
             throw new GlobalServiceException(e.getMessage());
         }
-    }
-
-    public static <T> T analyzeJsonField(String json, String path, Class<T> clazz) {
-        // todo 优化掉 hutool 的 json
-        return JSONUtil.parse(json).getByPath(path, clazz);
     }
 
     public static JsonBuilder jsonBuilder() {

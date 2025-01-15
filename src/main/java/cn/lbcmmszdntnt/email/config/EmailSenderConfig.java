@@ -14,8 +14,8 @@ import java.util.List;
  * Date: 2024-10-13
  * Time: 22:14
  */
-@Setter
 @Getter
+@Setter
 @Configuration
 @ConfigurationProperties("okr.mail")
 public class EmailSenderConfig {

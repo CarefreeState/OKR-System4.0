@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.medal.config;
 
 
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.config.StatusFlagConfig;
 import cn.lbcmmszdntnt.domain.medal.enums.MedalType;
 import cn.lbcmmszdntnt.domain.medal.model.entity.UserMedal;

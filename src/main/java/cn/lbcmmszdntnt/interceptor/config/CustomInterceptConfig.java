@@ -1,7 +1,8 @@
 package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.interceptor.config.properties.CustomInterceptProperties;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,13 +15,12 @@ import java.util.List;
  * Date: 2025-01-09
  * Time: 14:59
  */
-@Data
+@Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "secure.custom")
 public class CustomInterceptConfig {
 
     private List<CustomInterceptProperties> list;
-
-
 
 }

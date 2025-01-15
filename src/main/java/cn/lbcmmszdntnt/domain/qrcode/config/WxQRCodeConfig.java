@@ -1,7 +1,8 @@
 package cn.lbcmmszdntnt.domain.qrcode.config;
 
 import cn.lbcmmszdntnt.wxtoken.model.dto.WxQRCode;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,9 +13,10 @@ import org.springframework.context.annotation.Configuration;
  * Date: 2025-01-14
  * Time: 15:54
  */
-@Data
+@Getter
+@Setter
 @Configuration
-@ConfigurationProperties(prefix = "wx")
+@ConfigurationProperties(prefix = "qrcode.wx")
 public class WxQRCodeConfig {
 
     private WxQRCode common;

@@ -7,6 +7,7 @@ import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.wxtoken.config.WxAdmin;
 import cn.lbcmmszdntnt.wxtoken.enums.WxHttpRequest;
 import cn.lbcmmszdntnt.wxtoken.model.dto.AccessTokenDTO;
 import cn.lbcmmszdntnt.wxtoken.model.dto.JsCode2SessionDTO;
@@ -29,13 +30,11 @@ import java.util.Map;
 @Slf4j
 public class WxHttpRequestUtil {
 
-    private final static String APP_ID = SpringUtil.getProperty("wx.appid");
-
-    private final static String APP_SECRET = SpringUtil.getProperty("wx.secret");
+    private final static WxAdmin WX_ADMIN = SpringUtil.getBean(WxAdmin.class);
 
     public static AccessTokenVO accessToken(AccessTokenDTO accessTokenDTO) {
-        accessTokenDTO.setAppid(APP_ID);
-        accessTokenDTO.setSecret(APP_SECRET);
+        accessTokenDTO.setAppid(WX_ADMIN.getAppid());
+        accessTokenDTO.setSecret(WX_ADMIN.getSecret());
         WxHttpRequest accessToken = WxHttpRequest.ACCESS_TOKEN;
         return HttpRequestUtil.jsonRequest(
                 accessToken.getUrl(),
@@ -49,8 +48,8 @@ public class WxHttpRequestUtil {
     public static JsCode2SessionVO jsCode2Session(JsCode2SessionDTO jsCode2SessionDTO) {
         WxHttpRequest jsCode2Session = WxHttpRequest.JS_CODE2_SESSION;
         String url = HttpRequestUtil.buildUrl(jsCode2Session.getUrl(), Map.of(
-                "appid", List.of(APP_ID),
-                "secret", List.of(APP_SECRET),
+                "appid", List.of(WX_ADMIN.getAppid()),
+                "secret", List.of(WX_ADMIN.getSecret()),
                 "js_code", List.of(jsCode2SessionDTO.getJsCode()),
                 "grant_type", List.of(jsCode2SessionDTO.getGrantType())
         ));

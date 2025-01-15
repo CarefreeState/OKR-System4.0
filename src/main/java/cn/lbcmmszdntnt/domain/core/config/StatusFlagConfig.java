@@ -1,11 +1,11 @@
 package cn.lbcmmszdntnt.domain.core.config;
 
 
-import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagProperty;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,29 +23,30 @@ import java.util.Objects;
  * Date: 2024-04-07
  * Time: 13:49
  */
-@Setter
 @Getter
+@Setter
 @Configuration
-@ConfigurationProperties(prefix = "medal.status-flag")
+@ConfigurationProperties(prefix = "status-flag")
 public class StatusFlagConfig {
 
-    private List<StatusFlagProperty> statusFlagProperties;
+    private final static Map<String, Long> COLOR_CREDIT_MAP = new HashMap<>();
+
+    private List<StatusFlagProperty> properties;
 
     private Double threshold;
 
-    private final Map<String, Long> colorCreditMap = new HashMap<>();
-
-    private final StatusFlagMapper statusFlagMapper = SpringUtil.getBean(StatusFlagMapper.class);
+    @Resource
+    private StatusFlagMapper statusFlagMapper;
 
     @PostConstruct
-    public void doPostConstruct() {
-        statusFlagProperties.stream().parallel().forEach(statusFlagProperty -> {
-            colorCreditMap.put(statusFlagProperty.getColor(), statusFlagProperty.getCredit());
+    public void init() {
+        properties.stream().parallel().forEach(statusFlagProperty -> {
+            COLOR_CREDIT_MAP.put(statusFlagProperty.getColor(), statusFlagProperty.getCredit());
         });
     }
 
     public Long getCredit(String color) {
-        Long credit = colorCreditMap.get(color);
+        Long credit = COLOR_CREDIT_MAP.get(color);
         return Objects.isNull(credit) ? 0L : credit;
     }
 

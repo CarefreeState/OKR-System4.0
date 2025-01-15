@@ -2,7 +2,8 @@ package cn.lbcmmszdntnt.domain.user.controller;
 
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.common.util.thread.pool.SchedulerThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.SchedulerThreadPool;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
@@ -41,9 +42,10 @@ public class WsUserServer {
             WsSessionMapper.remove(sessionKey);
         }
         WsSessionMapper.put(sessionKey, session);
-        // 发送：path, secret
-        WsMessageSender.sendMessage(session, loginQRCode);
-//        SessionUtil.refuse("拒绝连接");
+        IOThreadPool.submit(() -> {
+            // 发送：path, secret
+            WsMessageSender.sendMessage(session, loginQRCode);
+        });
     }
 
     @OnMessage

@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +20,12 @@ import java.util.List;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "secure.refused")
-public class ForceRefuseUrlsConfig implements InitializingBean {
+public class ForceRefuseUrlsConfig {
 
     private List<String> urls;
 
-    @Override
-    public void afterPropertiesSet() {
+    @PostConstruct
+    public void init() {
         urls = ObjectUtil.distinctNonNullStream(urls).toList();
     }
 

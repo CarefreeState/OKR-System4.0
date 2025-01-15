@@ -3,9 +3,10 @@ package cn.lbcmmszdntnt.domain.qrcode.factory;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
@@ -16,9 +17,10 @@ import java.util.Map;
  * Date: 2025-01-14
  * Time: 15:23
  */
-@Component
+@Getter
+@Setter
+@Configuration
 @ConfigurationProperties(prefix = "okr.service.qrcode-provider")
-@Data
 public class QRCodeProviderFactory {
 
     private Map<QRCodeType, String> map;

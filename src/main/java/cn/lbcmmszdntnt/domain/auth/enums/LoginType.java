@@ -30,8 +30,7 @@ public enum LoginType {
     ;
 
     @JsonValue
-    private final String name;
-
+    private final String name; // 加密后的
     private final String description;
 
     public static LoginType get(String name) {

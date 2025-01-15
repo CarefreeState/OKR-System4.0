@@ -1,13 +1,13 @@
 package cn.lbcmmszdntnt.template.util;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import cn.lbcmmszdntnt.template.model.po.ReplaceResource;
 import org.thymeleaf.context.Context;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -26,7 +26,7 @@ public class TemplateUtil {
     }
 
     public static String getUniqueSymbol() {
-        return String.format("[(${%s})]", UUID.randomUUID());
+        return String.format("[(${%s})]", UUIDUtil.uuid36());
     }
 
     public static String replace(String text, List<ReplaceResource> resourceList, Function<String, String> textConverter) {

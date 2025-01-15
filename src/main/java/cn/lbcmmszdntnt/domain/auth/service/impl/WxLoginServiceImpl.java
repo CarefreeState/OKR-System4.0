@@ -39,7 +39,6 @@ public class WxLoginServiceImpl implements LoginService {
         }
         // 1. 构造请求 + 发起请求 -> code2Session
         String code = wxLoginDTO.getCode();
-        ;
         JsCode2SessionVO userFlag = userService.getUserFlag(code);
         // 2.  解析
         String openId = userFlag.getOpenid();
@@ -54,7 +53,7 @@ public class WxLoginServiceImpl implements LoginService {
         userService.getUserByOpenid(openId)
                 .ifPresentOrElse(dbUser -> {
                     user.setId(dbUser.getId());
-                    // 更新一下数据
+                    // 更新一下数据 todo 没必要？
                     userService.lambdaUpdate().eq(User::getOpenid, openId).update(user);
                 }, () -> {
                     user.setNickname(DEFAULT_NICKNAME);

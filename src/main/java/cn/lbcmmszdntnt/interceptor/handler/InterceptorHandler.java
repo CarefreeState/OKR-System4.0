@@ -53,22 +53,24 @@ public abstract class InterceptorHandler {
         this.prev = prev;
     }
 
-    public static void addHandlerBefore(InterceptorHandler handler, InterceptorHandler beforeHandler) {
-        Optional.ofNullable(beforeHandler.prev).ifPresent(prevHandler -> {
-            prevHandler.setNext(handler);
-            handler.setPrev(prevHandler);
+    // 添加处理器在目标处理器之前
+    public static void addHandlerBefore(InterceptorHandler beforeHandler, InterceptorHandler targetHandler) {
+        Optional.ofNullable(targetHandler.prev).ifPresent(prevHandler -> {
+            prevHandler.setNext(beforeHandler);
+            beforeHandler.setPrev(prevHandler);
         });
-        handler.setNext(beforeHandler);
-        beforeHandler.setPrev(handler);
+        beforeHandler.setNext(targetHandler);
+        targetHandler.setPrev(beforeHandler);
     }
 
-    public static void addHandlerAfter(InterceptorHandler handler, InterceptorHandler afterHandler) {
-        Optional.ofNullable(afterHandler.next).ifPresent(nextHandler -> {
-            nextHandler.setPrev(handler);
-            handler.setNext(nextHandler);
+    // 添加处理器在目标处理器之后
+    public static void addHandlerAfter(InterceptorHandler afterHandler, InterceptorHandler targetHandler) {
+        Optional.ofNullable(targetHandler.next).ifPresent(nextHandler -> {
+            nextHandler.setPrev(afterHandler);
+            afterHandler.setNext(nextHandler);
         });
-        handler.setPrev(afterHandler);
-        afterHandler.setNext(handler);
+        afterHandler.setPrev(targetHandler);
+        targetHandler.setNext(afterHandler);
     }
 
 }

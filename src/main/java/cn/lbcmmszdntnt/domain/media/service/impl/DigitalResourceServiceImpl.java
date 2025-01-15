@@ -1,12 +1,12 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.model.mapper.DigitalResourceMapper;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
-import cn.lbcmmszdntnt.domain.media.util.DigitalResourceUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,7 +30,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     @Override
     public DigitalResource createResource(String originalName, String fileName, Long activeLimit) {
         DigitalResource digitalResource = new DigitalResource();
-        digitalResource.setCode(DigitalResourceUtil.getCode());
+        digitalResource.setCode(UUIDUtil.uuid32());
         digitalResource.setOriginalName(originalName);
         digitalResource.setFileName(fileName);
         digitalResource.setActiveLimit(activeLimit);

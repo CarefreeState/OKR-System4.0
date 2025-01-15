@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.bloomfilter;
+package cn.lbcmmszdntnt.domain.qrcode.generator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
  * Date: 2024-10-11
  * Time: 19:48
  */
-@Configuration
-@Setter
 @Getter
+@Setter
+@Configuration
 @ConfigurationProperties(prefix = "bloom-filter.login-secret-code")
 public class LoginSecretCodeBloomFilterProperties {
 

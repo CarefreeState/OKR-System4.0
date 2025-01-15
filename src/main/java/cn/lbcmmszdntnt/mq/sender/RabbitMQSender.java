@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.mq.sender;
 
-import cn.lbcmmszdntnt.common.util.thread.pool.ThreadPoolUtil;
+import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.ThreadPoolUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -9,8 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 @Slf4j
 public class RabbitMQSender {
 
-    private final static Executor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ");
+    private final static ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ-Thread");
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -45,7 +45,7 @@ public class RabbitMQSender {
     };
 
     private CorrelationData newCorrelationData() {
-        return new CorrelationData(UUID.randomUUID().toString().replace("-", ""));
+        return new CorrelationData(UUIDUtil.uuid32());
     }
 
     private <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){

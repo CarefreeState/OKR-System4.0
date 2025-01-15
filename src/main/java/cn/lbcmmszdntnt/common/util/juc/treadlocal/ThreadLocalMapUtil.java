@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.common.util.thread.local;
+package cn.lbcmmszdntnt.common.util.juc.treadlocal;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;

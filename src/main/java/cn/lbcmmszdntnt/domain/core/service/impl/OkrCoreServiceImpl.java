@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.core.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.thread.pool.IOThreadPool;
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.constants.OkrCoreConstants;
 import cn.lbcmmszdntnt.domain.core.model.converter.OkrCoreConverter;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
@@ -43,7 +43,7 @@ import java.util.concurrent.FutureTask;
 public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
     implements OkrCoreService {
 
-    @Value("${limit.time.multiple}")
+    @Value("${quadrant-cycle.limit.multiple}")
     private Integer multiple;
 
     private final FirstQuadrantService firstQuadrantService;
