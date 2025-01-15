@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.core.controller.quadrant;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.config.QuadrantCycleConfig;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.OkrInitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.message.operate.OkrInitialize;
@@ -18,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Intercept
 public class SecondQuadrantController {
 
-    @Value("${quadrant-cycle.limit.second}")
-    private Integer secondQuadrantCycle;
+    private final QuadrantCycleConfig quadrantCycleConfig;
 
     private final SecondQuadrantService secondQuadrantService;
 
@@ -53,7 +52,7 @@ public class SecondQuadrantController {
         InitQuadrantDTO initQuadrantDTO = okrInitQuadrantDTO.getInitQuadrantDTO();
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();
         // 判断周期长度合理性
-        if(secondQuadrantCycle.compareTo(quadrantCycle) > 0) {
+        if(quadrantCycleConfig.getSecond().compareTo(quadrantCycle) > 0) {
             throw new GlobalServiceException(GlobalServiceStatusCode.SECOND_CYCLE_TOO_SHORT);
         }
         User user = InterceptorContext.getUser();

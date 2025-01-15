@@ -1,10 +1,13 @@
 package cn.lbcmmszdntnt.redis.bloomfilter;
 
 import cn.hutool.core.bean.BeanUtil;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisException;
+
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class RedisBloomFilter<T> {
@@ -53,6 +56,21 @@ public class RedisBloomFilter<T> {
             tryInit();
             return rBloomFilter.contains(key);
         }
+    }
+
+    @Data
+    public static class BloomFilterProperties {
+
+        private String name;
+
+        private Long preSize;
+
+        private Double rate;
+
+        private Long timeout;
+
+        private TimeUnit unit;
+
     }
 
 }

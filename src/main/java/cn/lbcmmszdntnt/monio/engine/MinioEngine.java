@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +27,16 @@ public class MinioEngine {
      * 文件上传
      */
     public void upload(String fileName, byte[] bytes) throws Exception {
-        PutObjectArgs objectArgs = PutObjectArgs.builder()
-                .bucket(minioConfig.getBucketName())
-                .object(fileName)
-                .stream(MediaUtil.getInputStream(bytes), bytes.length, -1) // 不分块
-                .contentType(MediaUtil.getContentType(bytes))
-                .build();
-        //文件名称相同会覆盖
-        minioClient.putObject(objectArgs);
+        try(InputStream inputStream = MediaUtil.getInputStream(bytes)) {
+            PutObjectArgs objectArgs = PutObjectArgs.builder()
+                    .bucket(minioConfig.getBucketName())
+                    .object(fileName)
+                    .stream(inputStream, bytes.length, -1) // 不分块
+                    .contentType(MediaUtil.getContentType(bytes))
+                    .build();
+            //文件名称相同会覆盖
+            minioClient.putObject(objectArgs);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.redis.lock;
+package cn.lbcmmszdntnt.redis.config;
 
 import lombok.Data;
 

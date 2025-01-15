@@ -26,9 +26,9 @@ public class JobInfoServiceImpl implements JobInfoService {
     }
 
     @Override
-    public Integer addJob(XxlJobInfo xxlJobInfo) {
+    public void addJob(XxlJobInfo xxlJobInfo) {
         log.warn("提交任务 {}", xxlJobInfo);
-        return XxlJobRequestUtil.infoAdd(xxlJobInfo);
+        XxlJobRequestUtil.infoAdd(xxlJobInfo);
     }
 
 }

@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.core.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
+import cn.lbcmmszdntnt.domain.core.config.QuadrantCycleConfig;
 import cn.lbcmmszdntnt.domain.core.constants.OkrCoreConstants;
 import cn.lbcmmszdntnt.domain.core.model.converter.OkrCoreConverter;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
@@ -26,11 +27,11 @@ import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.FutureTask;
 /**
 * @author 马拉圈
@@ -43,8 +44,7 @@ import java.util.concurrent.FutureTask;
 public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
     implements OkrCoreService {
 
-    @Value("${quadrant-cycle.limit.multiple}")
-    private Integer multiple;
+    private final QuadrantCycleConfig quadrantCycleConfig;
 
     private final FirstQuadrantService firstQuadrantService;
 
@@ -204,10 +204,9 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
                 .oneOpt().orElseThrow(() ->
                         new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                 ).getSecondQuadrantCycle();
-        if(Objects.isNull(secondQuadrantCycle)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.SECOND_FIRST_QUADRANT_NOT_INIT);
-        }
-        if(quadrantCycle.compareTo(multiple * secondQuadrantCycle) < 0) {
+        Optional.ofNullable(secondQuadrantCycle).orElseThrow(() ->
+                new GlobalServiceException(GlobalServiceStatusCode.SECOND_FIRST_QUADRANT_NOT_INIT));
+        if(quadrantCycle.compareTo(quadrantCycleConfig.getMultiple() * secondQuadrantCycle) < 0) {
             throw new GlobalServiceException(GlobalServiceStatusCode.THIRD_CYCLE_TOO_SHORT);
         }
     }

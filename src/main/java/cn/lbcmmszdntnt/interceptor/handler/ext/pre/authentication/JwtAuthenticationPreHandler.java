@@ -4,7 +4,7 @@ import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
 import cn.lbcmmszdntnt.interceptor.service.UserInfoLoadService;
-import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

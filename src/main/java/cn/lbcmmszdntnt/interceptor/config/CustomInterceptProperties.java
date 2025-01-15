@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.interceptor.config.properties;
+package cn.lbcmmszdntnt.interceptor.config;
 
 import lombok.Data;
 

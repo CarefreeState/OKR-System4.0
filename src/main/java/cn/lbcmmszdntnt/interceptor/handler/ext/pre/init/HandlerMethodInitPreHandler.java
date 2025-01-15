@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.init;
 
 import cn.lbcmmszdntnt.interceptor.annotation.InterceptHelper;
-import cn.lbcmmszdntnt.interceptor.config.properties.InterceptProperties;
+import cn.lbcmmszdntnt.interceptor.config.InterceptProperties;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import jakarta.servlet.http.HttpServletRequest;

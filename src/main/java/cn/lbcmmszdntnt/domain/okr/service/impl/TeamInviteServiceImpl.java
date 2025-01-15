@@ -1,9 +1,9 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.shortcode.NormalShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.shortcode.NormalShortCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

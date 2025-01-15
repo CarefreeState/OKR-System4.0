@@ -8,6 +8,6 @@ public interface JobInfoService {
 
     List<XxlJobInfo> getJobInfo(Integer jobGroupId, String executorHandler);
 
-    Integer addJob(XxlJobInfo xxlJobInfo);
+    void addJob(XxlJobInfo xxlJobInfo);
 
 }

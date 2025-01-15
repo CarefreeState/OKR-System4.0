@@ -6,6 +6,11 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import com.freewayso.image.combiner.ImageCombiner;
 import com.freewayso.image.combiner.enums.OutputFormat;
 import com.freewayso.image.combiner.enums.ZoomMode;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
@@ -14,10 +19,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class ImageUtil {
 
+    public static final String DEFAULT_FORMAT_NAME = "png";
     private final static ResourceStaticConfig RESOURCE_STATIC_CONFIG = SpringUtil.getBean(ResourceStaticConfig.class);
     private final static double MAX_PX_RATE = 0.213;
     private final static double REFER_WIDTH_RATE = 0.800;
@@ -38,24 +47,35 @@ public class ImageUtil {
         }
     }
 
-    public static byte[] pressText(String text, byte[] bytes, Color color, Font font, int x, int y) throws IOException {
-        Image src = ImageIO.read(MediaUtil.getInputStream(bytes));
-        int width = src.getWidth(null);
-        int height = src.getHeight(null);
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics = image.createGraphics();
-        graphics.drawImage(src, 0, 0, width, height, null);
-        graphics.setColor(color);
-        graphics.setFont(font);
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        // 在指定坐标（图片居中）绘制水印文字
-        graphics.drawString(text, x, y);
-        graphics.dispose();
-        // 输出到文件流
+    public static byte[] getBytes(BufferedImage image, String formatName) throws IOException {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ImageIO.write(image, MediaUtil.DEFAULT_SUFFIX, outputStream);
+            // 输出到文件流
+            ImageIO.write(image, formatName, outputStream);
             outputStream.flush();
             return outputStream.toByteArray();
+        }
+    }
+
+    public static byte[] getBytes(BufferedImage image) throws IOException {
+        return getBytes(image, DEFAULT_FORMAT_NAME);
+    }
+
+    public static byte[] pressText(String text, byte[] bytes, Color color, Font font, int x, int y) throws IOException {
+        try (InputStream inputStream = MediaUtil.getInputStream(bytes)) {
+            Image src = ImageIO.read(inputStream);
+            int width = src.getWidth(null);
+            int height = src.getHeight(null);
+            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = image.createGraphics();
+            graphics.drawImage(src, 0, 0, width, height, null);
+            graphics.setColor(color);
+            graphics.setFont(font);
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            // 在指定坐标（图片居中）绘制水印文字
+            graphics.drawString(text, x, y);
+            graphics.dispose();
+            // 输出
+            return getBytes(image);
         }
     }
 
@@ -104,15 +124,15 @@ public class ImageUtil {
     }
 
     public static byte[] mergeImage(byte[] bytes, byte[] board, int x, int y, int width, int height) throws Exception {
-        try (InputStream inputStream = MediaUtil.getInputStream(board)) {
-            BufferedImage boardImager = ImageIO.read(inputStream);
+        try (InputStream inputStream = MediaUtil.getInputStream(bytes);
+             InputStream boardInputStream = MediaUtil.getInputStream(board)) {
+            BufferedImage boardImager = ImageIO.read(boardInputStream);
             //合成器和背景图（整个图片的宽高和相关计算依赖于背景图，所以背景图的大小是个基准）
             ImageCombiner combiner = new ImageCombiner(boardImager, OutputFormat.PNG);
             combiner.setBackgroundBlur(0);     //设置背景高斯模糊（毛玻璃效果）
-            combiner.setCanvasRoundCorner(0); //设置整图圆角（输出格式必须为PNG）
+            combiner.setCanvasRoundCorner(0); //设置整图圆角（输出格式必须为 PNG）
             //二维码（强制按指定宽度、高度缩放）
-            combiner.addImageElement(ImageIO.read(MediaUtil.getInputStream(bytes)),
-                    x, y, width, height, ZoomMode.WidthHeight);
+            combiner.addImageElement(ImageIO.read(inputStream), x, y, width, height, ZoomMode.WidthHeight);
             //执行图片合并
             combiner.combine();
             //保存文件
@@ -135,6 +155,36 @@ public class ImageUtil {
 
     public static byte[] signatureWrite(byte[] bytes, String text, String flag, Color textColor) {
         return signatureWrite(bytes, text, flag, textColor, Color.BLACK);
+    }
+
+    public static byte[] getUrlQRCodeBytes(String url, int width, int height) {
+        // 配置生成二维码的参数
+        Map<EncodeHintType, String> hintMap = new HashMap<>();
+        hintMap.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8.displayName());
+        try {
+            // 生成二维码矩阵
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height, hintMap);
+            // 创建二维码图片
+            BufferedImage qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            qrImage.createGraphics();
+            // 将二维码矩阵渲染到图片上
+            Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
+            graphics.fillRect(0, 0, width, height);
+            graphics.setColor(Color.BLACK);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    if (bitMatrix.get(i, j)) {
+                        graphics.fillRect(i, j, 1, 1);
+                    }
+                }
+            }
+            graphics.dispose();
+            // 输出
+            return getBytes(qrImage);
+        } catch (IOException | WriterException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
     }
 
 }

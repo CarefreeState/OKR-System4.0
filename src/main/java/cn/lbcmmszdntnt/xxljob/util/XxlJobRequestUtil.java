@@ -13,10 +13,11 @@ import cn.lbcmmszdntnt.xxljob.model.dto.InfoPageListDTO;
 import cn.lbcmmszdntnt.xxljob.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
 import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobInfo;
-import cn.lbcmmszdntnt.xxljob.model.vo.InfoAddVO;
+import cn.lbcmmszdntnt.xxljob.model.vo.GroupPageListVO;
+import cn.lbcmmszdntnt.xxljob.model.vo.InfoPageListVO;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.HttpCookie;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ import java.util.List;
  * Date: 2025-01-14
  * Time: 18:58
  */
+@Slf4j
 public class XxlJobRequestUtil {
 
     private final static String XXL_JOB_LOGIN_IDENTITY = "XXL_JOB_LOGIN_IDENTITY";
@@ -33,7 +35,6 @@ public class XxlJobRequestUtil {
     private final static Admin ADMIN = SpringUtil.getBean(Admin.class);
 
     public static String login() {
-
         XxlJobRequest xxlJobRequest = XxlJobRequest.LOGIN;
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         LoginDTO loginDTO = LoginDTO.builder().userName(ADMIN.getUsername()).password(ADMIN.getPassword()).build();
@@ -43,7 +44,7 @@ public class XxlJobRequestUtil {
                     .filter(cookie -> cookie.getName().equals(XXL_JOB_LOGIN_IDENTITY))
                     .findFirst()
                     .map(HttpCookie::getValue)
-                    .map(cookie -> HttpRequestUtil.encodeString(String.format("%s=%s", XXL_JOB_LOGIN_IDENTITY, cookie)))
+                    .map(cookie -> String.format("%s=%s", XXL_JOB_LOGIN_IDENTITY, cookie))
                     .orElseThrow(() ->
                             new GlobalServiceException("get xxl-job cookie error!")
                     );
@@ -54,16 +55,16 @@ public class XxlJobRequestUtil {
         XxlJobRequest xxlJobRequest = XxlJobRequest.GROUP_PAGE_LIST;
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
-        XxlJobGroup[] groups = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), groupPageListDTO, XxlJobGroup[].class, null, cookie);
-        return Arrays.asList(groups);
+        GroupPageListVO groupPageListVO = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), groupPageListDTO, GroupPageListVO.class, null, cookie);
+        return groupPageListVO.getData();
     }
 
     public static List<XxlJobInfo> infoPageList(InfoPageListDTO infoPageListDTO) {
         XxlJobRequest xxlJobRequest = XxlJobRequest.INFO_PAGE_LIST;
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
-        XxlJobInfo[] infos = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), infoPageListDTO, XxlJobInfo[].class, null, cookie);
-        return Arrays.asList(infos);
+        InfoPageListVO infoPageListVO = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), infoPageListDTO, InfoPageListVO.class, null, cookie);
+        return infoPageListVO.getData();
     }
 
     public static void groupSave(GroupSaveDTO groupSaveDTO) {
@@ -71,19 +72,18 @@ public class XxlJobRequestUtil {
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
         try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), groupSaveDTO, null, cookie)) {
+            log.info("保存 group {}", groupSaveDTO);
             return;
         }
     }
 
-    public static Integer infoAdd(XxlJobInfo xxlJobInfo) {
+    public static void infoAdd(XxlJobInfo xxlJobInfo) {
         XxlJobRequest xxlJobRequest = XxlJobRequest.INFO_ADD;
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
-        InfoAddVO infoAddVO = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), xxlJobInfo, InfoAddVO.class, null, cookie);
-        if(infoAddVO.getCode().equals(200)) {
-            return infoAddVO.getContent();
-        } else {
-            throw new GlobalServiceException("add jobInfo error!");
+        try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), xxlJobInfo, null, cookie)) {
+            log.info("新增 info {}", xxlJobInfo);
+            return;
         }
     }
 

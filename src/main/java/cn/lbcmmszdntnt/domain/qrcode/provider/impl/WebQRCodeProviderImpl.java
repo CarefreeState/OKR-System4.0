@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.qrcode.provider.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
-import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
 import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
@@ -42,7 +41,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
         String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of("scene", List.of(scene)));
         Integer width = webQRCode.getWidth();
         log.info("生成二维码 -> {}  {}  {} ", url, width, width);
-        byte[] codeBytes = MediaUtil.getUrlQRCodeBytes(url, width, width);
+        byte[] codeBytes = ImageUtil.getUrlQRCodeBytes(url, width, width);
         codeBytes = strategy.process(codeBytes);
         return fileMediaService.uploadImage(QRCodeConstants.DEFAULT_ORIGINAL_NAME, codeBytes, activeLimit);
     }

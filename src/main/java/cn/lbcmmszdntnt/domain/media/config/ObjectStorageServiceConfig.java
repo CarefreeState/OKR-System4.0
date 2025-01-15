@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.config;
+package cn.lbcmmszdntnt.domain.media.config;
 
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
 import org.springframework.context.annotation.Bean;

@@ -14,7 +14,6 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.LinkedMultiValueMap;
@@ -23,19 +22,15 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class HttpRequestUtil {
 
     public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
-
-    private static final Pattern HTTP_PATTERN = Pattern.compile("^(?i)(http|https):(//(([^@\\[/?#]*)@)?(\\[[\\p{XDigit}:.]*[%\\p{Alnum}]*]|[^\\[/?#:]*)(:(\\{[^}]+\\}?|[^/?#]*))?)?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
     public final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
@@ -154,40 +149,6 @@ public class HttpRequestUtil {
                 .form(BeanUtil.beanToMap(formData))
                 .cookie(cookie)
                 .execute();
-    }
-
-    public static boolean isHttpUrl(String url) {
-        return StringUtils.hasText(url) && HTTP_PATTERN.matcher(url).matches();
-    }
-
-    @Nullable
-    public static HttpURLConnection openConnection(String url) throws IOException {
-        try {
-            HttpURLConnection connection = isHttpUrl(url) ? (HttpURLConnection) new URL(url).openConnection() : null;
-            if(Objects.nonNull(connection) && connection.getResponseCode() / 100 == 3) {
-                return openConnection(connection.getHeaderField("Location")); // Location 就是最深的那个地址了
-            } else {
-                return connection;
-            }
-        } catch (ProtocolException | UnknownHostException e) {
-            // 处理重定向次数太多的情况
-            log.warn(e.getMessage());
-            return null;
-        }
-    }
-
-    public static boolean isAccessible(HttpURLConnection connection) throws IOException {
-        return Objects.nonNull(connection) && connection.getResponseCode() / 100 == 2;
-    }
-
-    public static boolean isAccessible(String url) throws IOException {
-        return isAccessible(openConnection(url));
-    }
-
-    @Nullable
-    public static InputStream getInputStream(String url) throws IOException {
-        HttpURLConnection connection = openConnection(url);
-        return isAccessible(connection) ? connection.getInputStream() : null;
     }
 
 }

@@ -11,7 +11,7 @@ import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.util.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.wxtoken.model.dto.JsCode2SessionDTO;
 import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;

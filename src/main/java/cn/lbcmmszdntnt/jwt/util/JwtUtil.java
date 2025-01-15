@@ -1,8 +1,9 @@
-package cn.lbcmmszdntnt.jwt;
+package cn.lbcmmszdntnt.jwt.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
+import cn.lbcmmszdntnt.jwt.config.JwtProperties;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

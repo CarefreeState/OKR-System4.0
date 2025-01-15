@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.config;
+package cn.lbcmmszdntnt.domain.qrcode.generator;
 
 import lombok.Getter;
 import lombok.Setter;

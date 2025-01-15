@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.core.config;
 
 
-import cn.lbcmmszdntnt.domain.core.config.properties.StatusFlagProperty;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +30,7 @@ public class StatusFlagConfig {
 
     private final static Map<String, Long> COLOR_CREDIT_MAP = new HashMap<>();
 
-    private List<StatusFlagProperty> properties;
+    private List<StatusFlagProperties> properties;
 
     private Double threshold;
 
@@ -40,8 +39,8 @@ public class StatusFlagConfig {
 
     @PostConstruct
     public void init() {
-        properties.stream().parallel().forEach(statusFlagProperty -> {
-            COLOR_CREDIT_MAP.put(statusFlagProperty.getColor(), statusFlagProperty.getCredit());
+        properties.stream().parallel().forEach(statusFlagProperties -> {
+            COLOR_CREDIT_MAP.put(statusFlagProperties.getColor(), statusFlagProperties.getCredit());
         });
     }
 

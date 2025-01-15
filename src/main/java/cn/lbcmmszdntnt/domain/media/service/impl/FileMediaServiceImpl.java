@@ -3,13 +3,13 @@ package cn.lbcmmszdntnt.domain.media.service.impl;
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
+import cn.lbcmmszdntnt.config.ResourceCompressionConfig;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,8 +27,7 @@ import static cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants.DEFAULT_
 @RequiredArgsConstructor
 public final class FileMediaServiceImpl implements FileMediaService {
 
-    @Value("${resource.compression.threshold}")
-    private Integer compressionThreshold;
+    private final ResourceCompressionConfig resourceCompressionConfig;
 
     private final DigitalResourceService digitalResourceService;
 
@@ -43,8 +42,6 @@ public final class FileMediaServiceImpl implements FileMediaService {
     public void preview(String code, HttpServletResponse response) {
         objectStorageService.preview(analyzeCode(code), response);
     }
-
-
 
     @Override
     public byte[] load(String code) {
@@ -78,7 +75,7 @@ public final class FileMediaServiceImpl implements FileMediaService {
         String contentType = MediaUtil.getContentType(data);
         String suffix = null;
         // 判断是否是图片类型，并判断是否达到压缩阈值（否则压缩适得其反），若是则压缩图片
-        if(FileResourceUtil.matchType(contentType, FileResourceType.IMAGE) && compressionThreshold.compareTo(data.length) <= 0) {
+        if(FileResourceUtil.matchType(contentType, FileResourceType.IMAGE) && resourceCompressionConfig.getThreshold().compareTo(data.length) <= 0) {
             // 压缩图片
             data = MediaUtil.compressImage(data);
             suffix = MediaUtil.COMPRESS_FORMAT_SUFFIX;
@@ -114,7 +111,7 @@ public final class FileMediaServiceImpl implements FileMediaService {
         // 判断是否是图片类型
         FileResourceUtil.checkImage(contentType);
         // 判断是否压缩
-        if(compressionThreshold.compareTo(data.length) <= 0) {
+        if(resourceCompressionConfig.getThreshold().compareTo(data.length) <= 0) {
             // 压缩图片
             data = MediaUtil.compressImage(data);
             suffix = MediaUtil.COMPRESS_FORMAT_SUFFIX;

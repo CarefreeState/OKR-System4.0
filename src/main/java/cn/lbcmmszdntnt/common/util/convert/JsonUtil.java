@@ -48,7 +48,16 @@ public class JsonUtil {
         ;
     }
 
+    // 特殊处理: json == "" -> null(Object)
+    // 特殊处理: json == null -> null(Object)
+    // json == "null" -> null(Object)
+    // json == "\"null\"" -> "null"(String)
+    // json 数组，可以传 T[].class（若传 List.class 可能会导致泛型相关的问题）
     public static <T> T parse(String json, Class<T> clazz) {
+        // json 为空串，返回 null
+        if (!StringUtils.hasText(json)) {
+            return null;
+        }
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
         } catch (Exception e) {
@@ -56,9 +65,9 @@ public class JsonUtil {
         }
     }
 
-    public static String toJson(Object obj) {
+    public static <T> String toJson(T object) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(obj);
+            return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             throw new GlobalServiceException(e.getMessage());
         }

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "okr.wx")
-public class WxAdmin {
+public class Admin {
 
     private String appid;
 

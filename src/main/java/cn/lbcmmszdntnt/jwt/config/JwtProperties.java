@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.jwt;
+package cn.lbcmmszdntnt.jwt.config;
 
 import lombok.Getter;
 import lombok.Setter;

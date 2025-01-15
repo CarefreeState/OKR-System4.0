@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
 import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import cn.lbcmmszdntnt.redis.bloomfilter.RedisBloomFilter;
+import lombok.Data;
 
 import java.util.Optional;
 
@@ -47,6 +48,17 @@ public class ShortCodeGenerator {
 
     public String convert() {
         return convert(DEFAULT_BASE_STR);
+    }
+
+    @Data
+    public static class ShortCodeProperties {
+
+        private String key;
+
+        private Integer length;
+
+        private Boolean unique;
+
     }
 
 }

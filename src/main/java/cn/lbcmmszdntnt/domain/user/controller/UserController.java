@@ -23,7 +23,7 @@ import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
-import cn.lbcmmszdntnt.jwt.JwtUtil;
+import cn.lbcmmszdntnt.jwt.util.JwtUtil;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import io.swagger.v3.oas.annotations.Operation;

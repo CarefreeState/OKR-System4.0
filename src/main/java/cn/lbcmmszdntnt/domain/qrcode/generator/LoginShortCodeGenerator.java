@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.generator;
 
 import cn.lbcmmszdntnt.shortcode.ShortCodeGenerator;
-import cn.lbcmmszdntnt.domain.qrcode.config.LoginShortCodeProperties;
 import org.springframework.stereotype.Component;
 
 /**

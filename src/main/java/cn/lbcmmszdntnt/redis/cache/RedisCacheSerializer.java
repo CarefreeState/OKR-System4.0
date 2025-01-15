@@ -17,10 +17,7 @@ import java.util.stream.Collectors;
 public class RedisCacheSerializer {
 
     public <T> T parse(String json, Class<T> clazz) {
-        // json == null -> null
-        // json == "null" -> null
-        // json == "\"null\"" -> "null"(String)
-        return Optional.ofNullable(json).map(j -> JsonUtil.parse(j, clazz)).orElse(null);
+        return JsonUtil.parse(json, clazz);
     }
 
     public String toJson(Object obj) {

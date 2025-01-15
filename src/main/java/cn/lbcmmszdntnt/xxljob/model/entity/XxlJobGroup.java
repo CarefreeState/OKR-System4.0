@@ -3,8 +3,8 @@ package cn.lbcmmszdntnt.xxljob.model.entity;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,14 +13,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class XxlJobGroup {
+public class XxlJobGroup implements Serializable {
 
     private int id;
     private String appname;
     private String title;
     private int addressType;        // 执行器地址类型：0=自动注册、1=手动录入
     private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
-    private Date updateTime;
 
     // registry list
     private List<String> registryList;  // 执行器地址列表(系统注册)
@@ -30,5 +29,5 @@ public class XxlJobGroup {
         }
         return registryList;
     }
-
+    private static final long serialVersionUID = 1L;
 }

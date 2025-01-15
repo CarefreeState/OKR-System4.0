@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.redis.config;
 
-import cn.lbcmmszdntnt.redis.lock.RedisLockProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.redisson.Redisson;

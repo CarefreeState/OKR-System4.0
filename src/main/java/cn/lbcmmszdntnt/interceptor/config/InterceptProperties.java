@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.interceptor.config.properties;
+package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import lombok.*;

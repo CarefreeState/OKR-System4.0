@@ -31,7 +31,7 @@ mybatis-plus:
       id-type: auto #id为雪花算法生成 设置为none->为遵循版本默认，可见这个版本默认为assign_id
       update-strategy: not_null #更新策略:只更新非空字段
       insert-strategy: not_null #插入策略:为空走默认值
-  db-type: MYSQL # 分页时指定数据库类型
+  db-type: mysql # 分页时指定数据库类型
 
 okr:
   service:
@@ -81,7 +81,7 @@ quadrant-cycle:
     multiple: 2
 
 resource:
-  local:
+  locate:
     patten: /media/** # 路由前缀
     location: file:D:/media/ # 本地存储的根路径
   compression:

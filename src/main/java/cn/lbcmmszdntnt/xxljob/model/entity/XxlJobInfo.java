@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.xxljob.model.entity;
 
 import lombok.*;
 
-import java.util.Date;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -10,16 +10,12 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class XxlJobInfo {
+public class XxlJobInfo implements Serializable {
 	
 	private int id;				// 主键ID
 	
 	private int jobGroup;		// 执行器主键ID
 	private String jobDesc;
-	
-	private Date addTime;
-	private Date updateTime;
-	
 	private String author;		// 负责人
 	private String alarmEmail;	// 报警邮件
 
@@ -37,7 +33,6 @@ public class XxlJobInfo {
 	private String glueType;		// GLUE类型	#com.xxl.job.core.glue.GlueTypeEnum
 	private String glueSource;		// GLUE源代码
 	private String glueRemark;		// GLUE备注
-	private Date glueUpdatetime;	// GLUE更新时间-
 
 	private String childJobId;		// 子任务ID，多个逗号分隔
 
@@ -89,5 +84,6 @@ public class XxlJobInfo {
 	public static XxlJobInfoBuilder builder() {
 		return new XxlJobInfoBuilder();
 	}
+	private static final long serialVersionUID = 1L;
 
 }

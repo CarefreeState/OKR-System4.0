@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.redis.lock;
 
+import cn.lbcmmszdntnt.redis.config.RedisLockProperties;
 import cn.lbcmmszdntnt.redis.lock.strategy.LockStrategy;
 import cn.lbcmmszdntnt.redis.lock.strategy.SimpleLockStrategy;
 import jakarta.annotation.PostConstruct;

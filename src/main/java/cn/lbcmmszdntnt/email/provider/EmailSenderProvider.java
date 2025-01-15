@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.email.provider;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.email.config.EmailSenderConfig;
-import cn.lbcmmszdntnt.email.config.EmailSenderProperties;
 import cn.lbcmmszdntnt.email.provider.strategy.ProvideStrategy;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import jakarta.annotation.PostConstruct;
@@ -15,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -47,8 +46,7 @@ public class EmailSenderProvider implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // 构造邮件发送器实现
         this.senderList = new ArrayList<>();
-        List<EmailSenderProperties> senders = emailSenderConfig.getSenders();
-        Optional.ofNullable(senders).stream().flatMap(List::stream).forEach(sender -> {
+        ObjectUtil.nonNullstream(emailSenderConfig.getSenders()).forEach(sender -> {
             // 邮件发送者
             JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
             javaMailSender.setHost(sender.getHost());

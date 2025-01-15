@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.core.config.properties;
+package cn.lbcmmszdntnt.domain.core.config;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
  * Time: 14:00
  */
 @Data
-public class StatusFlagProperty {
+public class StatusFlagProperties {
 
     private String color;
 
