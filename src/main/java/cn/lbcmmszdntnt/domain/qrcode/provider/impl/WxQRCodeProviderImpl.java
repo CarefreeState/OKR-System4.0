@@ -46,7 +46,7 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public String getInviteQRCode(Long teamId, String teamName, String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getInvite();
-        String scene = String.format("teamId=%d&secret=%s", teamId, secret);
+        String scene = String.format(INVITE_CODE_SCENE_FORMAT, teamId, secret);
         return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
@@ -74,7 +74,7 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public String getLoginQRCode(String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getLogin();
-        String scene = String.format("secret=%s", secret);
+        String scene = String.format(LOGIN_CODE_SCENE_FORMAT, secret);
         return getQRCode(qrCode, scene, LOGIN_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
@@ -86,9 +86,9 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     }
 
     @Override
-    public String getBindingQRCode(Long userId, String secret) {
+    public String getBindingQRCode(String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getBinding();
-        String scene = String.format("userId=%d&secret=%s", userId, secret);
+        String scene = String.format(BINDING_CODE_SCENE_FORMAT, secret);
         return getQRCode(qrCode, scene, BINDING_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,

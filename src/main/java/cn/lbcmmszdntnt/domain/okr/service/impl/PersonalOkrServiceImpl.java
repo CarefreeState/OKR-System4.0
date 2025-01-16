@@ -6,11 +6,11 @@ import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.PersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
-import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.service.PersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
     private final RedisCache redisCache;
 
     @Override
+    @Transactional
     public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         // 查看当前用户是否有未完成的 OKR
@@ -80,14 +82,14 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConfig.USER_CORE_MAP + coreId;
+        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             Long userId = Db.lambdaQuery(PersonalOkr.class)
                     .eq(PersonalOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getUserId();
-            redisCache.setObject(redisKey, userId, CoreUserMapConfig.USER_CORE_MAP_TTL, CoreUserMapConfig.USER_CORE_MAP_TTL_UNIT);
+            redisCache.setObject(redisKey, userId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
             return userId;
         });
     }

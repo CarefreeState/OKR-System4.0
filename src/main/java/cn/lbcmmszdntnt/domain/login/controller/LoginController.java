@@ -2,12 +2,11 @@ package cn.lbcmmszdntnt.domain.login.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
-import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
-import cn.lbcmmszdntnt.domain.auth.factory.LoginServiceFactory;
+import cn.lbcmmszdntnt.domain.login.enums.LoginType;
+import cn.lbcmmszdntnt.domain.login.factory.LoginServiceFactory;
 import cn.lbcmmszdntnt.domain.login.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.login.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.login.service.LoginService;
-import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
@@ -20,7 +19,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created With Intellij IDEA
@@ -31,9 +33,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
-@Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
-@RequestMapping("/user/login")
-@Tag(name = "登录测试接口")
+@Tag(name = "登录")
 @Validated
 public class LoginController {
 
@@ -41,7 +41,7 @@ public class LoginController {
 
     private final UserService userService;
 
-    @PostMapping({"/", ""})
+    @PostMapping("/user/login")
     @Operation(summary = "用户登录")
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<LoginVO> login(
@@ -56,7 +56,7 @@ public class LoginController {
         LoginService loginService = loginServiceFactory.getService(LoginType.get(type));
         User user = loginService.login(loginDTO);
         Long userId = user.getId();
-        userService.deleteUserAllCache(userId);
+        userService.clearUserAllCache(userId);
         // 构造 token
         TokenVO tokenVO = TokenVO.builder().userId(userId).build();
         String token = JwtUtil.createJwt(AuthConstants.JWT_SUBJECT, tokenVO);

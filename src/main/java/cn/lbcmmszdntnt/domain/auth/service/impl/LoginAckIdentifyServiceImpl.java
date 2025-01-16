@@ -11,11 +11,12 @@ import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.jwt.util.JwtUtil;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static cn.lbcmmszdntnt.domain.auth.constants.AuthConstants.VALIDATE_LOGIN_ACK_KEY;
 
 /**
  * Created With Intellij IDEA
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
 
-    private final QRCodeService QRCodeService;
+    private final QRCodeService qrCodeService;
 
     private final UserService userService;
 
@@ -39,7 +40,7 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
 
     @Override
     public LoginQRCodeVO getLoginQRCode(QRCodeType codeType) {
-        LoginQRCodeVO loginQRCode = QRCodeService.getLoginQRCode(codeType);
+        LoginQRCodeVO loginQRCode = qrCodeService.getLoginQRCode(codeType);
         // 设置为 -1
         redisCache.setObject(AuthConstants.LOGIN_QR_CODE_MAP + loginQRCode.getSecret(), -1,
                 QRCodeConstants.LOGIN_QR_CODE_TTL, QRCodeConstants.LOGIN_QR_CODE_UNIT);
@@ -51,7 +52,7 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
         String redisKey = AuthConstants.LOGIN_QR_CODE_MAP + secret;
         redisCache.getObject(redisKey, Long.class).ifPresentOrElse(uid -> {
             if (uid.compareTo(0L) <= 0) {
-                redisCache.setObject(redisKey, JwtUtil.createJwt(AuthConstants.JWT_SUBJECT, userId),
+                redisCache.setObject(redisKey, userId,
                         QRCodeConstants.LOGIN_QR_CODE_TTL, QRCodeConstants.LOGIN_QR_CODE_UNIT);
             }
         }, () -> {
@@ -64,7 +65,7 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
         String redisKey = AuthConstants.LOGIN_QR_CODE_MAP + secret;
         Long userId = redisCache.getObject(redisKey, Long.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
-        validateService.validate(secret, () -> userId.compareTo(0L) > 0, GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
+        validateService.validate(VALIDATE_LOGIN_ACK_KEY + secret, () -> userId.compareTo(0L) > 0, GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
         return userService.getUserById(userId)
                 .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
     }

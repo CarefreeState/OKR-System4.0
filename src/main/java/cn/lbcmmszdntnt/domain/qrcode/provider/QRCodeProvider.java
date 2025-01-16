@@ -17,8 +17,8 @@ public interface QRCodeProvider {
     <T> String getQRCode(T params, String scene, Long activeLimit, QRCodeProcessor strategy);
 
     String getInviteQRCode(Long teamId, String teamName, String secret);
-    String getCommonQRCode();
+    String getCommonQRCode(); // 访问域名查看主页二维码，再扫码去主页，还不如直接代理域名到主页
     String getLoginQRCode(String secret);
-    String getBindingQRCode(Long userId, String secret);
+    String getBindingQRCode(String secret); // 绑定码只用于绑定微信
 
 }

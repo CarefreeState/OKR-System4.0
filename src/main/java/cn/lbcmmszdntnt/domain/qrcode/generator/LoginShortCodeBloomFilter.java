@@ -14,11 +14,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Slf4j
-public class LoginSecretCodeBloomFilter extends RedisBloomFilter<String> {
+public class LoginShortCodeBloomFilter extends RedisBloomFilter<String> {
 
     // todo 登录 secret 其实只有 五分钟的有效日期，怎么解决伪数据的存在
-    public LoginSecretCodeBloomFilter(final RedissonClient redissonClient, final LoginSecretCodeBloomFilterProperties loginSecretCodeBloomFilterProperties) {
-        super(redissonClient, loginSecretCodeBloomFilterProperties);
+    public LoginShortCodeBloomFilter(final RedissonClient redissonClient, final LoginShortCodeBloomFilterProperties loginShortCodeBloomFilterProperties) {
+        super(redissonClient, loginShortCodeBloomFilterProperties);
     }
 
 }

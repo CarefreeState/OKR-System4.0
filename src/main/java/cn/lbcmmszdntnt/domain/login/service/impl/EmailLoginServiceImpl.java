@@ -45,7 +45,7 @@ public class EmailLoginServiceImpl implements LoginService {
         // 验证码验证
         emailIdentifyService.validateEmailCode(EmailIdentifyType.LOGIN, email, emailLoginDTO.getCode());
         // 如果用户不存在（邮箱用户未注册/绑定），则注册
-        return redisLock.tryLockGetSomething(UserConstants.REGISTER_USER_EMAIL_LOCK + email, () -> {
+        return redisLock.tryLockGetSomething(UserConstants.EXISTS_USER_EMAIL_LOCK + email, () -> {
             return userService.getUserByEmail(email).orElseGet(() -> {
                 User user = new User();
                 user.setEmail(email);

@@ -2,6 +2,8 @@ package cn.lbcmmszdntnt.domain.user.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -10,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
  * Time: 2:15
  */
 public interface UserPhotoService {
+
+    List<String> getDefaultPhotoList();
 
     String tryUploadPhoto(MultipartFile multipartFile, Long userId, String originPhoto);
 

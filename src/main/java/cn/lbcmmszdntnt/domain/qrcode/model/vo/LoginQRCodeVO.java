@@ -19,7 +19,7 @@ public class LoginQRCodeVO {
     @Schema(description = "小程序码地址")
     private String path;
 
-    @Schema(description = "场景值")
+    @Schema(description = "密钥")
     private String secret;
 
 }

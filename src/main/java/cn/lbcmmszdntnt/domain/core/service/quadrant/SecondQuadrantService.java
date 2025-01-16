@@ -5,7 +5,6 @@ import cn.lbcmmszdntnt.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.SecondQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -16,7 +15,6 @@ import java.util.Date;
 */
 public interface SecondQuadrantService extends IService<SecondQuadrant> {
 
-    @Transactional
     void initSecondQuadrant(InitQuadrantDTO initQuadrantDTO);
     void updateDeadline(Long id, Date date);
 

@@ -41,6 +41,10 @@ okr:
         email: emailLoginServiceImpl
         ack: ackLoginServiceImpl
         password: passwordLoginServiceImpl
+    binding-service:
+      map:
+        email: emailBindingServiceImpl
+        wx: wxBindingServiceImpl
     okr-operate-service:
       map:
         personal: personalOkrServiceImpl

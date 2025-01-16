@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class SecondQuadrantServiceImpl extends ServiceImpl<SecondQuadrantMapper,
     private final RedisCache redisCache;
 
     @Override
+    @Transactional
     public void initSecondQuadrant(InitQuadrantDTO initQuadrantDTO) {
         Long id = initQuadrantDTO.getId();
         // 查询是否初始化过

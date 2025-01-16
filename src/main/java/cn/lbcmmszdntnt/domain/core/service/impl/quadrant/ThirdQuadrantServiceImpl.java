@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class ThirdQuadrantServiceImpl extends ServiceImpl<ThirdQuadrantMapper, T
     private final RedisCache redisCache;
 
     @Override
+    @Transactional
     public void initThirdQuadrant(InitQuadrantDTO initQuadrantDTO) {
         Long id = initQuadrantDTO.getId();
         Date deadline = this.lambdaQuery()

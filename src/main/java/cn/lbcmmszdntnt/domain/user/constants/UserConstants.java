@@ -42,9 +42,9 @@ public interface UserConstants {
     TimeUnit WX_USER_UNIT = TimeUnit.HOURS;
     TimeUnit ID_USER_UNIT = TimeUnit.HOURS;
 
-    String REGISTER_USER_USERNAME_LOCK = "registerUserUsernameLock:";
-    String REGISTER_USER_EMAIL_LOCK = "registerUserEmailLock:";
-    String REGISTER_USER_WX_LOCK = "registerUserWxLock:";
+    String EXISTS_USER_USERNAME_LOCK = "existsUserUsernameLock:";
+    String EXISTS_USER_EMAIL_LOCK = "existsUserEmailLock:";
+    String EXISTS_USER_WX_LOCK = "existsUserWxLock:";
 
     static String getDefaultPhoto() {
         return DEFAULT_PHOTO_LIST.get(RandomUtil.randomInt(DEFAULT_PHOTO_LIST.size()));

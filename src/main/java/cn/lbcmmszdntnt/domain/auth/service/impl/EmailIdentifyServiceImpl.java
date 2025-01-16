@@ -3,7 +3,7 @@ package cn.lbcmmszdntnt.domain.auth.service.impl;
 import cn.hutool.core.util.RandomUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.auth.enums.EmailIdentifyType;
-import cn.lbcmmszdntnt.domain.auth.model.vo.IdentifyTemplateVO;
+import cn.lbcmmszdntnt.domain.auth.model.vo.EmailIdentifyTemplateVO;
 import cn.lbcmmszdntnt.domain.auth.service.EmailIdentifyService;
 import cn.lbcmmszdntnt.domain.auth.service.ValidateService;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
@@ -52,12 +52,12 @@ public class EmailIdentifyServiceImpl implements EmailIdentifyService {
         emailMessage.setTitle(EMAIL_IDENTIFY.getTitle());
         emailMessage.setRecipient(email);
         // 构造模板消息
-        IdentifyTemplateVO identifyTemplateVO = IdentifyTemplateVO.builder()
+        EmailIdentifyTemplateVO emailIdentifyTemplateVO = EmailIdentifyTemplateVO.builder()
                 .code(code)
                 .timeout(EMAIL_IDENTIFY_TIMEUNIT.toMinutes(EMAIL_IDENTIFY_TIMEOUT))
                 .build();
         String html = htmlEngine.builder()
-                .append(EMAIL_IDENTIFY.getTemplate(), identifyTemplateVO)
+                .append(EMAIL_IDENTIFY.getTemplate(), emailIdentifyTemplateVO)
                 .build();
         emailMessage.setContent(html);
         // 发送模板消息

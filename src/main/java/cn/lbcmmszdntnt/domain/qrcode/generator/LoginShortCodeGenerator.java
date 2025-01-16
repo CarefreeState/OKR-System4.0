@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginShortCodeGenerator extends ShortCodeGenerator {
 
-    public LoginShortCodeGenerator(final LoginSecretCodeBloomFilter bloomFilter, final LoginShortCodeProperties shortCodeProperties) {
+    public LoginShortCodeGenerator(final LoginShortCodeBloomFilter bloomFilter, final LoginShortCodeProperties shortCodeProperties) {
         super(bloomFilter, shortCodeProperties);
     }
 }

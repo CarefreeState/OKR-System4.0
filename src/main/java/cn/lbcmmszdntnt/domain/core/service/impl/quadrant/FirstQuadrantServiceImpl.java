@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -41,6 +42,7 @@ public class FirstQuadrantServiceImpl extends ServiceImpl<FirstQuadrantMapper, F
     private final RedisCache redisCache;
 
     @Override
+    @Transactional
     public void initFirstQuadrant(FirstQuadrant firstQuadrant) {
         Long id = firstQuadrant.getId();
         Date deadline = firstQuadrant.getDeadline();

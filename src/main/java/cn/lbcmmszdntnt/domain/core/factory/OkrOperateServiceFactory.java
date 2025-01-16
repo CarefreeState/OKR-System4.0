@@ -1,9 +1,9 @@
-package cn.lbcmmszdntnt.domain.okr.factory;
+package cn.lbcmmszdntnt.domain.core.factory;
 
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.core.enums.OkrType;
-import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

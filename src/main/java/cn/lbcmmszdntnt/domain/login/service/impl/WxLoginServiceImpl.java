@@ -47,7 +47,7 @@ public class WxLoginServiceImpl implements LoginService {
         String openid = jsCode2Session.getOpenid();
         String unionid = jsCode2Session.getUnionid();
         // 如果用户不存在（微信用户未注册/绑定），则注册
-        return redisLock.tryLockGetSomething(UserConstants.REGISTER_USER_WX_LOCK + openid, () -> {
+        return redisLock.tryLockGetSomething(UserConstants.EXISTS_USER_WX_LOCK + openid, () -> {
             return userService.getUserByOpenid(openid).orElseGet(() -> {
                 User user = new User();
                 user.setOpenid(openid);

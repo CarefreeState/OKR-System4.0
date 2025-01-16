@@ -5,7 +5,9 @@ import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.QRCodeProviderFactory;
+import cn.lbcmmszdntnt.domain.qrcode.generator.BindingShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.qrcode.generator.LoginShortCodeGenerator;
+import cn.lbcmmszdntnt.domain.qrcode.model.vo.BindingQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
@@ -36,6 +38,8 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     private final LoginShortCodeGenerator loginShortCodeGenerator;
 
+    private final BindingShortCodeGenerator bindingShortCodeGenerator;
+
     private final QRCodeProviderFactory qrCodeProviderFactory;
 
     private final FileMediaService fileMediaService;
@@ -44,11 +48,11 @@ public class QRCodeServiceImpl implements QRCodeService {
         String lockKey = QRCodeConstants.OKR_INVITE_QR_CODE_LOCK + teamId;
         return redisLock.tryLockGetSomething(lockKey, () -> {
             QRCodeProvider provider = qrCodeProviderFactory.getProvider(type);
-            String redisKey = String.format(QRCodeConstants.TEAM_QR_CODE_MAP, type, teamId);
+            String redisKey = String.format(QRCodeConstants.TEAM_INVITE_QR_CODE_MAP, type, teamId);
             return redisCache.getObject(redisKey, String.class).orElseGet(() -> {
                 // 获取 QRCode
                 String qrCode = provider.getInviteQRCode(teamId, teamName, secret);
-                redisCache.setObject(redisKey, qrCode, QRCodeConstants.TEAM_QR_MAP_TTL, QRCodeConstants.TEAM_QR_MAP_UNIT);
+                redisCache.setObject(redisKey, qrCode, QRCodeConstants.TEAM_INVITE_QR_MAP_TTL, QRCodeConstants.TEAM_INVITE_QR_MAP_UNIT);
                 return qrCode;
             });
         }, () -> {
@@ -58,7 +62,7 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Override
     public void deleteTeamNameQRCodeCache(Long teamId) {
-        Arrays.stream(QRCodeType.values()).map(type -> String.format(QRCodeConstants.TEAM_QR_CODE_MAP, type.getType(), teamId))
+        Arrays.stream(QRCodeType.values()).map(type -> String.format(QRCodeConstants.TEAM_INVITE_QR_CODE_MAP, type.getType(), teamId))
                 .forEach(redisKey -> {
                     redisCache.getObject(redisKey, String.class).ifPresent(qrCode -> {
                         redisCache.deleteObject(qrCode);
@@ -68,9 +72,14 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     @Override
-    public String getBindingQRCode(Long userId, String secret) {
+    public BindingQRCodeVO getBindingQRCode() {
         QRCodeProvider provider = qrCodeProviderFactory.getProvider(QRCodeType.WX);
-         return provider.getBindingQRCode(userId, secret);
+        String secret = bindingShortCodeGenerator.convert();
+        String qrcode = provider.getBindingQRCode(secret);
+        return BindingQRCodeVO.builder()
+                .path(qrcode)
+                .secret(secret)
+                .build();
     }
 
     @Override

@@ -1,11 +1,10 @@
-package cn.lbcmmszdntnt.domain.okr.service;
+package cn.lbcmmszdntnt.domain.core.service;
 
 
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created With Intellij IDEA
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface OkrOperateService {
 
-    @Transactional
     OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO);
 
     OkrCoreVO selectAllOfCore(User user, Long coreId);

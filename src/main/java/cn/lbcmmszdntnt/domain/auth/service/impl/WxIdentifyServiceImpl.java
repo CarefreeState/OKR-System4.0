@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+import static cn.lbcmmszdntnt.domain.auth.constants.AuthConstants.VALIDATE_WX_CODE_KEY;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -31,7 +33,7 @@ public class WxIdentifyServiceImpl implements WxIdentifyService {
         // 构造请求 + 发起请求 -> code2Session
         JsCode2SessionDTO jsCode2SessionDTO = JsCode2SessionDTO.builder().jsCode(code).build();
         JsCode2SessionVO jsCode2SessionVO = WxHttpRequestUtil.jsCode2Session(jsCode2SessionDTO);
-        validateService.validate(code, () -> {
+        validateService.validate(VALIDATE_WX_CODE_KEY + code, () -> {
             return Objects.nonNull(jsCode2SessionVO.getOpenid());
         }, GlobalServiceStatusCode.WX_CODE_NOT_VALID);
         return jsCode2SessionVO;

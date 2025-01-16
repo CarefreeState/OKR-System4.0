@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.user.service;
 
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Optional;
@@ -14,25 +13,16 @@ import java.util.Optional;
 */
 public interface UserService extends IService<User> {
 
-    JsCode2SessionVO getJsCode2Session(String code);
-
     Optional<User> getUserById(Long id);
     Optional<User> getUserByUsername(String username);
     Optional<User> getUserByEmail(String email);
     Optional<User> getUserByOpenid(String openid);
 
     User checkAndGetUserByUsername(String username);
-
     User registerUser(User user);
 
-    void deleteUserIdCache(Long id);
-    void deleteUserEmailCache(String email);
-    void deleteUserOpenidCache(String openid);
-    void deleteUserAllCache(Long id);
+    void clearUserAllCache(Long id);
 
     void improveUserinfo(UserinfoDTO userinfoDTO, Long userId);
-
-    void bindingEmail(Long userId, String email, String code, String recordEmail);
-    void bindingWx(Long userId, String randomCode, String code);
 
 }

@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.auth.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.auth.service.EmailIdentifyService;
-import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "邮箱测试接口")
-@Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
+@Tag(name = "邮箱")
 @Validated
 public class EmailController {
 

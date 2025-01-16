@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.qrcode.service;
 
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
+import cn.lbcmmszdntnt.domain.qrcode.model.vo.BindingQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 
 /**
@@ -15,7 +16,7 @@ public interface QRCodeService {
     String getInviteQRCode(Long teamId, String teamName, String secret, QRCodeType type);
     void deleteTeamNameQRCodeCache(Long teamId);
 
-    String getBindingQRCode(Long userId, String secret);
+    BindingQRCodeVO getBindingQRCode();
 
     LoginQRCodeVO getLoginQRCode(QRCodeType type);
 

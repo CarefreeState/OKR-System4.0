@@ -17,8 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT;
-import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.LOGIN_CODE_MESSAGE;
+import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.*;
 
 /**
  * Created With Intellij IDEA
@@ -32,6 +31,8 @@ import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.LOGIN_CODE
 @Slf4j
 public class WebQRCodeProviderImpl implements QRCodeProvider {
 
+    private final static String SCENE_KEY = "scene";
+
     private final WebQRCodeConfig webQRCodeConfig;
 
     private final FileMediaService fileMediaService;
@@ -41,7 +42,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public <T> String getQRCode(T params, String scene, Long activeLimit, QRCodeProcessor strategy) {
         WebQRCode webQRCode = params instanceof WebQRCode qrCode ? qrCode : BeanUtil.copyProperties(params, WebQRCode.class);
-        String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of("scene", List.of(scene)));
+        String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of(SCENE_KEY, List.of(scene)));
         Integer width = webQRCode.getWidth();
         log.info("生成二维码 -> {}  {}  {} ", url, width, width);
         byte[] codeBytes = ImageUtil.getUrlQRCodeBytes(url, width, width);
@@ -52,7 +53,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public String getInviteQRCode(Long teamId, String teamName, String secret) {
         WebQRCode qrCode = webQRCodeConfig.getInvite();
-        String scene = String.format("teamId=%d&secret=%s", teamId, secret);
+        String scene = String.format(INVITE_CODE_SCENE_FORMAT, teamId, secret);
         return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
@@ -71,7 +72,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public String getLoginQRCode(String secret) {
         WebQRCode qrCode = webQRCodeConfig.getLogin();
-        String scene = String.format("secret=%s", secret);
+        String scene = String.format(LOGIN_CODE_SCENE_FORMAT, secret);
         return getQRCode(qrCode, scene, LOGIN_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
@@ -83,7 +84,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     }
 
     @Override
-    public String getBindingQRCode(Long userId, String secret) {
+    public String getBindingQRCode(String secret) {
         return null;
     }
 }

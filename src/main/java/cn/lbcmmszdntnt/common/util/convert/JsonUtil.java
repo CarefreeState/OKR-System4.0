@@ -35,6 +35,7 @@ public class JsonUtil {
 
     static {
         OBJECT_MAPPER = new Jackson2ObjectMapperBuilder()
+                .timeZone(TIME_ZONE)
                 .indentOutput(Boolean.FALSE) // 取消美化
                 .dateFormat(DATE_FORMAT)
                 .simpleDateFormat(DATE_TIME_PATTERN)

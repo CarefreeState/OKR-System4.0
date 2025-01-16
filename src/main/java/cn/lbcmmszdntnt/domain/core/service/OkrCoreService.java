@@ -4,7 +4,6 @@ package cn.lbcmmszdntnt.domain.core.service;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -15,7 +14,6 @@ import java.util.Date;
 */
 public interface OkrCoreService extends IService<OkrCore> {
 
-    @Transactional
     Long createOkrCore();
 
     OkrCore getOkrCore(Long coreId);

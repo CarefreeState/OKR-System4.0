@@ -10,7 +10,8 @@ import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamOkrMapper;
@@ -18,7 +19,6 @@ import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
-import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     private final MemberService memberService;
 
-    private final QRCodeService QRCodeService;
+    private final QRCodeService qrCodeService;
 
     @Override
     public List<TeamOkr> selectChildTeams(Long id) {
@@ -105,6 +106,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     }
 
     @Override
+    @Transactional
     public OKRCreateVO grantTeamForMember(Long teamId, Long managerId, Long userId, String teamName) {
         if(managerId.equals(userId)) {
             throw new GlobalServiceException(GlobalServiceStatusCode.PARAM_FAILED_VALIDATE);
@@ -187,11 +189,12 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             redisCache.deleteObject(TeamOkrUtil.TEAM_ID_NAME_MAP + teamId);
             // 2. 删除邀请码的缓存
             // (如果经常修改，那么这个团队一直都在本地只有一个小程序码，如果一个月内一次修改都没有，那么应该也不会重新获取邀请码，即使有，每个月多一张无伤大雅)
-            QRCodeService.deleteTeamNameQRCodeCache(teamId);
+            qrCodeService.deleteTeamNameQRCodeCache(teamId);
         });
     }
 
     @Override
+    @Transactional
     public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
         String redisKey = TeamOkrUtil.CREATE_CD_FLAG + userId;
@@ -250,14 +253,14 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConfig.USER_CORE_MAP + coreId;
+        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             Long managerId = Db.lambdaQuery(TeamOkr.class)
                     .eq(TeamOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getManagerId();
-            redisCache.setObject(redisKey, managerId, CoreUserMapConfig.USER_CORE_MAP_TTL, CoreUserMapConfig.USER_CORE_MAP_TTL_UNIT);
+            redisCache.setObject(redisKey, managerId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
             return managerId;
         });
     }

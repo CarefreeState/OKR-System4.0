@@ -5,29 +5,23 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2024-10-11
- * Time: 19:48
+ * Date: 2025-01-16
+ * Time: 23:21
  */
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "bloom-filter.login-secret-code")
-public class LoginSecretCodeBloomFilterProperties {
+@ConfigurationProperties(prefix = "short-code-generator.binding")
+public class BindingShortCodeProperties {
 
-    private String name;
+    private String key;
 
-    private Long preSize;
+    private Integer length;
 
-    private Double rate;
-
-    private Long timeout;
-
-    private TimeUnit unit;
+    private Boolean unique;
 
 }

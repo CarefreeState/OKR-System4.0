@@ -23,7 +23,7 @@ import lombok.Getter;
 public enum EmailIdentifyType {
 
     LOGIN("email-login", "登录验证", GlobalServiceStatusCode.EMAIL_LOGIN_IDENTIFY_CODE_ERROR),
-    BINDING("email-binding", "绑定验证", GlobalServiceStatusCode.EMAIL_BIDING_IDENTIFY_CODE_ERROR),
+    BINDING("email-binding", "绑定验证", GlobalServiceStatusCode.EMAIL_BINDING_IDENTIFY_CODE_ERROR),
 
     ;
 

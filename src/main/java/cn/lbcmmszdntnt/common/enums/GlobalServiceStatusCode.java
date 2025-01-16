@@ -48,6 +48,8 @@ public enum GlobalServiceStatusCode {
     USER_TOKEN_NOT_VALID(2010, "用户登录凭据无效"),
     USER_LOGIN_CODE_VALID(2011, "用户登录码失效"),
     USER_LOGIN_NOT_CHECK(2012, "用户登录码未验证"),
+    USER_BINDING_CODE_VALID(2012, "用户绑定码失效"),
+    USER_BINDING_NOT_CHECK(2012, "用户绑定码未验证"),
 
     USER_IDENTIFY_CODE_ERROR(2101, "验证码错误"),
     USER_USERNAME_PASSWORD_ERROR(2102, "用户名或密码错误"),
@@ -106,9 +108,10 @@ public enum GlobalServiceStatusCode {
     EMAIL_SENDER_NOT_EXISTS(7001, "邮箱发送器不存在"),
     EMAIL_NOT_EXIST_RECORD(7002, "邮箱不存在记录"),
     EMAIL_LOGIN_IDENTIFY_CODE_ERROR(7003, "邮箱登录验证码错误"),
-    EMAIL_BIDING_IDENTIFY_CODE_ERROR(7004, "邮箱绑定验证码错误"),
+    EMAIL_BINDING_IDENTIFY_CODE_ERROR(7004, "邮箱绑定验证码错误"),
     EMAIL_IDENTIFY_CODE_COUNT_EXHAUST(7005, "申请次数达到上限"),
     EMAIL_USER_BE_BOUND(7006, "邮箱用户已被绑定"),
+    USER_BOUND_EMAIL(7007, "用户已经绑定了微信"),
 
     WX_USER_BE_BOUND(7100, "微信用户已被绑定"),
     USER_BOUND_WX(7101, "用户已经绑定了微信"),

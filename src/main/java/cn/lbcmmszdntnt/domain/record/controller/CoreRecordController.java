@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.record.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.core.factory.OkrOperateServiceFactory;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrCoreDTO;
-import cn.lbcmmszdntnt.domain.okr.factory.OkrOperateServiceFactory;
-import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.record.model.converter.DayRecordConverter;
 import cn.lbcmmszdntnt.domain.record.model.entity.DayRecord;
 import cn.lbcmmszdntnt.domain.record.model.vo.DayRecordVO;
@@ -37,7 +37,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/corerecord")
-@Tag(name = "OKR 记录")
+@Tag(name = "OKR 内核/记录")
 @Intercept
 @Validated
 public class CoreRecordController {

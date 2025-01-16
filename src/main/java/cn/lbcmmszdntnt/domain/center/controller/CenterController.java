@@ -29,11 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Intercept
-@Tag(name = "Center")
+@Tag(name = "中心")
 @Validated
 public class CenterController {
 
-    private final QRCodeService QRCodeService;
+    private final QRCodeService qrCodeService;
 
     private final FileMediaService fileMediaService;
 
@@ -42,7 +42,7 @@ public class CenterController {
     @Intercept(authenticate = false, authorize = false)
     public void fileMedia(@PathVariable(value = "code", required = false) @Parameter(description = "资源码") String code,
                           HttpServletResponse response)  {
-        fileMediaService.preview(StringUtils.hasText(code) ? code : QRCodeService.getCommonQRCode(), response);
+        fileMediaService.preview(StringUtils.hasText(code) ? code : qrCodeService.getCommonQRCode(), response);
     }
 
     @GetMapping("/jwt/{userId}")

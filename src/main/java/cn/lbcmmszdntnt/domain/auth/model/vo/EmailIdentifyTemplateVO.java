@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdentifyTemplateVO {
+public class EmailIdentifyTemplateVO {
 
     private String code; // 验证码
 

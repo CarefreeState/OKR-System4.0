@@ -6,15 +6,15 @@ import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConfig;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
+import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
-import cn.lbcmmszdntnt.domain.okr.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
+import cn.lbcmmszdntnt.domain.teaminvite.service.TeamInviteIdentifyService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,18 +44,19 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
 
     private final MemberService memberService;
 
-    private final TeamInviteService teamInviteService;
+    private final TeamInviteIdentifyService teamInviteIdentifyService;
 
     private final RedisCache redisCache;
 
     @Override
+    @Transactional
     public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         // 检测密钥
         Long teamId = okrOperateDTO.getTeamOkrId();
         String secret = okrOperateDTO.getSecret();
-        teamInviteService.checkSecret(teamId, secret);
         // 获取用户 ID（受邀者）
         Long userId = user.getId();
+        teamInviteIdentifyService.validateSecret(userId, teamId, secret);
         // 判断是否可以加入团队
         if(Boolean.TRUE.equals(memberService.isExistsInTeam(teamId, userId))) {
             String message = String.format("用户 %d 无法再次加入团队 %d", userId, teamId);
@@ -94,14 +96,14 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConfig.USER_CORE_MAP + coreId;
+        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
                 Long userId = Db.lambdaQuery(TeamPersonalOkr.class)
                     .eq(TeamPersonalOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getUserId();
-                redisCache.setObject(redisKey, userId, CoreUserMapConfig.USER_CORE_MAP_TTL, CoreUserMapConfig.USER_CORE_MAP_TTL_UNIT);
+                redisCache.setObject(redisKey, userId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
                 return userId;
         });
     }

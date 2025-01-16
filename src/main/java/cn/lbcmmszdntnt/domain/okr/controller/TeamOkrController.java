@@ -10,18 +10,14 @@ import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
-import cn.lbcmmszdntnt.domain.okr.service.TeamInviteService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
-import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
-import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +36,7 @@ import java.util.List;
  * Time: 22:19
  */
 @RestController
-@Tag(name = "OKR/团队 OKR 测试接口")
+@Tag(name = "OKR/团队 OKR")
 @RequestMapping("/team")
 @RequiredArgsConstructor
 @Slf4j
@@ -51,10 +47,6 @@ public class TeamOkrController {
     private final TeamOkrService teamOkrService;
 
     private final MemberService memberService;
-
-    private final QRCodeService QRCodeService;
-
-    private final TeamInviteService teamInviteService;
 
     @GetMapping("/list")
     @Operation(summary = "获取管理的团队 OKR 列表")
@@ -137,26 +129,6 @@ public class TeamOkrController {
         String teamName = grantDTO.getTeamName();
         OKRCreateVO ret = teamOkrService.grantTeamForMember(teamId, managerId, userId, teamName);
         return SystemJsonResponse.SYSTEM_SUCCESS(ret);
-    }
-
-    @PostMapping("/qrcode/{teamId}")
-    @Operation(summary = "获取邀请码")
-    public SystemJsonResponse<String> getQRCode(
-            @PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId,
-            @RequestParam(value = "type", required = false) @Parameter(example = "wx", schema = @Schema(
-                    type = "string",
-                    description = "二维码类型 wx 微信小程序二维码、web 网页二维码",
-                    allowableValues = {"wx", "web"}
-            )) String type
-    ) {
-        // 检测
-        User user = InterceptorContext.getUser();
-        Long managerId = user.getId();
-        // 检测管理者身份
-        teamOkrService.checkManager(teamId, managerId);
-        // 进行操作
-        String path = QRCodeService.getInviteQRCode(teamId, TeamOkrUtil.getTeamName(teamId), teamInviteService.getSecret(teamId), QRCodeType.get(type));
-        return SystemJsonResponse.SYSTEM_SUCCESS(path);
     }
 
     @GetMapping("/describe/{teamId}")

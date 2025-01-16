@@ -4,7 +4,6 @@ package cn.lbcmmszdntnt.domain.core.service.quadrant;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.FirstQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
 * @author 马拉圈
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 */
 public interface FirstQuadrantService extends IService<FirstQuadrant> {
 
-    @Transactional
     void initFirstQuadrant(FirstQuadrant firstQuadrant);
 
     FirstQuadrantVO searchFirstQuadrant(Long coreId);

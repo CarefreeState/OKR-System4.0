@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.auth.enums;
+package cn.lbcmmszdntnt.domain.login.enums;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
