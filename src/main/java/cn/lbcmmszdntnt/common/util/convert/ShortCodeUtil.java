@@ -33,7 +33,8 @@ public class ShortCodeUtil {
         System.out.println("\"" + subCodeByString("teamId=" + teamId + "macaku", 6) +"\"");
         System.out.println("\"" + subCodeByString("WX_JWT" + "macaku", 6) +"\""); // r6Vsr0
         System.out.println("\"" + subCodeByString("EMAIL_JWT" + "macaku", 6) +"\""); // Rl0p0r
-        System.out.println("\"" + subCodeByString("ACK" + "macaku", 6) +"\""); // Z-1_rf
+        System.out.println("\"" + subCodeByString("ACK_JWT" + "macaku", 6) +"\""); // 1eXBrJ
+        System.out.println("\"" + subCodeByString("PASSWORD_JWT" + "macaku", 6) +"\""); // jOKQE5
     }
 
 }

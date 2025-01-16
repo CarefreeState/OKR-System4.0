@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -26,7 +26,8 @@ public class WxBindingServiceImpl implements WxBindingService {
 
     @Override
     public String getSecret(Long userId) {
-        String randomCode = IdentifyingCodeValidator.getIdentifyingCode();
+        // todo 绑定逻辑
+        String randomCode = RandomUtil.randomNumbers(6);
         String redisKey = QRCodeConstants.WX_CHECK_QR_CODE_MAP + userId;
         redisCache.setObject(redisKey, randomCode,
                 QRCodeConstants.WX_CHECK_QR_CODE_TTL, QRCodeConstants.WX_CHECK_QR_CODE_UNIT);

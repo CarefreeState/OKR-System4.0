@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.domain.qrcode.config;
 
-import cn.lbcmmszdntnt.wxtoken.model.dto.LineColor;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @ConfigurationProperties(prefix = "font.text")
 public class FontTextConfig {
 
-    private LineColor lineColor;
+    private TextColor lineColor;
 
     private String common;
 
@@ -39,4 +39,20 @@ public class FontTextConfig {
     public void init() {
         this.color = Optional.ofNullable(color).orElseGet(lineColor::color);
     }
+
+    @Data
+    public static class TextColor {
+
+        private Integer red;
+
+        private Integer green;
+
+        private Integer blue;
+
+        public Color color() {
+            return new Color(red, green, blue);
+        }
+
+    }
+
 }

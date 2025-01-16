@@ -1,8 +1,10 @@
 package cn.lbcmmszdntnt.domain.user.model.dto;
 
+import cn.lbcmmszdntnt.domain.auth.enums.EmailIdentifyType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -17,8 +19,8 @@ import lombok.Data;
 public class EmailCheckDTO {
 
     @Schema(description = "验证类型")
-    @NotBlank(message = "验证类型不能为空")
-    private String type;
+    @NotNull(message = "验证类型不能为空")
+    private EmailIdentifyType type;
 
     @Schema(description = "email")
     @NotBlank(message = "邮箱不能为空")

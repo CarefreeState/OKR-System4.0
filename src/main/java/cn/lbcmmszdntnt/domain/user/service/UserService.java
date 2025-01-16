@@ -14,28 +14,25 @@ import java.util.Optional;
 */
 public interface UserService extends IService<User> {
 
-    JsCode2SessionVO getUserFlag(String code);
+    JsCode2SessionVO getJsCode2Session(String code);
 
     Optional<User> getUserById(Long id);
-
+    Optional<User> getUserByUsername(String username);
     Optional<User> getUserByEmail(String email);
-
     Optional<User> getUserByOpenid(String openid);
 
+    User checkAndGetUserByUsername(String username);
+
+    User registerUser(User user);
+
     void deleteUserIdCache(Long id);
-
     void deleteUserEmailCache(String email);
-
     void deleteUserOpenidCache(String openid);
-
     void deleteUserAllCache(Long id);
 
     void improveUserinfo(UserinfoDTO userinfoDTO, Long userId);
 
     void bindingEmail(Long userId, String email, String code, String recordEmail);
-
     void bindingWx(Long userId, String randomCode, String code);
-
-    void onLoginState(String secret, Long userId);
 
 }

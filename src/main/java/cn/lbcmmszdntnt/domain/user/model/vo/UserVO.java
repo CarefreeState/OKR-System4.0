@@ -24,6 +24,9 @@ public class UserVO {
     @Schema(description = "unionid")
     private String unionid;
 
+    @Schema(description = "用户名")
+    private String username;
+
     @Schema(description = "昵称")
     private String nickname;
 

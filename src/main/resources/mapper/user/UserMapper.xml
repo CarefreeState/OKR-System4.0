@@ -6,9 +6,11 @@
 
     <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.user.model.entity.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="username" column="nickname" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="openid" column="openid" jdbcType="VARCHAR"/>
             <result property="unionid" column="unionid" jdbcType="VARCHAR"/>
-            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="password" column="nickname" jdbcType="VARCHAR"/>
             <result property="photo" column="photo" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="CHAR"/>
@@ -23,6 +25,7 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="openid" column="openid" jdbcType="VARCHAR"/>
         <result property="unionid" column="unionid" jdbcType="VARCHAR"/>
+        <result property="username" column="nickname" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="photo" column="photo" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
@@ -30,7 +33,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,openid,unionid,
+        id,username,openid,unionid,password,
         nickname,photo,email,
         phone,user_type,version,is_deleted,
         create_time,update_time

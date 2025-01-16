@@ -21,4 +21,6 @@ public class WebQRCodeConfig {
 
     private WebQRCode invite;
 
+    private WebQRCode login;
+
 }

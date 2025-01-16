@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.auth.factory;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
-import cn.lbcmmszdntnt.domain.auth.service.LoginService;
+import cn.lbcmmszdntnt.domain.login.service.LoginService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

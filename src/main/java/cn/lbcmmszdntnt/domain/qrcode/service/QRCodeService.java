@@ -17,7 +17,7 @@ public interface QRCodeService {
 
     String getBindingQRCode(Long userId, String secret);
 
-    LoginQRCodeVO getLoginQRCode();
+    LoginQRCodeVO getLoginQRCode(QRCodeType type);
 
     String getCommonQRCode();
 

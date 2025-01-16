@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT;
+import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.LOGIN_CODE_MESSAGE;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -67,7 +70,16 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
 
     @Override
     public String getLoginQRCode(String secret) {
-        return null;
+        WebQRCode qrCode = webQRCodeConfig.getLogin();
+        String scene = String.format("secret=%s", secret);
+        return getQRCode(qrCode, scene, LOGIN_CODE_ACTIVE_LIMIT, bytes -> {
+            return ImageUtil.signatureWrite(
+                    bytes,
+                    LOGIN_CODE_MESSAGE,
+                    fontTextConfig.getLogin(),
+                    fontTextConfig.getColor()
+            );
+        });
     }
 
     @Override

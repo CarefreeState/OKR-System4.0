@@ -1,43 +1,33 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.domain.auth.enums.LoginType;
-import cn.lbcmmszdntnt.domain.auth.factory.LoginServiceFactory;
-import cn.lbcmmszdntnt.domain.auth.model.dto.LoginDTO;
-import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
-import cn.lbcmmszdntnt.domain.auth.service.LoginService;
-import cn.lbcmmszdntnt.domain.email.service.EmailService;
-import cn.lbcmmszdntnt.domain.email.util.IdentifyingCodeValidator;
-import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
 import cn.lbcmmszdntnt.domain.user.model.dto.EmailBindingDTO;
-import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.WxBindingDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.UserTypeVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.domain.user.service.WxBindingService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
-import cn.lbcmmszdntnt.interceptor.jwt.TokenVO;
-import cn.lbcmmszdntnt.jwt.util.JwtUtil;
-import cn.lbcmmszdntnt.sse.util.SseMessageSender;
-import cn.lbcmmszdntnt.websocket.util.WsMessageSender;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -49,64 +39,20 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@Intercept
+@Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
+@Validated
 public class UserController {
-
-    private final static String LOGIN_HEADER = "Login-Type";
-    private final static String JWT_SUBJECT = "登录认证";
-
-    private final LoginServiceFactory loginServiceFactory;
 
     private final UserService userService;
 
     private final QRCodeService QRCodeService;
 
-    private final EmailService emailService;
-
     private final UserPhotoService userPhotoService;
 
     private final WxBindingService wxBindingService;
 
-    @PostMapping("/login")
-    @Operation(summary = "用户登录")
-    @Tag(name = "用户测试接口/登录")
-    @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<LoginVO> login(
-            @RequestHeader(LOGIN_HEADER) @Parameter(example = "Rl0p0r", schema = @Schema(
-                    type = "string",
-                    description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、Z-1_rf 授权登录",
-                    allowableValues = {"Rl0p0r", "r6Vsr0", "Z-1_rf"})
-            ) String type,
-            @Valid @RequestBody LoginDTO loginDTO
-    ) {
-        // 选取服务
-        LoginService loginService = loginServiceFactory.getService(LoginType.get(type));
-        User user = loginService.login(loginDTO);
-        Long userId = user.getId();
-        userService.deleteUserAllCache(userId);
-        // 构造 token
-        TokenVO tokenVO = TokenVO.builder().userId(userId).build();
-        String token = JwtUtil.createJwt(JWT_SUBJECT, tokenVO);
-        LoginVO loginVO = LoginVO.builder().token(token).build();
-        return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
-    }
-
-    @PostMapping("/check/email")
-    @Operation(summary = "验证邮箱用户")
-    @Tag(name = "用户测试接口/邮箱")
-    @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<?> emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
-        // 获得随机验证码
-        String code = IdentifyingCodeValidator.getIdentifyingCode();
-        String type = emailCheckDTO.getType();
-        String email = emailCheckDTO.getEmail();
-        emailService.sendIdentifyingCode(type, email, code);
-        // 能到这一步就成功了
-        return SystemJsonResponse.SYSTEM_SUCCESS();
-    }
-
     @PostMapping("/check/wx")
-    @Operation(summary = "验证微信用户")
+    @Operation(summary = "获取微信绑定码")
     @Tag(name = "用户测试接口/微信")
     public SystemJsonResponse<String> wxIdentifyCheck() {
         Long userId = InterceptorContext.getUser().getId();
@@ -114,38 +60,6 @@ public class UserController {
         String mapPath = QRCodeService.getBindingQRCode(userId, wxBindingService.getSecret(userId));
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
-
-    @GetMapping("/wx/login")
-    @Operation(summary = "获取微信登录码")
-    @Tag(name = "用户测试接口/微信")
-    @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<LoginQRCodeVO> wxLoginCheck() {
-        // 生成一个小程序检查码
-        LoginQRCodeVO result = QRCodeService.getLoginQRCode();
-        return SystemJsonResponse.SYSTEM_SUCCESS(result);
-    }
-
-    @PostMapping("/wx/confirm/{secret}")
-    @Operation(summary = "微信登录授权")
-    @Tag(name = "用户测试接口/微信")
-    public SystemJsonResponse<?> wxLoginConfirm(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-        User user = InterceptorContext.getUser();
-        userService.onLoginState(secret, user.getId());//如果不是微信用户，但是有 openid，说明这个用户等同于微信登录
-        // 发送已确认的通知
-        SystemJsonResponse<?> systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
-        WsMessageSender.sendMessageToOne(WsUserServer.WEB_SOCKET_USER_SERVER + secret, systemJsonResponse);
-        SseMessageSender.sendMessage(SseUserServer.SSE_USER_SERVER + secret, systemJsonResponse);
-        return systemJsonResponse;
-    }
-
-//    @PostMapping("/wx/login/{secret}")
-//    @Operation(summary = "微信登录检查")
-//    @Tag(name = "用户测试接口/微信")
-//    @Intercept(authenticate = false, authorize = false)
-//    public SystemJsonResponse<LoginVO> wxLoginCheck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
-//        LoginVO result = userService.checkLoginState(secret);
-//        return SystemJsonResponse.SYSTEM_SUCCESS(result);
-//    }
 
     @PostMapping("/binding/email")
     @Operation(summary = "绑定用户邮箱")
@@ -198,9 +112,19 @@ public class UserController {
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }
 
+    @GetMapping("/usertype")
+    @Operation(summary = "获取用户信息")
+    @Tag(name = "用户测试接口/信息")
+    @Intercept(authenticate = false, authorize = false)
+    public SystemJsonResponse<List<UserTypeVO>> getUserTypeList() {
+        List<UserTypeVO> userTypeVOList = UserConverter.INSTANCE.userTypeListToUserTypeVOList(List.of(UserType.values()));
+        return SystemJsonResponse.SYSTEM_SUCCESS(userTypeVOList);
+    }
+
     @GetMapping("/userinfo")
     @Operation(summary = "获取用户信息")
     @Tag(name = "用户测试接口/信息")
+    @Intercept(authenticate = true, authorize = false) // 只需要登录就能访问
     public SystemJsonResponse<UserVO> getUserInfo() {
         // 获取当前登录用户
         User user = InterceptorContext.getUser();

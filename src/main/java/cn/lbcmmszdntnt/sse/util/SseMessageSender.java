@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.sse.util;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import cn.lbcmmszdntnt.sse.session.SseSessionMapper;
-import cn.lbcmmszdntnt.websocket.session.WsSessionMapper;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -30,7 +29,7 @@ public class SseMessageSender {
     private static Consumer<IOException> handleException(String sessionKey) {
         return e -> {
             log.error("{} 发送消息异常 {}", sessionKey, e.getMessage());
-            WsSessionMapper.remove(sessionKey);
+            SseSessionMapper.remove(sessionKey);
         };
     }
 

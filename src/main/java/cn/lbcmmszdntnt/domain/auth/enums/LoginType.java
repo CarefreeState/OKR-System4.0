@@ -18,14 +18,15 @@ import lombok.Getter;
 @AllArgsConstructor
 @Schema(
         type = "string",
-        description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、Z-1_rf 授权登录",
-        allowableValues = {"Rl0p0r", "r6Vsr0", "Z-1_rf"}
+        description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、1eXBrJ 授权登录、jOKQE5 密码登录",
+        allowableValues = {"Rl0p0r", "r6Vsr0", "1eXBrJ", "jOKQE5"}
 )
 public enum LoginType {
 
     EMAIL("Rl0p0r", "邮箱登录"),
     WX("r6Vsr0", "微信登录"),
-    ACK("Z-1_rf", "授权登录"),
+    ACK("1eXBrJ", "授权登录"),
+    PASSWORD("jOKQE5", "密码登录"),
 
     ;
 

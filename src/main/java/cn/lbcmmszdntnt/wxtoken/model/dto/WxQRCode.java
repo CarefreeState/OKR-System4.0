@@ -34,4 +34,18 @@ public class WxQRCode {
     @JsonProperty("is_hyaline")
     private Boolean isHyaline;
 
+    @Data
+    public static class LineColor {
+
+        @JsonProperty("r")
+        private Integer red;
+
+        @JsonProperty("g")
+        private Integer green;
+
+        @JsonProperty("b")
+        private Integer blue;
+
+    }
+
 }

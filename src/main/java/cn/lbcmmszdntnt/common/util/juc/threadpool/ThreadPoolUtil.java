@@ -167,6 +167,7 @@ public class ThreadPoolUtil {
     public static <T> void operateBatch(List<T> dataList, Consumer<T> consumer,
                                         int defaultTaskNumber, ThreadPoolExecutor threadPool) {
         if(CollectionUtils.isEmpty(dataList)) {
+            log.info("共需处理 0 个数据");
             return;
         }
         int size = dataList.size();

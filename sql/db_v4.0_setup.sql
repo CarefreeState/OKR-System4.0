@@ -46,6 +46,11 @@ create table `user` (
     index `idx_unionid`(`unionid` asc) using btree
 ) auto_increment 10000 comment '用户表';
 
+-- mms 123456
+insert into `user`(`id`, `username`, `nickname`, `password`, `photo`, `user_type`) values
+    (10000, 'mms', '马铭胜', '8f687f9a47e14aaf92f5d861355d3cce$8960081935ccd38123476bb232573024', 'default.png', 2)
+;
+
 -- 创建 OKR 内核表
 drop table if exists `okr_core`;
 create table `okr_core` (

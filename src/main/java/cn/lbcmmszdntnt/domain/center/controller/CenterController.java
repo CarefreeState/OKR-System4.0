@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.domain.center.controller;
 
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
-import cn.lbcmmszdntnt.domain.auth.model.vo.LoginVO;
+import cn.lbcmmszdntnt.domain.login.model.vo.LoginVO;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,16 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Intercept
 @Tag(name = "Center")
+@Validated
 public class CenterController {
-
-    private final static String JWT_SUBJECT = "登录认证（测试阶段伪造）";
 
     private final QRCodeService QRCodeService;
 
     private final FileMediaService fileMediaService;
 
     @Operation(summary = "访问资源")
-    @GetMapping({"/{code}", "/"})
+    @GetMapping({"/{code}", "/", ""})
     @Intercept(authenticate = false, authorize = false)
     public void fileMedia(@PathVariable(value = "code", required = false) @Parameter(description = "资源码") String code,
                           HttpServletResponse response)  {
@@ -51,7 +51,7 @@ public class CenterController {
     public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
         // 构造 token
         TokenVO tokenVO = TokenVO.builder().userId(userId).build();
-        String token = JwtUtil.createJwt(JWT_SUBJECT, tokenVO);
+        String token = JwtUtil.createJwt("登录认证（测试阶段伪造）", tokenVO);
         LoginVO loginVO = LoginVO.builder().token(token).build();
         return SystemJsonResponse.SYSTEM_SUCCESS(loginVO);
     }

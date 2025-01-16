@@ -5,6 +5,7 @@ import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
 import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import cn.lbcmmszdntnt.redis.bloomfilter.RedisBloomFilter;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -31,18 +32,18 @@ public class ShortCodeGenerator {
 
     public String convert(String baseStr) {
         int length = Optional.ofNullable(shortCodeProperties.getLength()).filter(l -> l.compareTo(0) > 0).orElse(DEFAULT_LENGTH);
+        baseStr += Optional.ofNullable(shortCodeProperties.getKey()).filter(StringUtils::hasText).orElse("");
         if(Boolean.TRUE.equals(shortCodeProperties.getUnique())) {
             // unique == true
             String code = baseStr;
             do {
-                code = ShortCodeUtil.subCodeByString(code + UUIDUtil.uuid32(), length);
+                code = ShortCodeUtil.subCodeByString(code + UUIDUtil.uuid36(), length);
             } while (bloomFilter.contains(code));
             bloomFilter.add(code);
             return code;
         } else {
             // unique == null/false
-            String key = shortCodeProperties.getKey();
-            return ShortCodeUtil.subCodeByString(baseStr + key, length);
+            return ShortCodeUtil.subCodeByString(baseStr, length);
         }
     }
 

@@ -74,12 +74,9 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     @Override
-    public LoginQRCodeVO getLoginQRCode() {
+    public LoginQRCodeVO getLoginQRCode(QRCodeType type) {
+        QRCodeProvider provider = qrCodeProviderFactory.getProvider(type);
         String secret = loginShortCodeGenerator.convert();
-        QRCodeProvider provider = qrCodeProviderFactory.getProvider(QRCodeType.WX);
-        // 设置为 -1
-        redisCache.setObject(QRCodeConstants.WX_LOGIN_QR_CODE_MAP + secret, -1,
-                QRCodeConstants.WX_LOGIN_QR_CODE_TTL, QRCodeConstants.WX_LOGIN_QR_CODE_UNIT);
         String qrcode = provider.getLoginQRCode(secret);
         return LoginQRCodeVO.builder()
                 .path(qrcode)
@@ -95,7 +92,7 @@ public class QRCodeServiceImpl implements QRCodeService {
             redisCache.getObject(redisKey, String.class).orElseGet(() -> {
                 // 获取 QRCode
                 String qrcode = provider.getCommonQRCode();
-                redisCache.setObject(redisKey, qrcode, QRCodeConstants.WX_COMMON_QR_CODE_TTL, QRCodeConstants.WX_COMMON_QR_CODE_UNIT);
+                redisCache.setObject(redisKey, qrcode, QRCodeConstants.COMMON_QR_CODE_TTL, QRCodeConstants.COMMON_QR_CODE_UNIT);
                 return qrcode;
             }), () -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.REDIS_LOCK_FAIL);

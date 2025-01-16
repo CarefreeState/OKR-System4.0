@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 @RequestMapping("/medal")
 @RequiredArgsConstructor
 @Intercept
+@Validated
 public class UserMedalController {
 
     private final UserMedalService userMedalService;

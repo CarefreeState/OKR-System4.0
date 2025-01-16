@@ -26,8 +26,8 @@ import java.util.Map;
 @Slf4j
 public class ImageUtil {
 
-    public static final String DEFAULT_FORMAT_NAME = "png";
     private final static ResourceStaticConfig RESOURCE_STATIC_CONFIG = SpringUtil.getBean(ResourceStaticConfig.class);
+    public static final String DEFAULT_FORMAT_NAME = "png";
     private final static double MAX_PX_RATE = 0.213;
     private final static double REFER_WIDTH_RATE = 0.800;
     private final static double REFER_HEIGHT_RATE = 0.333;

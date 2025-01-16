@@ -1,7 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.enums;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -34,7 +33,7 @@ public enum QRCodeType {
 
     public static QRCodeType get(String name) {
         if(!StringUtils.hasText(name)) {
-            return QRCodeConstants.DEFAULT_QRCODE_TYPE;
+            return  QRCodeType.WX;
         }
         for(QRCodeType type : values()) {
             if(type.type.equals(name)) {

@@ -1,10 +1,14 @@
 package cn.lbcmmszdntnt.domain.user.model.converter;
 
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.UserTypeVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -19,6 +23,8 @@ public interface UserConverter {
     UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
 
     UserVO userToUserVO(User user);
+
+    List<UserTypeVO> userTypeListToUserTypeVOList(List<UserType> userTypeList);
 
     User userinfoDTOToUser(UserinfoDTO userinfoDTO);
 }

@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.redis.bloomfilter;
 import cn.hutool.core.bean.BeanUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisException;
@@ -10,6 +11,7 @@ import org.redisson.client.RedisException;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
+@Slf4j
 public class RedisBloomFilter<T> {
 
     private final BloomFilterProperties properties;
@@ -39,6 +41,7 @@ public class RedisBloomFilter<T> {
 
     public void add(T key) {
         try {
+            log.info("加入布隆过滤器 {}", key);
             rBloomFilter.add(key);
             expire();
         } catch (RedisException e) {
@@ -51,11 +54,18 @@ public class RedisBloomFilter<T> {
         try {
             boolean contains = rBloomFilter.contains(key);
             expire();
+            log.info("查询布隆过滤器 {} {}", key, contains);
             return contains;
         } catch (RedisException e) {
             tryInit();
             return rBloomFilter.contains(key);
         }
+    }
+
+    public void clear() {
+        log.info("清除布隆过滤器");
+        rBloomFilter.delete();
+        tryInit();
     }
 
     @Data

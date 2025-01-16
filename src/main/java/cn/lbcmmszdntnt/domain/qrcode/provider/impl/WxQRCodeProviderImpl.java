@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -25,15 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class WxQRCodeProviderImpl implements QRCodeProvider {
-
-    private final static Long BINDING_CODE_ACTIVE_LIMIT = QRCodeConstants.WX_CHECK_QR_CODE_UNIT.toMillis(QRCodeConstants.WX_CHECK_QR_CODE_TTL);
-    private final static Long LOGIN_CODE_ACTIVE_LIMIT = QRCodeConstants.WX_LOGIN_QR_CODE_UNIT.toMillis(QRCodeConstants.WX_LOGIN_QR_CODE_TTL);
-
-    private final static String COMMON_CODE_MESSAGE = "让目标照耀前程，用规划书写人生！";
-    private final static String BINDING_CODE_MESSAGE = String.format("请在 %d %s 内前往微信扫码进行绑定！",
-            QRCodeConstants.WX_CHECK_QR_CODE_TTL, QRCodeConstants.WX_CHECK_QR_CODE_UNIT);
-    private final static String LOGIN_CODE_MESSAGE = String.format("请在 %d %s 内前往微信扫码进行验证！",
-            QRCodeConstants.WX_LOGIN_QR_CODE_TTL, QRCodeConstants.WX_LOGIN_QR_CODE_UNIT);
 
     private final WxQRCodeConfig wxQRCodeConfig;
 

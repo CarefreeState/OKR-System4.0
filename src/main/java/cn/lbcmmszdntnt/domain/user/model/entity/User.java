@@ -16,25 +16,22 @@ import java.io.Serializable;
 @Data
 public class User extends BaseIncrIDEntity implements Serializable {
 
-    @Schema(description = "openid")
     private String openid;
 
-    @Schema(description = "unionid")
     private String unionid;
 
-    @Schema(description = "昵称")
+    private String username;
+
     private String nickname;
 
-    @Schema(description = "头像")
+    private String password;
+
     private String photo;
 
-    @Schema(description = "邮箱")
     private String email;
 
-    @Schema(description = "手机号")
     private String phone;
 
-    @Schema(description = "用户类型")
     private UserType userType;
 
     private static final long serialVersionUID = 1L;
