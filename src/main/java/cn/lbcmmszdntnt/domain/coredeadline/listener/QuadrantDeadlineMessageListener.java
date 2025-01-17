@@ -10,6 +10,7 @@ import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.ThirdQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
+import cn.lbcmmszdntnt.domain.coredeadline.constants.CoreDeadlineConstants;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,6 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class QuadrantDeadlineMessageListener {
-
-    private final static String SECOND_QUADRANT_DEADLINE_LOCK = "secondQuadrantDeadlineLock:";
-    private final static String THIRD_QUADRANT_DEADLINE_LOCK = "thirdQuadrantDeadlineLock:";
 
     private final RedisLock redisLock;
 
@@ -83,7 +81,7 @@ public class QuadrantDeadlineMessageListener {
         // （若不一致，则代表此消息已无效，无需重发，因为认定数据库里的 deadline 也有自己的消息，若没有，则代表消息丢失，再此弥补也无济于事）
         Date secondQuadrantDeadline = secondQuadrantEvent.getDeadline();
         long deadTimestamp = secondQuadrantDeadline.getTime();
-        redisLock.tryLockDoSomething(SECOND_QUADRANT_DEADLINE_LOCK + secondQuadrantId, () -> {
+        redisLock.tryLockDoSomething(CoreDeadlineConstants.SECOND_QUADRANT_DEADLINE_LOCK + secondQuadrantId, () -> {
             secondQuadrantService.lambdaQuery().eq(SecondQuadrant::getId, secondQuadrantId).oneOpt().map(SecondQuadrant::getDeadline).map(Date::getTime).ifPresent(dbDeadline -> {
                 if(!dbDeadline.equals(deadTimestamp)) {
                     return;
@@ -131,7 +129,7 @@ public class QuadrantDeadlineMessageListener {
         // （若不一致，则代表此消息已无效，无需重发，因为认定数据库里的 deadline 也有自己的消息，若没有，则代表消息丢失，再此弥补也无济于事）
         Date thirdQuadrantDeadline = thirdQuadrantEvent.getDeadline();
         long deadTimestamp = thirdQuadrantDeadline.getTime();
-        redisLock.tryLockDoSomething(THIRD_QUADRANT_DEADLINE_LOCK + thirdQuadrantId, () -> {
+        redisLock.tryLockDoSomething(CoreDeadlineConstants.THIRD_QUADRANT_DEADLINE_LOCK + thirdQuadrantId, () -> {
             thirdQuadrantService.lambdaQuery().eq(ThirdQuadrant::getId, thirdQuadrantId).oneOpt().map(ThirdQuadrant::getDeadline).map(Date::getTime).ifPresent(dbDeadline -> {
                 if(!dbDeadline.equals(deadTimestamp)) {
                     return;

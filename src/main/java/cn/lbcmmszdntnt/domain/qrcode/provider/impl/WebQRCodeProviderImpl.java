@@ -31,8 +31,6 @@ import static cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants.*;
 @Slf4j
 public class WebQRCodeProviderImpl implements QRCodeProvider {
 
-    private final static String SCENE_KEY = "scene";
-
     private final WebQRCodeConfig webQRCodeConfig;
 
     private final FileMediaService fileMediaService;
@@ -42,7 +40,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     @Override
     public <T> String getQRCode(T params, String scene, Long activeLimit, QRCodeProcessor strategy) {
         WebQRCode webQRCode = params instanceof WebQRCode qrCode ? qrCode : BeanUtil.copyProperties(params, WebQRCode.class);
-        String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of(SCENE_KEY, List.of(scene)));
+        String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of(WEB_QR_CODE_SCENE_KEY, List.of(scene)));
         Integer width = webQRCode.getWidth();
         log.info("生成二维码 -> {}  {}  {} ", url, width, width);
         byte[] codeBytes = ImageUtil.getUrlQRCodeBytes(url, width, width);

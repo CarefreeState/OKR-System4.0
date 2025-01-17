@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 public class XxlJobCookie {
 
     private final static long TIMEOUT = 2;
-
     private final static TimeUnit UNIT = TimeUnit.HOURS;
 
     // 若 cookie 不对，或者没有 cookie，请求 xxl-job 会返回空串

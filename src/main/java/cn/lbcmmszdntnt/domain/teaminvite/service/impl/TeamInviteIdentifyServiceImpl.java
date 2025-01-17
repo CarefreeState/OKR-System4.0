@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TeamInviteIdentifyServiceImpl implements TeamInviteIdentifyService {
 
-    private final static String INVITE_SECRET_ORIGINAL_FORMAT = "teamId=%d";
-
     private final NormalShortCodeGenerator normalShortCodeGenerator;
 
     private final QRCodeService qrCodeService;
@@ -33,7 +31,7 @@ public class TeamInviteIdentifyServiceImpl implements TeamInviteIdentifyService 
     private final ValidateService validateService;
 
     private String convert(Long teamId) {
-        return normalShortCodeGenerator.convert(String.format(INVITE_SECRET_ORIGINAL_FORMAT, teamId));
+        return normalShortCodeGenerator.convert(String.format(TeamInviteConstants.INVITE_SECRET_ORIGINAL_FORMAT, teamId));
     }
 
     @Override

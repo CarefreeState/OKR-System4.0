@@ -15,4 +15,12 @@ public interface MedalConstants {
     Long USER_MEDAL_MAP_TIMEOUT = 2L;
     TimeUnit USER_MEDAL_MAP_TIMEUNIT = TimeUnit.DAYS;
 
+    String MEDAL_MAP_CACHE = "medalMapCache";
+    Long MEDAL_MAP_TIMEOUT = 30L;
+    TimeUnit MEDAL_MAP_TIMEUNIT = TimeUnit.DAYS;
+
+    int KEY_RESULT_FULL_VALUE = 100;
+    int COMMON_DEGREE_THRESHOLD = 79;
+    int EXCELLENT_DEGREE_THRESHOLD = 100;
+
 }

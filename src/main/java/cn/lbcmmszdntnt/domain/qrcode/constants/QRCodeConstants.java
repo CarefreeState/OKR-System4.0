@@ -13,6 +13,8 @@ public interface QRCodeConstants {
 
     String DEFAULT_ORIGINAL_NAME = "qrcode.png";
 
+    String WEB_QR_CODE_SCENE_KEY = "scene";
+
     String LOGIN_CODE_SCENE_FORMAT = "secret=%s";
     String INVITE_CODE_SCENE_FORMAT = "teamId=%d&secret=%s";
     String BINDING_CODE_SCENE_FORMAT = "secret=%s";

@@ -18,8 +18,7 @@ import java.util.Optional;
  */
 public class ShortCodeGenerator {
 
-    public static final String DEFAULT_BASE_STR = "";
-    public static final int DEFAULT_LENGTH = 6;
+    private final static Integer DEFAULT_LENGTH = 6;
 
     private final RedisBloomFilter<String> bloomFilter;
 
@@ -31,6 +30,7 @@ public class ShortCodeGenerator {
     }
 
     public String convert(String baseStr) {
+        // length 为 null 或者小于 0 会走默认值，默认长度为 6， 长度范围必须在 [1, 29] 以内，否则生成不了
         int length = Optional.ofNullable(shortCodeProperties.getLength()).filter(l -> l.compareTo(0) > 0).orElse(DEFAULT_LENGTH);
         baseStr += Optional.ofNullable(shortCodeProperties.getKey()).filter(StringUtils::hasText).orElse("");
         if(Boolean.TRUE.equals(shortCodeProperties.getUnique())) {
@@ -48,7 +48,7 @@ public class ShortCodeGenerator {
     }
 
     public String convert() {
-        return convert(DEFAULT_BASE_STR);
+        return convert("");
     }
 
     @Data

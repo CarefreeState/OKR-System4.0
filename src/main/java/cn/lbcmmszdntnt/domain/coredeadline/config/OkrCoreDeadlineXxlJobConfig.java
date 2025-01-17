@@ -20,11 +20,8 @@ import org.springframework.context.annotation.Configuration;
 public class OkrCoreDeadlineXxlJobConfig {
 
     private final static String AUTHOR = "macaku";
-
     private final static String ROUTE = "ROUND";
-
     private final static int TRIGGER_STATUS = 0; // 不启动
-
     private final static String CRON = "59 59 23 ? * 1 *"; // 每周日结束前一刻
 
     private final OkrCoreDeadlineService okrCoreDeadlineService;

@@ -24,8 +24,6 @@ import java.util.function.Function;
 @Slf4j
 public class SseMessageSender {
 
-    private final static MediaType MEDIA_TYPE = MediaType.APPLICATION_JSON;
-
     private static Consumer<IOException> handleException(String sessionKey) {
         return e -> {
             log.error("{} 发送消息异常 {}", sessionKey, e.getMessage());
@@ -39,7 +37,7 @@ public class SseMessageSender {
             return;
         }
         try {
-            sseEmitter.send(JsonUtil.toJson(message), MEDIA_TYPE);
+            sseEmitter.send(JsonUtil.toJson(message), MediaType.APPLICATION_JSON);
         } catch (IOException e) {
             handleException.accept(e);
         }

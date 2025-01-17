@@ -11,7 +11,6 @@ public class ShortCodeUtil {
     public static final int MODULES = CHARSET.length();
     public static final int FETCH_SIZE = 4;
 
-    // length 的范围是 [1, 29]
     public static String subCodeByString(String str, int length) {
         str = EncryptUtil.md5(str);
         int strLength = str.length();

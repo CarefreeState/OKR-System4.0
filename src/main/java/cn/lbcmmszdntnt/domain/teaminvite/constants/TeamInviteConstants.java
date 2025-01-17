@@ -11,4 +11,6 @@ public interface TeamInviteConstants {
 
     String VALIDATE_TEAM_INVITE_KEY = "validateTeamInviteKey:%d:%d"; // :teamId:userId
 
+    String INVITE_SECRET_ORIGINAL_FORMAT = "teamId=%d";
+
 }

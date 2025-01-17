@@ -9,8 +9,6 @@ package cn.lbcmmszdntnt.template.util;
  */
 public final class StringReplacer {
 
-    private final static String DEFAULT_TEXT = "";
-
     private String text;
 
     public synchronized StringReplacer replace(String target, String replacement) {
@@ -24,7 +22,7 @@ public final class StringReplacer {
     }
 
     public StringReplacer() {
-        this.text = DEFAULT_TEXT;
+        this.text = "";
     }
 
     public StringReplacer(String text) {

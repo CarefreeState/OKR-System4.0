@@ -26,6 +26,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.Objects;
 
+import static cn.lbcmmszdntnt.domain.medal.constants.MedalConstants.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -37,12 +39,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 public class OkrMedalMessageListener {
-
-    private final static int FULL_VALUE = 100;
-
-    private final static Integer COMMON_DEGREE_THRESHOLD = 79;
-
-    private final static Integer EXCELLENT_DEGREE_THRESHOLD = 100;
 
     private final UserMedalService userMedalService;
 
@@ -65,7 +61,7 @@ public class OkrMedalMessageListener {
         Long medalId = medalType.getMedalId();
         UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
         long credit = Objects.isNull(dbUserMedal) ? 0 : dbUserMedal.getCredit();
-        int increment = oldProbability.equals(FULL_VALUE) ? (probability.equals(FULL_VALUE) ? 0 : -1) : (probability.equals(FULL_VALUE) ? 1 : 0);
+        int increment = oldProbability.equals(KEY_RESULT_FULL_VALUE) ? (probability.equals(KEY_RESULT_FULL_VALUE) ? 0 : -1) : (probability.equals(KEY_RESULT_FULL_VALUE) ? 1 : 0);
         if(increment != 0) {
             credit += increment;
             userMedalService.saveUserMedal(userId, medalId, dbUserMedal, credit, medalType.getCoefficient());

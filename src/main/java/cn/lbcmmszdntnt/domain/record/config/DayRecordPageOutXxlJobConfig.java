@@ -31,11 +31,8 @@ import java.util.concurrent.TimeUnit;
 public class DayRecordPageOutXxlJobConfig {
 
     private final static String AUTHOR = "macaku";
-
     private final static String ROUTE = "ROUND";
-
     private final static int TRIGGER_STATUS = 1;
-
     private final static String CRON = "0 0 0 * * ? *"; // 每天 0 点
 
     private final RedisCache redisCache;

@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.user.service.impl;
 
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
-import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.DefaultPhoto;
 import cn.lbcmmszdntnt.domain.user.model.mapper.DefaultPhotoMapper;
 import cn.lbcmmszdntnt.domain.user.service.DefaultPhotoService;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+
+import static cn.lbcmmszdntnt.domain.user.constants.UserConstants.*;
 
 /**
 * @author 马拉圈
@@ -38,12 +39,11 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
 
     @Override
     public List<String> getDefaultPhotoList() {
-        return redisLock.tryLockGetSomething(UserConstants.DEFAULT_PHOTO_LIST_LOCK, () -> {
-            String redisKey = UserConstants.DEFAULT_PHOTO_LIST_CACHE;
-            return redisListCache.getList(redisKey, String.class).orElseGet(() -> {
+        return redisLock.tryLockGetSomething(DEFAULT_PHOTO_LIST_LOCK, () -> {
+            return redisListCache.getList(DEFAULT_PHOTO_LIST_CACHE, String.class).orElseGet(() -> {
                 List<String> photoList = list().stream().map(DefaultPhoto::getCode).toList();
                 if(!CollectionUtils.isEmpty(photoList)) {
-                    redisListCache.init(redisKey, photoList, UserConstants.DEFAULT_PHOTO_LIST_TTL, UserConstants.DEFAULT_PHOTO_LIST_UNIT);
+                    redisListCache.init(DEFAULT_PHOTO_LIST_CACHE, photoList, DEFAULT_PHOTO_LIST_TTL, DEFAULT_PHOTO_LIST_UNIT);
                 }
                 return photoList;
             });
@@ -52,20 +52,20 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
 
     @Override
     public void remove(String code) {
-        redisLock.tryLockDoSomething(UserConstants.DEFAULT_PHOTO_LIST_LOCK, () -> {
+        redisLock.tryLockDoSomething(DEFAULT_PHOTO_LIST_LOCK, () -> {
             this.lambdaUpdate().eq(DefaultPhoto::getCode, code).remove();
-            redisCache.deleteObject(UserConstants.DEFAULT_PHOTO_LIST_CACHE);
+            redisCache.deleteObject(DEFAULT_PHOTO_LIST_CACHE);
             fileMediaService.remove(code);
         }, () -> {}, writeLockStrategy);
     }
 
     @Override
     public void add(String code) {
-        redisLock.tryLockDoSomething(UserConstants.DEFAULT_PHOTO_LIST_LOCK, () -> {
+        redisLock.tryLockDoSomething(DEFAULT_PHOTO_LIST_LOCK, () -> {
             DefaultPhoto defaultPhoto = new DefaultPhoto();
             defaultPhoto.setCode(code);
             this.save(defaultPhoto);
-            redisCache.deleteObject(UserConstants.DEFAULT_PHOTO_LIST_CACHE);
+            redisCache.deleteObject(DEFAULT_PHOTO_LIST_CACHE);
             IOThreadPool.submit(() -> {
                 // 删除 code 但不希望影响速度与结果
                 fileMediaService.remove(code);

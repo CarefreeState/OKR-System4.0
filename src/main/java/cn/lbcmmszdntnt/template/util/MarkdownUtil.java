@@ -41,13 +41,9 @@ import java.util.Arrays;
 public class MarkdownUtil {
 
     private final static MutableDataSet OPTIONS;
-
     private final static Parser PARSER;
-
     private final static HtmlRenderer HTML_RENDERER;
-
     private final static FlexmarkHtmlConverter HTML_CONVERTER;
-
     private final static Formatter MARKDOWN_FORMATTER;
 
     static {

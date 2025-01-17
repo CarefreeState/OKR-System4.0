@@ -11,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static cn.lbcmmszdntnt.domain.medal.constants.MedalConstants.*;
 
 /**
  * Created With Intellij IDEA
@@ -25,10 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class MedalMap {
-
-    private final static String MEDAL_MAP_CACHE = "medalMapCache";
-    private final static Long MEDAL_MAP_TIMEOUT = 30L;
-    private final static TimeUnit MEDAL_MAP_TIMEUNIT = TimeUnit.DAYS;
 
     private final RedisMapCache redisMapCache;
 
