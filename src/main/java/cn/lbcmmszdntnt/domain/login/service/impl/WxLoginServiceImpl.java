@@ -7,6 +7,7 @@ import cn.lbcmmszdntnt.domain.login.model.dto.WxLoginDTO;
 import cn.lbcmmszdntnt.domain.login.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
@@ -34,6 +35,8 @@ public class WxLoginServiceImpl implements LoginService {
 
     private final UserService userService;
 
+    private final UserPhotoService userPhotoService;
+
     private final WxIdentifyService wxIdentifyService;
 
     @Override
@@ -54,7 +57,7 @@ public class WxLoginServiceImpl implements LoginService {
                 user.setUnionid(unionid);
                 user.setUsername(openid);
                 user.setNickname(UserConstants.DEFAULT_WX_USER_NICKNAME);
-                user.setPhoto(UserConstants.getDefaultPhoto());
+                user.setPhoto(userPhotoService.getAnyOnePhoto());
                 user.setUserType(UserConstants.DEFAULT_USER_TYPE);
                 userService.registerUser(user);
                 return user;

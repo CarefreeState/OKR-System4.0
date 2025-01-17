@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ import java.util.List;
 @Tag(name = "用户/信息")
 @Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
 @Validated
-public class UserController {
+public class UserInfoController {
 
     private final UserService userService;
 
@@ -46,13 +45,11 @@ public class UserController {
 
     @PostMapping(value = "/photo/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "上传用户头像")
-    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) throws IOException {
+    public SystemJsonResponse<String> uploadPhoto(@Parameter(description = "用户头像（只能上传图片）") @NotNull(message = "用户头像不能为空") @RequestPart("photo") MultipartFile multipartFile) {
         User user = InterceptorContext.getUser();
         Long userId = user.getId();
         String originPhoto = user.getPhoto();
         String mapPath = userPhotoService.tryUploadPhoto(multipartFile, userId, originPhoto);
-        // 删除记录
-        userService.clearUserAllCache(userId);
         return SystemJsonResponse.SYSTEM_SUCCESS(mapPath);
     }
 
@@ -63,7 +60,6 @@ public class UserController {
         Long userId = InterceptorContext.getUser().getId();
         // 完善信息
         userService.improveUserinfo(userinfoDTO, userId);
-        userService.clearUserAllCache(userId);
         // 删除记录
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
@@ -8,7 +9,6 @@ import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.cache.RedisMapCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created With Intellij IDEA
@@ -33,14 +32,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private final static String USER_TEAM_MEMBER = "userTeamMember:";
-    private final static Long USER_TEAM_MEMBER_TTL = 30L;
-
-    private final static TimeUnit USER_TEAM_MEMBER_TTL_UNIT = TimeUnit.DAYS;
-
     private final TeamPersonalOkrMapper teamPersonalOkrMapper;
-
-    private final RedisCache redisCache;
 
     private final RedisMapCache redisMapCache;
 
@@ -64,13 +56,13 @@ public class MemberServiceImpl implements MemberService {
     public Boolean isExistsInTeam(Long teamId, Long userId) {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
-        String redisKey = USER_TEAM_MEMBER + rootId;
+        String redisKey = OkrConstants.USER_TEAM_MEMBER + rootId;
         return redisMapCache.get(redisKey, userId, Boolean.class).orElseGet(() -> {
             List<Long> ids = TeamOkrUtil.getChildIds(rootId);
             Boolean isExists = findExistsInTeam(ids, userId);
             redisMapCache.getMap(redisKey, Long.class, Boolean.class).orElseGet(() -> {
                 Map<Long, Boolean> data = new HashMap<>();
-                redisMapCache.init(redisKey, data, USER_TEAM_MEMBER_TTL, USER_TEAM_MEMBER_TTL_UNIT);
+                redisMapCache.init(redisKey, data, OkrConstants.USER_TEAM_MEMBER_TTL, OkrConstants.USER_TEAM_MEMBER_TTL_UNIT);
                 return null;
             });
             redisMapCache.put(redisKey, userId, isExists);
@@ -91,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
     public void setExistsInTeam(Long teamId, Long userId) {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
-        String redisKey = USER_TEAM_MEMBER + rootId;
+        String redisKey = OkrConstants.USER_TEAM_MEMBER + rootId;
         redisMapCache.put(redisKey, userId, Boolean.TRUE);
     }
 
@@ -99,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
     public void setNotExistsInTeam(Long teamId, Long userId) {
         Long rootId = TeamOkrUtil.getTeamRootId(teamId);
         // 查看是否有缓存
-        String redisKey = USER_TEAM_MEMBER + rootId;
+        String redisKey = OkrConstants.USER_TEAM_MEMBER + rootId;
         redisMapCache.put(redisKey, userId, Boolean.FALSE);
     }
 

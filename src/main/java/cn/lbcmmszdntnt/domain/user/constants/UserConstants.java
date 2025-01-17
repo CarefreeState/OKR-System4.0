@@ -1,9 +1,7 @@
 package cn.lbcmmszdntnt.domain.user.constants;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,12 +18,12 @@ public interface UserConstants {
     String DEFAULT_WX_USER_NICKNAME = "微信用户";
 
     String DEFAULT_PHOTO = "media/static/default.png";
-    String DEFAULT_PHOTO1 = "media/static/default1.png";
-    String DEFAULT_PHOTO2 = "media/static/default2.png";
-    String DEFAULT_PHOTO3 = "media/static/default3.png";
     String USER_PHOTO_LOCK = "userPhotoLock:";
 
-    List<String> DEFAULT_PHOTO_LIST = List.of(DEFAULT_PHOTO, DEFAULT_PHOTO1, DEFAULT_PHOTO2, DEFAULT_PHOTO3);
+    String DEFAULT_PHOTO_LIST_CACHE = "defaultPhotoListCache";
+    String DEFAULT_PHOTO_LIST_LOCK = "defaultPhotoListLock";
+    Long DEFAULT_PHOTO_LIST_TTL = 1L;
+    TimeUnit DEFAULT_PHOTO_LIST_UNIT = TimeUnit.DAYS;
 
     String USERNAME_USER_MAP = "usernameUserMap:";
     String EMAIL_USER_MAP = "emailUserMap:";
@@ -45,9 +43,5 @@ public interface UserConstants {
     String EXISTS_USER_USERNAME_LOCK = "existsUserUsernameLock:";
     String EXISTS_USER_EMAIL_LOCK = "existsUserEmailLock:";
     String EXISTS_USER_WX_LOCK = "existsUserWxLock:";
-
-    static String getDefaultPhoto() {
-        return DEFAULT_PHOTO_LIST.get(RandomUtil.randomInt(DEFAULT_PHOTO_LIST.size()));
-    }
 
 }

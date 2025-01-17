@@ -1,8 +1,10 @@
 package cn.lbcmmszdntnt.domain.user.model.converter;
 
+import cn.lbcmmszdntnt.common.base.BasePageResult;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.UserQueryVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserTypeVO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserVO;
 import org.mapstruct.Mapper;
@@ -27,4 +29,6 @@ public interface UserConverter {
     List<UserTypeVO> userTypeListToUserTypeVOList(List<UserType> userTypeList);
 
     User userinfoDTOToUser(UserinfoDTO userinfoDTO);
+
+    UserQueryVO userBasePageResultToUserQueryVO(BasePageResult<User> userBasePageResult);
 }

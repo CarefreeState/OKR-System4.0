@@ -2,16 +2,15 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.util.convert.MakeUpUtil;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
-import cn.lbcmmszdntnt.common.util.juc.threadpool.SchedulerThreadPool;
-import cn.lbcmmszdntnt.common.util.sql.BadSqlUtil;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
+import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamOkrMapper;
@@ -36,7 +35,6 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
 * @author 马拉圈
@@ -48,10 +46,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     implements TeamOkrService, OkrOperateService {
-
-    private final static Long DELAY = 5L;
-
-    private final static TimeUnit DELAY_UNIT = TimeUnit.SECONDS;
 
     private final TeamOkrMapper teamOkrMapper;
 
@@ -67,7 +61,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     @Override
     public List<TeamOkr> selectChildTeams(Long id) {
-        return BadSqlUtil.tryGetSomething(
+        return MakeUpUtil.tryGetSomething(
                 () -> teamOkrMapper.queryTeamTree(id),
                 Boolean.TRUE,
                 // 创建存储过程
@@ -78,7 +72,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     @Override
     public TeamOkr findRootTeam(Long id) {
-        TeamOkr teamOkr = BadSqlUtil.tryGetSomething(
+        TeamOkr teamOkr = MakeUpUtil.tryGetSomething(
                 () -> teamOkrMapper.findTeamRoot(id),
                 Boolean.TRUE,
                 // 创建存储过程
@@ -142,14 +136,12 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             Db.lambdaUpdate(TeamOkr.class).eq(TeamOkr::getId, id).update(updateTeam);
         }
         // 本来就有团队个人 OKR，无需再次生成
-        log.info("管理员 {} 为成员 {} 授权创建团队原OKR {} 的子 OKR {} 内核 {}",
+        log.info("管理员 {} 为成员 {} 授权创建团队原 OKR {} 的子 OKR {} 内核 {}",
                 managerId, userId, teamId, id, coreId);
         // 删除缓存
         TeamOkrUtil.deleteChildListCache(teamId);
-        // 延时再次删除（先数据库后删缓存出现问题 + 5s 内系统挂了的概率实在太低了！）
-        SchedulerThreadPool.schedule(() -> {
-            TeamOkrUtil.deleteChildListCache(teamId);
-        }, DELAY, DELAY_UNIT);
+        // 延时再次删除
+        TeamOkrUtil.sendTeamOkrClearCache(teamId);
         return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
 
@@ -186,7 +178,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     public void deleteTeamNameCache(Long teamId) {
         IOThreadPool.submit(() -> {
             // 1. 删除 ID - TeamName 的映射
-            redisCache.deleteObject(TeamOkrUtil.TEAM_ID_NAME_MAP + teamId);
+            redisCache.deleteObject(OkrConstants.TEAM_ID_NAME_MAP + teamId);
             // 2. 删除邀请码的缓存
             // (如果经常修改，那么这个团队一直都在本地只有一个小程序码，如果一个月内一次修改都没有，那么应该也不会重新获取邀请码，即使有，每个月多一张无伤大雅)
             qrCodeService.deleteTeamNameQRCodeCache(teamId);
@@ -197,7 +189,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     @Transactional
     public OKRCreateVO createOkrCore(User user, OkrOperateDTO okrOperateDTO) {
         Long userId = user.getId();
-        String redisKey = TeamOkrUtil.CREATE_CD_FLAG + userId;
+        String redisKey = OkrConstants.CREATE_CD_FLAG + userId;
         redisCache.getObject(redisKey, Integer.class).ifPresent(o -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.TEAM_CREATE_TOO_FREQUENT);
         });
@@ -221,7 +213,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         }
         log.info("用户 {} 新建团队 OKR {}  内核 {}", userId, teamId, coreId1);
         // 设置冷却时间
-        redisCache.setObject(redisKey, 0, TeamOkrUtil.CREATE_CD, TeamOkrUtil.CD_UNIT);// CD 没好的意思
+        redisCache.setObject(redisKey, 0, OkrConstants.CREATE_CD, OkrConstants.CD_UNIT);// CD 没好的意思
         // 团队的“始祖”有团队个人 OKR
         TeamPersonalOkr teamPersonalOkr = new TeamPersonalOkr();
         teamPersonalOkr.setCoreId(coreId2);
@@ -253,14 +245,14 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
+        String redisKey = OkrConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             Long managerId = Db.lambdaQuery(TeamOkr.class)
                     .eq(TeamOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getManagerId();
-            redisCache.setObject(redisKey, managerId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
+            redisCache.setObject(redisKey, managerId, OkrConstants.USER_CORE_MAP_TTL, OkrConstants.USER_CORE_MAP_TTL_UNIT);
             return managerId;
         });
     }

@@ -1,20 +1,27 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
+import cn.lbcmmszdntnt.common.base.BasePageQuery;
+import cn.lbcmmszdntnt.common.base.BasePageResult;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.converter.UserConverter;
+import cn.lbcmmszdntnt.domain.user.model.dto.UserQueryDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper;
+import cn.lbcmmszdntnt.domain.user.model.vo.UserQueryVO;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static cn.lbcmmszdntnt.domain.user.constants.UserConstants.*;
@@ -116,6 +123,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User updateUser = UserConverter.INSTANCE.userinfoDTOToUser(userinfoDTO);
         // 修改
         this.lambdaUpdate().eq(User::getId, userId).update(updateUser);
+        clearUserAllCache(userId);
+    }
+
+    @Override
+    public UserQueryVO queryUser(UserQueryDTO userQueryDTO) {
+        // 解析分页参数获取 page
+        IPage<User> page = null;
+        String username = null;
+        String nickname = null;
+        UserType userType = null;
+        // 获取条件分页查询参数
+        if(Objects.nonNull(userQueryDTO)) {
+            page = userQueryDTO.toMpPage();
+            username = userQueryDTO.getUsername();
+            nickname = userQueryDTO.getNickname();
+            userType = userQueryDTO.getUserType();
+        } else {
+            page = new BasePageQuery().toMpPage();
+        }
+        // 分页
+        IPage<User> userIPage = this.lambdaQuery()
+                .like(StringUtils.hasText(username), User::getUsername, username)
+                .like(StringUtils.hasText(nickname), User::getNickname, nickname)
+                .eq(Objects.nonNull(userType), User::getUserType, userType)
+                .page(page);
+        // 封装
+        BasePageResult<User> userBasePageResult = BasePageResult.of(userIPage);
+        // 转化并返回
+        return UserConverter.INSTANCE.userBasePageResultToUserQueryVO(userBasePageResult);
+    }
+
+    @Override
+    public void updateUserType(Long userId, UserType userType) {
+        User updateUser = new User();
+        updateUser.setUserType(userType);
+        this.lambdaUpdate().eq(User::getId, userId).update(updateUser);
+        clearUserAllCache(userId);
     }
 
 }

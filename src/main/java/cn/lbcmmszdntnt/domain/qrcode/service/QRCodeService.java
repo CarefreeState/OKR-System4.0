@@ -17,9 +17,7 @@ public interface QRCodeService {
     void deleteTeamNameQRCodeCache(Long teamId);
 
     BindingQRCodeVO getBindingQRCode();
-
     LoginQRCodeVO getLoginQRCode(QRCodeType type);
-
     String getCommonQRCode();
 
 }

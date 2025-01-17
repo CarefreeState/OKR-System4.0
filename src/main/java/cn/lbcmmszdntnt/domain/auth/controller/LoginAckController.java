@@ -2,10 +2,10 @@ package cn.lbcmmszdntnt.domain.auth.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
+import cn.lbcmmszdntnt.domain.auth.model.dto.LoginQRCodeDTO;
 import cn.lbcmmszdntnt.domain.auth.service.LoginAckIdentifyService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
-import cn.lbcmmszdntnt.domain.user.model.dto.LoginQRCodeDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
@@ -50,7 +50,7 @@ public class LoginAckController {
             
             将 `secret=T1dH_S` 的 `T1dH_S` 作为路径参数请求 `/user/login/ack/{secret}` （必须是在登录的状态下）；
             
-            服务器会给【刚才获得小程序码的客户端】发一个消息（状态码为 200）作为提示；
+            服务器会给【刚才获得二维码的客户端】发一个消息（状态码为 200）作为提示；
             
             如果收到此消息，那么就可以断开连接，进行第三步了；
             

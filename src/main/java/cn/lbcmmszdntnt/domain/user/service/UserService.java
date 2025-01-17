@@ -1,7 +1,10 @@
 package cn.lbcmmszdntnt.domain.user.service;
 
+import cn.lbcmmszdntnt.domain.user.enums.UserType;
+import cn.lbcmmszdntnt.domain.user.model.dto.UserQueryDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserinfoDTO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.domain.user.model.vo.UserQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Optional;
@@ -24,5 +27,8 @@ public interface UserService extends IService<User> {
     void clearUserAllCache(Long id);
 
     void improveUserinfo(UserinfoDTO userinfoDTO, Long userId);
+
+    UserQueryVO queryUser(UserQueryDTO userQueryDTO);
+    void updateUserType(Long userId, UserType userType);
 
 }

@@ -24,7 +24,7 @@ public class MessageRecovererConfig {
     public MessageRecoverer messageRecoverer(RabbitTemplate rabbitTemplate) {
         return new RejectAndDontRequeueRecoverer(); // nack、直接 reject 和不 requeue，成为死信（默认）
 //        return new ImmediateRequeueMessageRecoverer(); // nack、requeue
-//        return new RepublishMessageRecoverer(rabbitTemplate, "error.direct", "error"); // ack、发送给指定的交换机
+//        return new RepublishMessageRecoverer(rabbitTemplate, "error.direct", "error"); // ack、发送给指定的交换机 // confirm 机制需要设置到 rabbitTemplate 里
     }
 
 

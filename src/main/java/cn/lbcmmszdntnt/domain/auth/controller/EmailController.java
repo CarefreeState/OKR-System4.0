@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.domain.auth.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
+import cn.lbcmmszdntnt.domain.auth.model.dto.EmailIdentifyDTO;
 import cn.lbcmmszdntnt.domain.auth.service.EmailIdentifyService;
-import cn.lbcmmszdntnt.domain.user.model.dto.EmailCheckDTO;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,12 +29,11 @@ public class EmailController {
     private final EmailIdentifyService emailIdentifyService;
 
     @PostMapping("/user/check/email")
-    @Operation(summary = "验证邮箱用户")
-    @Tag(name = "用户测试接口/邮箱")
+    @Operation(summary = "发送邮箱验证码")
     @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<?> emailIdentityCheck(@Valid @RequestBody EmailCheckDTO emailCheckDTO) {
-        String email = emailCheckDTO.getEmail();
-        emailIdentifyService.sendIdentifyingCode(emailCheckDTO.getType(), email);
+    public SystemJsonResponse<?> emailIdentityCheck(@Valid @RequestBody EmailIdentifyDTO emailIdentifyDTO) {
+        String email = emailIdentifyDTO.getEmail();
+        emailIdentifyService.sendIdentifyingCode(emailIdentifyDTO.getType(), email);
         // 能到这一步就成功了
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

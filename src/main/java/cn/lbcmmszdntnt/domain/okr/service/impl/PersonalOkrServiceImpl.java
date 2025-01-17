@@ -7,7 +7,7 @@ import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
+import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.PersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
@@ -35,8 +35,6 @@ import java.util.List;
 public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, PersonalOkr>
     implements PersonalOkrService, OkrOperateService {
 
-    private final static Long ALLOW_COUNT = 1L; // 允许同时存在多少个未完成的 OKR
-
     private final OkrCoreService okrCoreService;
 
     private final PersonalOkrMapper personalOkrMapper;
@@ -49,7 +47,7 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
         Long userId = user.getId();
         // 查看当前用户是否有未完成的 OKR
         Long count = personalOkrMapper.getNotCompletedCount(userId);
-        if(ALLOW_COUNT.compareTo(count) <= 0) {
+        if(OkrConstants.ALLOW_NOT_COMPLETED_PERSONAL_OKR_COUNT.compareTo(count) <= 0) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
         }
         // 创建 OKR 内核
@@ -82,14 +80,14 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
+        String redisKey = OkrConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
             Long userId = Db.lambdaQuery(PersonalOkr.class)
                     .eq(PersonalOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getUserId();
-            redisCache.setObject(redisKey, userId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
+            redisCache.setObject(redisKey, userId, OkrConstants.USER_CORE_MAP_TTL, OkrConstants.USER_CORE_MAP_TTL_UNIT);
             return userId;
         });
     }

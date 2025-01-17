@@ -1,6 +1,5 @@
-package cn.lbcmmszdntnt.common.util.sql;
+package cn.lbcmmszdntnt.common.util.convert;
 
-import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.BadSqlGrammarException;
 
@@ -15,7 +14,7 @@ import java.util.function.Supplier;
  * Time: 22:29
  */
 @Slf4j
-public class BadSqlUtil {
+public class MakeUpUtil {
 
     private static void makeUp(List<Runnable> behaviorList) {
         ObjectUtil.nonNullstream(behaviorList).forEach(makeUp -> {

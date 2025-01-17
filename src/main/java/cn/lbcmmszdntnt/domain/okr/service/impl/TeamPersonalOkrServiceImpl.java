@@ -7,7 +7,7 @@ import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
-import cn.lbcmmszdntnt.domain.okr.config.CoreUserMapConstants;
+import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
@@ -96,14 +96,14 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
 
     @Override
     public Long getCoreUser(Long coreId) {
-        String redisKey = CoreUserMapConstants.USER_CORE_MAP + coreId;
+        String redisKey = OkrConstants.USER_CORE_MAP + coreId;
         return redisCache.getObject(redisKey, Long.class).orElseGet(() -> {
                 Long userId = Db.lambdaQuery(TeamPersonalOkr.class)
                     .eq(TeamPersonalOkr::getCoreId, coreId)
                     .oneOpt().orElseThrow(() ->
                             new GlobalServiceException(GlobalServiceStatusCode.CORE_NOT_EXISTS)
                     ).getUserId();
-                redisCache.setObject(redisKey, userId, CoreUserMapConstants.USER_CORE_MAP_TTL, CoreUserMapConstants.USER_CORE_MAP_TTL_UNIT);
+                redisCache.setObject(redisKey, userId, OkrConstants.USER_CORE_MAP_TTL, OkrConstants.USER_CORE_MAP_TTL_UNIT);
                 return userId;
         });
     }

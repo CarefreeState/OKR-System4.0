@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.user.model.dto;
+package cn.lbcmmszdntnt.domain.auth.model.dto;
 
 import cn.lbcmmszdntnt.domain.auth.enums.EmailIdentifyType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Schema(description = "邮箱验证数据")
 @Data
-public class EmailCheckDTO {
+public class EmailIdentifyDTO {
 
     @Schema(description = "验证类型")
     @NotNull(message = "验证类型不能为空")

@@ -2,17 +2,21 @@ package cn.lbcmmszdntnt.domain.okr.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.mq.sender.RabbitMQSender;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.cache.RedisListCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static cn.lbcmmszdntnt.domain.okr.constants.OkrConstants.*;
 
 /**
  * Created With Intellij IDEA
@@ -22,50 +26,20 @@ import java.util.stream.Collectors;
  * Time: 0:38
  */
 @Component
+@Slf4j
 public class TeamOkrUtil {
 
-    public final static String TEAM_ID_NAME_MAP = "teamIdNameMap:";
-
-    public final static String TEAM_ID_MANAGER_MAP = "teamIdManagerMap:";
-
-    public final static Long TEAM_ID_NAME_TTL = 1L;
-
-    public final static Long TEAM_ID_MANAGER_TTL = 1L;
-
-    public final static TimeUnit TEAM_ID_NAME_UNIT = TimeUnit.DAYS;
-
-    public final static TimeUnit TEAM_ID_MANAGER_UNIT = TimeUnit.DAYS;
-
-    public final static  String TEAM_ROOT_MAP = "teamRootMap:";
-
-    public final static  String TEAM_CHILD_LIST = "teamChildList:";
-
-    public final static Long TEAM_ROOT_TTL = 30L;
-
-    public final static Long TEAM_CHILD_TTL = 1L;
-
-    public final static TimeUnit TEAM_ROOT_TTL_UNIT = TimeUnit.DAYS;
-
-    public final static TimeUnit TEAM_CHILD_TTL_UNIT = TimeUnit.DAYS;
-
-    public final static String CREATE_CD_FLAG = "createCDFlag:";
-
-    public final static Long CREATE_CD = 1L;
-
-    public final static TimeUnit CD_UNIT = TimeUnit.DAYS;
-
     private final static RedisCache REDIS_CACHE = SpringUtil.getBean(RedisCache.class);
-
     private final static RedisListCache REDIS_LIST_CACHE = SpringUtil.getBean(RedisListCache.class);
-
     private final static TeamOkrService TEAM_OKR_SERVICE = SpringUtil.getBean(TeamOkrService.class);
+    private final static RabbitMQSender RABBIT_MQ_SENDER = SpringUtil.getBean(RabbitMQSender.class);
 
     public static Long getTeamRootId(Long id) {
         String redisKey = TEAM_ROOT_MAP + id;
         return REDIS_CACHE.getObject(redisKey, Long.class).orElseGet(() -> {
             TeamOkr rootTeam = TEAM_OKR_SERVICE.findRootTeam(id);
             Long rootTeamId = rootTeam.getId();
-            REDIS_CACHE.setObject(redisKey, rootTeamId, TeamOkrUtil.TEAM_ROOT_TTL, TeamOkrUtil.TEAM_ROOT_TTL_UNIT);
+            REDIS_CACHE.setObject(redisKey, rootTeamId, TEAM_ROOT_TTL, TEAM_ROOT_TTL_UNIT);
             return rootTeam.getId();
         });
     }
@@ -87,8 +61,18 @@ public class TeamOkrUtil {
 
     public static void deleteChildListCache(Long teamId) {
         // 这里应该是获取到老的缓存 ids，不过缺少的那些也没必要删，因为本来就没有缓存
-        List<String> ids = getAllChildIds(teamId).stream().map(id -> TEAM_CHILD_LIST + id).toList();
-        REDIS_CACHE.deleteObjects(ids);
+        log.info("清除 {} 所在团队树的缓存", teamId);
+        List<String> redisKeys = getAllChildIds(teamId).stream().map(id -> TEAM_CHILD_LIST + id).toList();
+        REDIS_CACHE.deleteObjects(redisKeys);
+    }
+
+    public static void sendTeamOkrClearCache(Long teamId) {
+        RABBIT_MQ_SENDER.sendDelayMessage(
+                OkrConstants.TEAM_OKR_CLEAR_CACHE_DELAY_DIRECT,
+                OkrConstants.TEAM_OKR_CLEAR_CACHE,
+                teamId,
+                OkrConstants.TEAM_OKR_CLEAR_CACHE_DELAY
+        );
     }
 
     public static String getTeamName(Long id) {
@@ -96,7 +80,7 @@ public class TeamOkrUtil {
         return REDIS_CACHE.getObject(redisKey, String.class).orElseGet(() -> {
             String teamName = Db.lambdaQuery(TeamOkr.class).eq(TeamOkr::getId, id).oneOpt().orElseThrow(() ->
                     new GlobalServiceException(GlobalServiceStatusCode.TEAM_NOT_EXISTS)).getTeamName();
-            REDIS_CACHE.setObject(redisKey, teamName, TeamOkrUtil.TEAM_ID_NAME_TTL, TeamOkrUtil.TEAM_ID_NAME_UNIT);
+            REDIS_CACHE.setObject(redisKey, teamName, TEAM_ID_NAME_TTL, TEAM_ID_NAME_UNIT);
             return teamName;
         });
     }
@@ -107,7 +91,7 @@ public class TeamOkrUtil {
         return REDIS_CACHE.getObject(redisKey, Long.class).orElseGet(() -> {
             Long managerId = Db.lambdaQuery(TeamOkr.class).eq(TeamOkr::getId, teamId).oneOpt().orElseThrow(() ->
                     new GlobalServiceException(GlobalServiceStatusCode.TEAM_NOT_EXISTS)).getManagerId();
-            REDIS_CACHE.setObject(redisKey, managerId, TeamOkrUtil.TEAM_ID_MANAGER_TTL, TeamOkrUtil.TEAM_ID_MANAGER_UNIT);
+            REDIS_CACHE.setObject(redisKey, managerId, TEAM_ID_MANAGER_TTL, TEAM_ID_MANAGER_UNIT);
             return managerId;
         });
     }

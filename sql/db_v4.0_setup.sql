@@ -6,6 +6,7 @@ use `db_okr_system`;
 
 SET @@FOREIGN_KEY_CHECKS = 0;
 
+-- 创建资源表
 drop table if exists `digital_resource`;
 create table `digital_resource` (
     `id` bigint primary key auto_increment comment '资源 id',
@@ -50,6 +51,20 @@ create table `user` (
 insert into `user`(`id`, `username`, `nickname`, `password`, `photo`, `user_type`) values
     (10000, 'mms', '马铭胜', '8f687f9a47e14aaf92f5d861355d3cce$8960081935ccd38123476bb232573024', 'default.png', 2)
 ;
+
+-- 创建默认头像表
+drop table if exists `default_photo`;
+create table `default_photo` (
+    `id` bigint primary key auto_increment comment 'ID',
+    `code` char(32) unique not null comment '资源码',
+    -- common column
+    `version` int not null default 0 comment '乐观锁',
+    `is_deleted` bit not null default b'0' comment '伪删除标记',
+    `create_time` datetime not null default current_timestamp comment '创建时间',
+    `update_time` datetime not null default current_timestamp on update current_timestamp comment '更新时间',
+    -- index
+    unique index `uni_code`(`code` asc) using btree
+) comment '默认头像表';
 
 -- 创建 OKR 内核表
 drop table if exists `okr_core`;
