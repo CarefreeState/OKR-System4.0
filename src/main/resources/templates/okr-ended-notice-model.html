@@ -21,7 +21,7 @@
 
     <p><span class="theme"><strong> Preamble </strong></span>
         <br />
-        亲爱的用户 <strong th:text="${nickname}"></strong>，您的目标“<strong th:text="${objective}"></strong>”已结束，以下是您的完成情况，无论结果如何，请做好总结吧！
+        亲爱的用户“<strong th:text="${nickname}"></strong>”，您的目标“<strong th:text="${objective}"></strong>”已结束，以下是您的完成情况，无论结果如何，请做好总结吧！
     </p>
 
     <p th:if="${not #lists.isEmpty(keyResultList)}" th:each="keyResult, iterStat : ${keyResultList}"><span class="theme"><strong> Key Result </strong></span>
