@@ -1,14 +1,12 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.domain.auth.generator.BindingShortCodeGenerator;
+import cn.lbcmmszdntnt.domain.auth.generator.LoginShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
 import cn.lbcmmszdntnt.domain.qrcode.factory.QRCodeProviderFactory;
-import cn.lbcmmszdntnt.domain.qrcode.generator.BindingShortCodeGenerator;
-import cn.lbcmmszdntnt.domain.qrcode.generator.LoginShortCodeGenerator;
-import cn.lbcmmszdntnt.domain.qrcode.model.vo.BindingQRCodeVO;
-import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.provider.QRCodeProvider;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -72,25 +70,15 @@ public class QRCodeServiceImpl implements QRCodeService {
     }
 
     @Override
-    public BindingQRCodeVO getBindingQRCode() {
+    public String getBindingQRCode(String secret) {
         QRCodeProvider provider = qrCodeProviderFactory.getProvider(QRCodeType.WX);
-        String secret = bindingShortCodeGenerator.convert();
-        String qrcode = provider.getBindingQRCode(secret);
-        return BindingQRCodeVO.builder()
-                .path(qrcode)
-                .secret(secret)
-                .build();
+        return provider.getBindingQRCode(secret);
     }
 
     @Override
-    public LoginQRCodeVO getLoginQRCode(QRCodeType type) {
+    public String getLoginQRCode(String secret, QRCodeType type) {
         QRCodeProvider provider = qrCodeProviderFactory.getProvider(type);
-        String secret = loginShortCodeGenerator.convert();
-        String qrcode = provider.getLoginQRCode(secret);
-        return LoginQRCodeVO.builder()
-                .path(qrcode)
-                .secret(secret)
-                .build();
+        return provider.getLoginQRCode(secret);
     }
 
     @Override

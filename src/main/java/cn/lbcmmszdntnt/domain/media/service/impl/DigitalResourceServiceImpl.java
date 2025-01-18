@@ -1,9 +1,11 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
+import cn.lbcmmszdntnt.domain.media.generator.DigitalResourceCodeBloomFilter;
+import cn.lbcmmszdntnt.domain.media.generator.DigitalResourceCodeGenerator;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.model.mapper.DigitalResourceMapper;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
@@ -12,8 +14,11 @@ import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
 * @author 马拉圈
@@ -27,28 +32,27 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
 
     private final RedisCache redisCache;
 
+    private final DigitalResourceCodeGenerator digitalResourceCodeGenerator;
+
+    private final DigitalResourceCodeBloomFilter digitalResourceCodeBloomFilter;
+
     @Override
     public DigitalResource createResource(String originalName, String fileName, Long activeLimit) {
         DigitalResource digitalResource = new DigitalResource();
-        digitalResource.setCode(UUIDUtil.uuid32());
+        String code = digitalResourceCodeGenerator.generate();
+        digitalResource.setCode(code);
         digitalResource.setOriginalName(originalName);
         digitalResource.setFileName(fileName);
         digitalResource.setActiveLimit(activeLimit);
         this.save(digitalResource);
+        // 删除 code 的缓存
+        redisCache.deleteObject(FileMediaConstants.CODE_RESOURCE_MAP + code);
         return digitalResource;
     }
 
     @Override
     public DigitalResource createResource(String originalName, String fileName) {
         return createResource(originalName, fileName, -1L);
-    }
-
-    @Override
-    public void removeResource(String code) {
-        this.lambdaUpdate()
-                .eq(DigitalResource::getCode, code)
-                .remove();
-        redisCache.deleteObject(FileMediaConstants.CODE_RESOURCE_MAP + code);
     }
 
     @Override
@@ -68,11 +72,41 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
                     .update();
         });
         String redisKey = FileMediaConstants.CODE_RESOURCE_MAP + code;
-        return redisCache.getObject(redisKey, String.class).orElseGet(() -> {
-            String fileName = getFileName(code);
-            redisCache.setObject(redisKey, fileName, FileMediaConstants.CODE_RESOURCE_MAP_TIMEOUT, FileMediaConstants.CODE_RESOURCE_MAP_TIMEUNIT);
+        // 布隆过滤器 + 缓存 null 的方式预防缓存穿透
+        String fileName = "";
+        if (digitalResourceCodeBloomFilter.contains(code)) {
+            if (redisCache.isExists(redisKey)) {
+                fileName = redisCache.getObject(redisKey, String.class).orElse(null);
+            } else {
+                fileName = getResourceByCode(code).getFileName();
+                redisCache.setObject(redisKey, fileName, FileMediaConstants.CODE_RESOURCE_MAP_TIMEOUT, FileMediaConstants.CODE_RESOURCE_MAP_TIMEUNIT);
+            }
+        }
+        if (StringUtils.hasText(fileName)) {
             return fileName;
-        });
+        } else {
+            throw new GlobalServiceException(GlobalServiceStatusCode.RESOURCE_NOT_EXISTS);
+        }
+    }
+
+    @Override
+    public void removeFileNameCache(List<String> codeList) {
+        List<String> redisKeys = ObjectUtil.distinctNonNullStream(codeList)
+                .filter(StringUtils::hasText)
+                .map(code -> FileMediaConstants.CODE_RESOURCE_MAP + code)
+                .toList();
+        redisCache.deleteObjects(redisKeys);
+    }
+
+    @Override
+    public void removeResource(List<String> codeList) {
+        if(CollectionUtils.isEmpty(codeList)) {
+            return;
+        }
+        this.lambdaUpdate()
+                .in(DigitalResource::getCode, codeList)
+                .remove();
+        removeFileNameCache(codeList);
     }
 
 }

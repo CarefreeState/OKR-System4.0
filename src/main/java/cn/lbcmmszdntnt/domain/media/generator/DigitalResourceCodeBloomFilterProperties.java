@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.generator;
+package cn.lbcmmszdntnt.domain.media.generator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "bloom-filter.login-short-code")
-public class LoginShortCodeBloomFilterProperties {
+@ConfigurationProperties(prefix = "bloom-filter.digital-resource-code")
+public class DigitalResourceCodeBloomFilterProperties {
 
     private String name;
 

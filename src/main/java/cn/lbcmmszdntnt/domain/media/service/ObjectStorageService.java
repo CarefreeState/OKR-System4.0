@@ -2,6 +2,8 @@ package cn.lbcmmszdntnt.domain.media.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -42,5 +44,6 @@ public interface ObjectStorageService {
      *
      */
     void remove(String fileName);
+    void remove(List<String> fileNameList);
 
 }

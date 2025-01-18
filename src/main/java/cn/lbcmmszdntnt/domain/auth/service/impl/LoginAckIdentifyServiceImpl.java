@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
+import cn.lbcmmszdntnt.domain.auth.generator.LoginShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.auth.service.LoginAckIdentifyService;
 import cn.lbcmmszdntnt.domain.auth.service.ValidateService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
@@ -38,13 +39,16 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
 
     private final RedisCache redisCache;
 
+    private final LoginShortCodeGenerator loginShortCodeGenerator;
+
     @Override
     public LoginQRCodeVO getLoginQRCode(QRCodeType codeType) {
-        LoginQRCodeVO loginQRCode = qrCodeService.getLoginQRCode(codeType);
-        // 设置为 -1
-        redisCache.setObject(AuthConstants.LOGIN_QR_CODE_MAP + loginQRCode.getSecret(), -1,
-                QRCodeConstants.LOGIN_QR_CODE_TTL, QRCodeConstants.LOGIN_QR_CODE_UNIT);
-        return loginQRCode;
+        String secret = loginShortCodeGenerator.generate();
+        String path = qrCodeService.getLoginQRCode(secret, codeType);
+        return LoginQRCodeVO.builder()
+                .path(path)
+                .secret(secret)
+                .build();
     }
 
     @Override

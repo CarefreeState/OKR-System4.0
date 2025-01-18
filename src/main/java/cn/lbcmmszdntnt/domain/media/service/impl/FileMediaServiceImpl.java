@@ -2,8 +2,10 @@ package cn.lbcmmszdntnt.domain.media.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
+import cn.lbcmmszdntnt.common.util.media.ImageUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
 import cn.lbcmmszdntnt.config.ResourceCompressionConfig;
+import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.media.service.ObjectStorageService;
@@ -11,7 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants.DEFAULT_ACTIVE_LIMIT;
 
@@ -51,7 +56,22 @@ public final class FileMediaServiceImpl implements FileMediaService {
     @Override
     public void remove(String code) {
         objectStorageService.remove(analyzeCode(code));
-        digitalResourceService.removeResource(code);
+        digitalResourceService.removeResource(List.of(code));
+    }
+
+    @Override
+    public void remove(List<String> codeList) {
+        if(CollectionUtils.isEmpty(codeList)) {
+            return;
+        }
+        List<String> fileNameList = digitalResourceService.lambdaQuery()
+                .in(DigitalResource::getCode, codeList)
+                .list()
+                .stream()
+                .map(DigitalResource::getFileName)
+                .toList();
+        objectStorageService.remove(fileNameList);
+        digitalResourceService.removeResource(codeList);
     }
 
     @Override
@@ -77,8 +97,8 @@ public final class FileMediaServiceImpl implements FileMediaService {
         // 判断是否是图片类型，并判断是否达到压缩阈值（否则压缩适得其反），若是则压缩图片
         if(FileResourceUtil.matchType(contentType, FileResourceType.IMAGE) && resourceCompressionConfig.getThreshold().compareTo(data.length) <= 0) {
             // 压缩图片
-            data = MediaUtil.compressImage(data);
-            suffix = MediaUtil.COMPRESS_FORMAT_SUFFIX;
+            data = ImageUtil.compressImage(data);
+            suffix = ImageUtil.COMPRESS_FORMAT_SUFFIX;
             originalName = FileResourceUtil.changeSuffix(originalName, suffix);
         } else {
             // 使用原后缀
@@ -113,8 +133,8 @@ public final class FileMediaServiceImpl implements FileMediaService {
         // 判断是否压缩
         if(resourceCompressionConfig.getThreshold().compareTo(data.length) <= 0) {
             // 压缩图片
-            data = MediaUtil.compressImage(data);
-            suffix = MediaUtil.COMPRESS_FORMAT_SUFFIX;
+            data = ImageUtil.compressImage(data);
+            suffix = ImageUtil.COMPRESS_FORMAT_SUFFIX;
             originalName = FileResourceUtil.changeSuffix(originalName, suffix);
         } else {
             // 使用原后缀

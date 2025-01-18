@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.model.mapper;
 
 
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.okr.model.entity.PersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -17,8 +18,8 @@ import java.util.List;
 public interface PersonalOkrMapper extends BaseMapper<PersonalOkr> {
 
     Long getNotCompletedCount(@Param("id") Long id);
-
     List<PersonalOkrVO> getPersonalOkrList(@Param("id") Long id);
+    List<UserStatusFlagsVO> getStatusFlagsByUserId(@Param("ids") List<Long> ids);
 
 }
 

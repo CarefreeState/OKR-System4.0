@@ -1,8 +1,10 @@
 package cn.lbcmmszdntnt.domain.core.config;
 
 
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.StatusFlag;
 import cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper;
+import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created With Intellij IDEA
@@ -37,6 +40,9 @@ public class StatusFlagConfig {
     @Resource
     private StatusFlagMapper statusFlagMapper;
 
+    @Resource
+    private List<OkrOperateService> okrOperateServiceList;
+
     @PostConstruct
     public void init() {
         properties.stream().parallel().forEach(statusFlagProperties -> {
@@ -53,28 +59,40 @@ public class StatusFlagConfig {
         return average >= threshold;
     }
 
-    public double calculateStatusFlag(List<StatusFlag> statusFlags) {
+    public double calculateStatusFlagList(List<StatusFlag> statusFlags) {
         if(Objects.isNull(statusFlags)) {
             return 0d;
         }
         int size = statusFlags.size();
-        long sum = statusFlags
-                .stream()
-                .parallel()
+        long sum = statusFlags.stream()
                 .map(statusFlag -> getCredit(statusFlag.getColor()))
                 .reduce(Long::sum)
                 .orElse(0L);
         return size == 0 ? 0 : (sum * 1.0) / size;
     }
 
-    public double calculateStatusFlag(Long userId) {
-        List<StatusFlag> statusFlags = statusFlagMapper.getStatusFlagsByUserId(userId);
-        return calculateStatusFlag(statusFlags);
+    public Map<Long, Double> calculateStatusFlag(List<Long> ids) {
+        Map<Long, List<StatusFlag>> resultMap = new HashMap<>();
+        ObjectUtil.nonNullstream(okrOperateServiceList)
+                .map(service -> service.getStatusFlagsByUserId(ids))
+                .flatMap(List::stream)
+                .forEach(vo -> {
+                    Long userId = vo.getUserId();
+                    if(resultMap.containsKey(userId)) {
+                        resultMap.get(userId).addAll(vo.getStatusFlags());
+                    } else {
+                        resultMap.put(userId, vo.getStatusFlags());
+                    }
+                });
+        return resultMap.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> calculateStatusFlagList(entry.getValue()),
+                (oldData, newData) -> newData
+        ));
     }
 
     public double calculateCoreStatusFlag(Long quadrantId) {
-        List<StatusFlag> statusFlags = statusFlagMapper.getStatusFlagsByQuadrantId(quadrantId);
-        return calculateStatusFlag(statusFlags);
+        return calculateStatusFlagList(statusFlagMapper.getStatusFlagsByQuadrantId(quadrantId));
     }
 
 }

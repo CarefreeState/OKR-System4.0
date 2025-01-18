@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.core.service.impl;
 
 
+import cn.lbcmmszdntnt.common.enums.EmailTemplate;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.core.config.QuadrantCycleConfig;
@@ -13,6 +14,7 @@ import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.entity.quadrant.ThirdQuadrant;
 import cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.OkrNoticeTemplateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.FourthQuadrantVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.quadrant.SecondQuadrantVO;
@@ -22,13 +24,18 @@ import cn.lbcmmszdntnt.domain.core.service.quadrant.FirstQuadrantService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.FourthQuadrantService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.ThirdQuadrantService;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
+import cn.lbcmmszdntnt.email.model.po.EmailMessage;
+import cn.lbcmmszdntnt.email.sender.EmailSender;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
+import cn.lbcmmszdntnt.template.engine.HtmlEngine;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.Objects;
@@ -56,6 +63,10 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
     private final FourthQuadrantService fourthQuadrantService;
 
     private final RedisCache redisCache;
+
+    private final EmailSender emailSender;
+
+    private final HtmlEngine htmlEngine;
 
     @Transactional
     public Long createOkrCore() {
@@ -184,6 +195,31 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
         this.lambdaUpdate().eq(OkrCore::getId, id).update(updateOkrCore);
         removeOkrCoreCache(id);
         return endTime;
+    }
+
+    @Override
+    public void noticeOkr(User user, OkrCoreVO okrCoreVO, Date nextDeadline, EmailTemplate emailTemplate) {
+        Optional.ofNullable(user).filter(u -> StringUtils.hasText(u.getEmail())).ifPresentOrElse(u -> {
+            // 构造模板内容
+            OkrNoticeTemplateVO noticeTemplateVO = OkrNoticeTemplateVO.builder()
+                    .nickname(u.getNickname())
+                    .objective(okrCoreVO.getFirstQuadrantVO().getObjective())
+                    .keyResultList(okrCoreVO.getFirstQuadrantVO().getKeyResults())
+                    .priorityOneList(okrCoreVO.getSecondQuadrantVO().getPriorityNumberOnes())
+                    .priorityTwoList(okrCoreVO.getSecondQuadrantVO().getPriorityNumberTwos())
+                    .actionList(okrCoreVO.getThirdQuadrantVO().getActions())
+                    .statusList(okrCoreVO.getFourthQuadrantVO().getStatusFlags())
+                    .nextDeadline(nextDeadline)
+                    .build();
+            // 构造邮件
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.setTitle(emailMessage.getTitle());
+            emailMessage.setRecipient(u.getEmail());
+            emailMessage.setContent(htmlEngine.builder().append(emailTemplate.getTemplate(), noticeTemplateVO).build());
+            emailSender.send(emailMessage);
+        }, () -> {
+            log.warn("无法发送 OKR 通知 -> {}", user);
+        });
     }
 
     @Override

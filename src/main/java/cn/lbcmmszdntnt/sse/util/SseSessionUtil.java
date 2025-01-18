@@ -1,7 +1,9 @@
 package cn.lbcmmszdntnt.sse.util;
 
+import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
+import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.sse.session.SseSessionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -26,6 +28,9 @@ public class SseSessionUtil {
     private final static String DEFAULT_MESSAGE = "OK";
 
     public static void initSseEmitter(SseEmitter sseEmitter, String sessionKey) {
+        if(SseSessionMapper.containsKey(sessionKey)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.SSE_CONNECTION_IS_EXIST);
+        }
         // 注册回调
         sseEmitter.onCompletion(completionCallBack(sessionKey));
         sseEmitter.onTimeout(timeOutCallBack(sessionKey));

@@ -23,7 +23,7 @@ import static cn.lbcmmszdntnt.common.enums.FileResourceType.*;
 public class FileResourceUtil {
 
     public static void checkOriginalName(String originalName) {
-        // todo 目前不允许无后缀文件，若要上传，需要放在压缩文件里
+        // 目前不允许无后缀文件，若要上传，需要放在压缩文件里
         // 判断是否有非空字符以及是否有后缀
         if (!StringUtils.hasText(originalName) || !originalName.contains(".") || originalName.lastIndexOf(".") + 1 == originalName.length()) {
             throw new GlobalServiceException(String.format("资源名非法 %s", originalName), GlobalServiceStatusCode.FILE_RESOURCE_NOT_VALID);

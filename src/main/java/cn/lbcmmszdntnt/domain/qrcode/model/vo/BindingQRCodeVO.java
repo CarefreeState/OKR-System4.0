@@ -11,9 +11,9 @@ import lombok.Data;
  * Date: 2025-01-16
  * Time: 23:14
  */
-@Schema(description = "小程序登录码")
-@Builder
 @Data
+@Builder
+@Schema(description = "小程序登录码")
 public class BindingQRCodeVO {
 
     @Schema(description = "小程序码地址")

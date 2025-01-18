@@ -2,8 +2,6 @@ package cn.lbcmmszdntnt.shortcode;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.convert.ShortCodeUtil;
-import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
-import cn.lbcmmszdntnt.redis.bloomfilter.RedisBloomFilter;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -20,35 +18,39 @@ public class ShortCodeGenerator {
 
     private final static Integer DEFAULT_LENGTH = 6;
 
-    private final RedisBloomFilter<String> bloomFilter;
+    private final int length;
+    private final String key;
 
-    private final ShortCodeProperties shortCodeProperties;
-
-    public <P> ShortCodeGenerator(RedisBloomFilter<String> bloomFilter, P shortCodeProperties) {
-        this.bloomFilter = bloomFilter;
-        this.shortCodeProperties = BeanUtil.copyProperties(shortCodeProperties, ShortCodeProperties.class);
+    public <P> ShortCodeGenerator(P properties) {
+        ShortCodeProperties shortCodeProperties = BeanUtil.copyProperties(properties, ShortCodeProperties.class);
+        length = Optional.ofNullable(shortCodeProperties.getLength()).filter(l -> l.compareTo(0) > 0).orElse(DEFAULT_LENGTH);
+        key = Optional.ofNullable(shortCodeProperties.getKey()).filter(StringUtils::hasText).orElse("");
     }
 
-    public String convert(String baseStr) {
+    public String getOriginCode(String baseStr, String key) {
+        return baseStr + key;
+    };
+
+    public boolean contains(String code, String key) {
+        return Boolean.FALSE;
+    }
+
+    public void add(String code, String key) {
+
+    };
+
+    public final String generate(String baseStr) {
         // length 为 null 或者小于 0 会走默认值，默认长度为 6， 长度范围必须在 [1, 29] 以内，否则生成不了
-        int length = Optional.ofNullable(shortCodeProperties.getLength()).filter(l -> l.compareTo(0) > 0).orElse(DEFAULT_LENGTH);
-        baseStr += Optional.ofNullable(shortCodeProperties.getKey()).filter(StringUtils::hasText).orElse("");
-        if(Boolean.TRUE.equals(shortCodeProperties.getUnique())) {
-            // unique == true
-            String code = baseStr;
-            do {
-                code = ShortCodeUtil.subCodeByString(code + UUIDUtil.uuid36(), length);
-            } while (bloomFilter.contains(code));
-            bloomFilter.add(code);
-            return code;
-        } else {
-            // unique == null/false
-            return ShortCodeUtil.subCodeByString(baseStr, length);
-        }
+        String code = baseStr;
+        do {
+            code = ShortCodeUtil.subCodeByString(getOriginCode(code, key), length);
+        } while (contains(code, key));
+        add(code, key);
+        return code;
     }
 
-    public String convert() {
-        return convert("");
+    public final String generate() {
+        return generate("");
     }
 
     @Data
@@ -57,8 +59,6 @@ public class ShortCodeGenerator {
         private String key;
 
         private Integer length;
-
-        private Boolean unique;
 
     }
 

@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
+import cn.lbcmmszdntnt.domain.auth.generator.BindingShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.auth.service.BindingAckIdentifyService;
 import cn.lbcmmszdntnt.domain.auth.service.ValidateService;
 import cn.lbcmmszdntnt.domain.auth.service.WxIdentifyService;
@@ -37,13 +38,16 @@ public class BindingAckIdentifyServiceImpl implements BindingAckIdentifyService 
 
     private final WxIdentifyService wxIdentifyService;
 
+    private final BindingShortCodeGenerator bindingShortCodeGenerator;
+
     @Override
     public BindingQRCodeVO getBindingQRCode() {
-        BindingQRCodeVO bindingQRCodeVO = qrCodeService.getBindingQRCode();
-        // 设置为 "null"
-        redisCache.setObject(AuthConstants.WX_BINDING_QR_CODE_MAP + bindingQRCodeVO.getSecret(), "null",
-                QRCodeConstants.LOGIN_QR_CODE_TTL, QRCodeConstants.LOGIN_QR_CODE_UNIT);
-        return bindingQRCodeVO;
+        String secret = bindingShortCodeGenerator.generate();
+        String path = qrCodeService.getBindingQRCode(secret);
+        return BindingQRCodeVO.builder()
+                .path(path)
+                .secret(secret)
+                .build();
     }
 
     @Override

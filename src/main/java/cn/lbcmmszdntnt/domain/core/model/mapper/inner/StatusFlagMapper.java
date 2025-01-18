@@ -15,8 +15,6 @@ import java.util.List;
 */
 public interface StatusFlagMapper extends BaseMapper<StatusFlag> {
 
-    List<StatusFlag> getStatusFlagsByUserId(@Param("userId") Long userId);
-
     List<StatusFlag> getStatusFlagsByQuadrantId(@Param("quadrantId") Long quadrantId);
 
 }

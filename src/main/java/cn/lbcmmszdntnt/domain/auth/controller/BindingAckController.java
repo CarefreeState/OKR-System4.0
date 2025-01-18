@@ -10,6 +10,9 @@ import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -58,6 +61,10 @@ public class BindingAckController {
             """)
     @GetMapping(value = "/sse/binding/qrcode", consumes = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Intercept(authenticate = false, authorize = false)
+    @ApiResponse(content = @Content(
+            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
+            oneOf = @Schema(oneOf = BindingQRCodeVO.class)
+    ))
     public SseEmitter getBindingQRCode() {
         // 获得绑定码
         BindingQRCodeVO bindingQRCodeVO = bindingAckIdentifyService.getBindingQRCode();

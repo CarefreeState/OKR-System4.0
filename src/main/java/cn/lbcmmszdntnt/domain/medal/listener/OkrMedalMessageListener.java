@@ -102,7 +102,7 @@ public class OkrMedalMessageListener {
         Integer degree = okrFinish.getDegree();
         Boolean isAdvance = okrFinish.getIsAdvance();
         int standOutCredit = 0;
-        if(Objects.nonNull(isAdvance) && Boolean.TRUE.equals(isAdvance) && degree.compareTo(COMMON_DEGREE_THRESHOLD) > 0) {
+        if(Objects.nonNull(isAdvance) && Boolean.TRUE.equals(isAdvance) && degree.compareTo(COMMON_DEGREE_THRESHOLD) >= 0) {
             standOutCredit++;
         }
         if(Objects.nonNull(degree) && degree.compareTo(EXCELLENT_DEGREE_THRESHOLD) > 0) {

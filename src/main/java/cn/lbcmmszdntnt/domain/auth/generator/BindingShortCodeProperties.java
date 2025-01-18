@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.generator;
+package cn.lbcmmszdntnt.domain.auth.generator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,19 +9,17 @@ import org.springframework.context.annotation.Configuration;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2025-01-15
- * Time: 18:58
+ * Date: 2025-01-16
+ * Time: 23:21
  */
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "short-code-generator.login")
-public class LoginShortCodeProperties {
+@ConfigurationProperties(prefix = "short-code-generator.binding")
+public class BindingShortCodeProperties {
 
     private String key;
 
     private Integer length;
-
-    private Boolean unique;
 
 }

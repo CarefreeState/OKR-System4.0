@@ -29,8 +29,8 @@ public class IOThreadPool {
         EXECUTOR.submit(runnable);
     }
 
-    public static <T> void operateBatch(List<T> dataList, Consumer<T> consumer) {
-        ThreadPoolUtil.operateBatch(dataList, consumer, DEFAULT_TASK_NUMBER, EXECUTOR);
+    public static <T> void operateBatch(List<T> dataList, Consumer<List<T>> subListConsumer) {
+        ThreadPoolUtil.operateBatch(dataList, subListConsumer, DEFAULT_TASK_NUMBER, EXECUTOR);
     }
 
 }

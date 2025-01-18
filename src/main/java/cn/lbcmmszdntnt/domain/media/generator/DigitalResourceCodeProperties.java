@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.domain.qrcode.generator;
+package cn.lbcmmszdntnt.domain.media.generator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,13 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "short-code-generator.binding")
-public class BindingShortCodeProperties {
+@ConfigurationProperties(prefix = "short-code-generator.digital-resource")
+public class DigitalResourceCodeProperties {
 
     private String key;
 
     private Integer length;
-
-    private Boolean unique;
 
 }

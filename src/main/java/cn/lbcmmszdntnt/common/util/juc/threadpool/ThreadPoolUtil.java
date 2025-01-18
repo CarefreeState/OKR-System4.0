@@ -164,7 +164,7 @@ public class ThreadPoolUtil {
         }
     }
 
-    public static <T> void operateBatch(List<T> dataList, Consumer<T> consumer,
+    public static <T> void operateBatch(List<T> dataList, Consumer<List<T>> subListConsumer,
                                         int defaultTaskNumber, ThreadPoolExecutor threadPool) {
         if(CollectionUtils.isEmpty(dataList)) {
             log.info("共需处理 0 个数据");
@@ -174,13 +174,14 @@ public class ThreadPoolUtil {
         // 计算多少个线程，每个线程多少个任务
         int taskNumber = defaultTaskNumber;
         int threadNumber = size / taskNumber;
+        // 保证整体任务数达到待处理的数据数
         while (taskNumber * threadNumber < size) {
             threadNumber++;
         }
         // 控制线程数在核心线程数以内
-        int core_size = threadPool.getCorePoolSize();
-        if(threadNumber > core_size) {
-            threadNumber = core_size;
+        int coreSize = threadPool.getCorePoolSize();
+        if(threadNumber > coreSize) {
+            threadNumber = coreSize;
             taskNumber = size / threadNumber;
         }
         // 保证整体任务数达到待处理的数据数
@@ -194,7 +195,7 @@ public class ThreadPoolUtil {
             int to = Math.min(i + taskNumber, size);
             threadPool.submit(() -> {
                 log.info("分段操作 [{}, {})", from, to);
-                dataList.subList(from, to).forEach(consumer);
+                subListConsumer.accept(dataList.subList(from, to));
                 latch.countDown();
             });
         }

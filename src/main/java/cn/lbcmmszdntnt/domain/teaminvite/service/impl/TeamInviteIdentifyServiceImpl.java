@@ -31,7 +31,7 @@ public class TeamInviteIdentifyServiceImpl implements TeamInviteIdentifyService 
     private final ValidateService validateService;
 
     private String convert(Long teamId) {
-        return normalShortCodeGenerator.convert(String.format(TeamInviteConstants.INVITE_SECRET_ORIGINAL_FORMAT, teamId));
+        return normalShortCodeGenerator.generate(String.format(TeamInviteConstants.INVITE_SECRET_ORIGINAL_FORMAT, teamId));
     }
 
     @Override

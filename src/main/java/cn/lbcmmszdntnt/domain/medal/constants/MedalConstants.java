@@ -20,7 +20,7 @@ public interface MedalConstants {
     TimeUnit MEDAL_MAP_TIMEUNIT = TimeUnit.DAYS;
 
     int KEY_RESULT_FULL_VALUE = 100;
-    int COMMON_DEGREE_THRESHOLD = 79;
+    int COMMON_DEGREE_THRESHOLD = 80;
     int EXCELLENT_DEGREE_THRESHOLD = 100;
 
 }

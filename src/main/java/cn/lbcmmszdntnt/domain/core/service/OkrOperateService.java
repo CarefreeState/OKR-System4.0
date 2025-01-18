@@ -4,7 +4,10 @@ package cn.lbcmmszdntnt.domain.core.service;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
+
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -22,5 +25,7 @@ public interface OkrOperateService {
     Boolean canVisit(User user, Long coreId);
 
     Long getCoreUser(Long coreId);
+
+    List<UserStatusFlagsVO> getStatusFlagsByUserId(List<Long> ids);
 
 }

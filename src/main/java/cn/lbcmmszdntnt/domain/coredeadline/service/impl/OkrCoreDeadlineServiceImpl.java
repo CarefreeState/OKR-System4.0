@@ -33,8 +33,10 @@ public class OkrCoreDeadlineServiceImpl implements OkrCoreDeadlineService {
         List<DeadlineEvent> deadlineEvents = okrCoreMapper.getDeadlineEvents();
         final long nowTimestamp = System.currentTimeMillis();// 当前时间
         // 处理任务
-        IOThreadPool.operateBatch(deadlineEvents, deadlineEvent -> {
-            deadlineEventHandlerChain.handle(deadlineEvent, nowTimestamp);
+        IOThreadPool.operateBatch(deadlineEvents, events -> {
+            events.forEach(event -> {
+                deadlineEventHandlerChain.handle(event, nowTimestamp);
+            });
         });
     }
 }

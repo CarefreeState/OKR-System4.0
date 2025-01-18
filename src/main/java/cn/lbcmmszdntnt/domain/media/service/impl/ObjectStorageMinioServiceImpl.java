@@ -9,6 +9,8 @@ import cn.lbcmmszdntnt.monio.engine.MinioEngine;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -68,6 +70,15 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     public void remove(String fileName) {
         try {
             minioEngine.remove(fileName);
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.FILE_RESOURCE_REMOVE_FAILED);
+        }
+    }
+
+    @Override
+    public void remove(List<String> fileNameList) {
+        try {
+            minioEngine.remove(fileNameList);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.FILE_RESOURCE_REMOVE_FAILED);
         }

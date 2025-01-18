@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class ClearDigitalResourceXxlJobConfig {
 
-
     private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static String CRON = "0 0 * * * ? *"; // 每小时
@@ -41,13 +40,18 @@ public class ClearDigitalResourceXxlJobConfig {
         long now = System.currentTimeMillis();
         List<DigitalResource> list = digitalResourceService.lambdaQuery()
                 .ge(DigitalResource::getActiveLimit, 0L)
-                .list();
-        IOThreadPool.operateBatch(list, digitalResource -> {
-            if(digitalResource.getActiveLimit().compareTo(now - digitalResource.getUpdateTime().getTime()) <= 0) {
-                digitalResourceService.removeResource(digitalResource.getCode());
-                objectStorageService.remove(digitalResource.getFileName());
-            }
-        });
+                .list()
+                .stream()
+                .filter(digitalResource -> digitalResource.getActiveLimit().compareTo(now - digitalResource.getUpdateTime().getTime()) <= 0)
+                .toList();
+        IOThreadPool.operateBatch(
+                list.stream().map(DigitalResource::getCode).toList(),
+                digitalResourceService::removeResource
+        );
+        IOThreadPool.operateBatch(
+                list.stream().map(DigitalResource::getFileName).toList(),
+                objectStorageService::remove
+        );
     }
 
 }

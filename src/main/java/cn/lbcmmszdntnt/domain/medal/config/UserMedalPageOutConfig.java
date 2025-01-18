@@ -46,19 +46,21 @@ public class UserMedalPageOutConfig {
         List<UserMedal> userMedalSaveList = new ArrayList<>();
         // 数据量很大，需要分批处理
         Set<String> keys = redisCache.getKeysByPrefix(MedalConstants.USER_MEDAL_MAP_CACHE);
-        IOThreadPool.operateBatch(keys.stream().toList(), redisKey -> {
-            redisMapCache.getMap(redisKey, Long.class, UserMedal.class)
-                    .map(Map::entrySet)
-                    .stream()
-                    .flatMap(Collection::stream)
-                    .map(Map.Entry::getValue)
-                    .forEach(userMedal -> {
-                        Optional.ofNullable(userMedal.getId()).ifPresentOrElse(userId -> {
-                            userMedalUpdateList.add(userMedal);
-                        }, () -> {
-                            userMedalSaveList.add(userMedal);
+        IOThreadPool.operateBatch(keys.stream().toList(), redisKeyList -> {
+            redisKeyList.forEach(redisKey -> {
+                redisMapCache.getMap(redisKey, Long.class, UserMedal.class)
+                        .map(Map::entrySet)
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .map(Map.Entry::getValue)
+                        .forEach(userMedal -> {
+                            Optional.ofNullable(userMedal.getId()).ifPresentOrElse(userId -> {
+                                userMedalUpdateList.add(userMedal);
+                            }, () -> {
+                                userMedalSaveList.add(userMedal);
+                            });
                         });
-                    });
+            });
         });
         redisCache.deleteObjects(keys);
         userMedalService.saveBatch(userMedalSaveList);

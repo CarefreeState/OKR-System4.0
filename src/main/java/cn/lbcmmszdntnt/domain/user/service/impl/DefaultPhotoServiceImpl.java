@@ -1,6 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
-import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.user.model.entity.DefaultPhoto;
 import cn.lbcmmszdntnt.domain.user.model.mapper.DefaultPhotoMapper;
@@ -31,6 +30,8 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
 
     private final RedisCache redisCache;
     private final RedisListCache redisListCache;
+
+    // 读写锁保证双写一致
     private final RedisLock redisLock;
     private final WriteLockStrategy writeLockStrategy;
     private final ReadLockStrategy readLockStrategy;
@@ -66,10 +67,7 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
             defaultPhoto.setCode(code);
             this.save(defaultPhoto);
             redisCache.deleteObject(DEFAULT_PHOTO_LIST_CACHE);
-            IOThreadPool.submit(() -> {
-                // 删除 code 但不希望影响速度与结果
-                fileMediaService.remove(code);
-            });
+            fileMediaService.remove(code);
         }, () -> {}, writeLockStrategy);
     }
 

@@ -52,18 +52,19 @@ public class GreatStateMedalXxlJobConfig {
                 .map(User::getId)
                 .toList();
         // 数据量很大，需要分批处理
-        IOThreadPool.operateBatch(userIds, userId -> {
+        IOThreadPool.operateBatch(userIds, ids -> {
             MedalType medalType = MedalType.GREAT_STATE;
             Long medalId = medalType.getMedalId();
             // 查看用户当前未完成的个人 OKR 的所有状态指标，算加权平均值
-            double average = statusFlagConfig.calculateStatusFlag(userId);
-            // 判断是否计数
-            log.info("用户 {} 状态指标评估： {}", userId, average);
-            if (statusFlagConfig.isTouch(average)) {
-                UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
-                long credit = Objects.isNull(dbUserMedal) ? 1 : dbUserMedal.getCredit() + 1;
-                userMedalService.saveUserMedal(userId, medalId, dbUserMedal, credit, medalType.getCoefficient());
-            }
+            statusFlagConfig.calculateStatusFlag(ids).forEach((userId, average) -> {
+                // 判断是否计数
+                log.info("用户 {} 状态指标评估： {}", userId, average);
+                if (statusFlagConfig.isTouch(average)) {
+                    UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
+                    long credit = Objects.isNull(dbUserMedal) ? 1 : dbUserMedal.getCredit() + 1;
+                    userMedalService.saveUserMedal(userId, medalId, dbUserMedal, credit, medalType.getCoefficient());
+                }
+            });
         });
         log.info("本周定时颁布勋章任务执行完毕！下次执行将与一周后");
     }

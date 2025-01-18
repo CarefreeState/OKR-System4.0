@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class NormalShortCodeGenerator extends ShortCodeGenerator {
 
     public NormalShortCodeGenerator(final NormalShortCodeProperties shortCodeProperties) {
-        super(null, shortCodeProperties);
+        super(shortCodeProperties);
     }
+
 }

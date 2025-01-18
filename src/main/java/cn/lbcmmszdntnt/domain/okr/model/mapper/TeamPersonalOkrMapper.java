@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.okr.model.mapper;
 
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
@@ -16,8 +17,8 @@ import java.util.List;
 */
 public interface TeamPersonalOkrMapper extends BaseMapper<TeamPersonalOkr> {
 
+    List<UserStatusFlagsVO> getStatusFlagsByUserId(@Param("ids") List<Long> ids);
     List<TeamPersonalOkrVO> getTeamPersonalOkrList(@Param("id") Long id);
-
     List<TeamMemberVO> getTeamMembers(@Param("id") Long id);
 
 }

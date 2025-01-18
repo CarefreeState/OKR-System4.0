@@ -48,8 +48,10 @@ public class DayRecordPageOutXxlJobConfig {
         List<DayRecord> dayRecordList = new ArrayList<>();
         // 数据量很大，需要分批处理
         Set<String> keys = redisCache.getKeysByPrefix(DayRecordConstants.DAY_RECORD_DATE_CACHE_PREFIX);
-        IOThreadPool.operateBatch(keys.stream().toList(), redisKey -> {
-            redisCache.getObject(redisKey, DayRecord.class).ifPresent(dayRecordList::add);
+        IOThreadPool.operateBatch(keys.stream().toList(), redisKeyList -> {
+            redisKeyList.forEach(redisKey -> {
+                redisCache.getObject(redisKey, DayRecord.class).ifPresent(dayRecordList::add);
+            });
         });
         redisCache.deleteObjects(keys);
         dayRecordService.saveBatch(dayRecordList);

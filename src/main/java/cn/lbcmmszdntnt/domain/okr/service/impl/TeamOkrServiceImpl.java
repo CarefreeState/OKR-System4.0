@@ -8,6 +8,7 @@ import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.entity.inner.KeyResult;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
@@ -30,8 +31,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -140,7 +143,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
                 managerId, userId, teamId, id, coreId);
         // 删除缓存
         TeamOkrUtil.deleteChildListCache(teamId);
-        // 延时再次删除
+        // 延时再次删除（延时双删的方式保证双写一致）
         TeamOkrUtil.sendTeamOkrClearCache(teamId);
         return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
@@ -255,6 +258,14 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             redisCache.setObject(redisKey, managerId, OkrConstants.USER_CORE_MAP_TTL, OkrConstants.USER_CORE_MAP_TTL_UNIT);
             return managerId;
         });
+    }
+
+    @Override
+    public List<UserStatusFlagsVO> getStatusFlagsByUserId(List<Long> ids) {
+        if(CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+        return teamOkrMapper.getStatusFlagsByUserId(ids);
     }
 
 }

@@ -12,6 +12,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -36,6 +37,11 @@ public class ImageUtil {
     private final static double MAX_PX = MAX_PX_RATE * IMAGE_SIZE;
     private final static double REFER_WIDTH = REFER_WIDTH_RATE * IMAGE_SIZE;
     private final static double REFER_HEIGHT = REFER_HEIGHT_RATE * IMAGE_SIZE;
+
+    public final static String COMPRESS_FORMAT_NAME = "jpg"; // 压缩图片格式
+    public final static String COMPRESS_FORMAT_SUFFIX = "." + COMPRESS_FORMAT_NAME; // 压缩图片格式
+    public final static float COMPRESS_SCALE = 1.0f; // 压缩图片大小
+    public final static float COMPRESS_QUALITY = 0.5f; // 压缩图片质量
 
     public static Font getFont(float fontSize){
         try (InputStream inputStream = MediaUtil.getInputStream(RESOURCE_STATIC_CONFIG.getFontBytes())) {
@@ -183,6 +189,21 @@ public class ImageUtil {
             // 输出
             return getBytes(qrImage);
         } catch (IOException | WriterException e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    public static byte[] compressImage(byte[] bytes) {
+        try(InputStream inputStream = MediaUtil.getInputStream(bytes);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            // 使用 thumbnailator 进行压缩，指定输出格式
+            Thumbnails.of(inputStream)
+                    .outputFormat(COMPRESS_FORMAT_NAME)
+                    .scale(COMPRESS_SCALE)
+                    .outputQuality(COMPRESS_QUALITY)
+                    .toOutputStream(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage());
         }
     }

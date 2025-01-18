@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.okr.model.mapper;
 
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrStatisticVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamOkrVO;
@@ -20,6 +21,7 @@ public interface TeamOkrMapper extends BaseMapper<TeamOkr> {
     TeamOkr findTeamRoot(@Param("id") Long id);
     List<TeamOkrVO> getTeamOkrList(@Param("id") Long id);
     List<TeamOkrStatisticVO> selectKeyResultsByTeamId(@Param("ids") List<Long> ids);
+    List<UserStatusFlagsVO> getStatusFlagsByUserId(@Param("ids") List<Long> ids);
 
     void createFindTeamRootProcedure();
     void creatQueryTeamTreeProcedure();

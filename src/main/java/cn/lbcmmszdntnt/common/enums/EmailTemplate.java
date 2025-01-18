@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.email.enums;
+package cn.lbcmmszdntnt.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +8,10 @@ import lombok.Getter;
 public enum EmailTemplate {
 
     EMAIL_IDENTIFY("邮箱验证", "identifying-code-model.html"),
+
+    SHORT_TERM_NOTICE("OKR 短期计划周期提醒", "short-term-notice-model.html"),
+    LONG_TERM_NOTICE("OKR 长期计划周期提醒", "long-term-notice-model.html"),
+    OKR_ENDED_NOTICE("OKR 结束提醒", "okr-ended-notice-model.html"),
 
     ;
 

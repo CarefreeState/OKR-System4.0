@@ -1,8 +1,10 @@
 package cn.lbcmmszdntnt.domain.core.service;
 
 
+import cn.lbcmmszdntnt.common.enums.EmailTemplate;
 import cn.lbcmmszdntnt.domain.core.model.entity.OkrCore;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
+import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
@@ -29,6 +31,8 @@ public interface OkrCoreService extends IService<OkrCore> {
     void confirmCelebrateDate(Long id, Integer celebrateDay);
 
     Date summaryOKR(Long id, String summary, Integer degree);
+
+    void noticeOkr(User user, OkrCoreVO okrCoreVO, Date nextDeadline, EmailTemplate emailTemplate);
 
     void complete(Long id);
 

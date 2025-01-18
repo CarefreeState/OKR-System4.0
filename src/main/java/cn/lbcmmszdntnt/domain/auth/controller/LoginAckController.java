@@ -13,6 +13,9 @@ import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +63,10 @@ public class LoginAckController {
             """)
     @GetMapping(value = "/sse/login/qrcode", consumes = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Intercept(authenticate = false, authorize = false)
+    @ApiResponse(content = @Content(
+            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
+            oneOf = @Schema(oneOf = LoginQRCodeVO.class)
+    ))
     public SseEmitter getLoginQRCode(@Valid @RequestBody LoginQRCodeDTO loginQRCodeDTO) {
         // 获得邀请码
         LoginQRCodeVO loginQRCode = loginAckIdentifyService.getLoginQRCode(loginQRCodeDTO.getType());

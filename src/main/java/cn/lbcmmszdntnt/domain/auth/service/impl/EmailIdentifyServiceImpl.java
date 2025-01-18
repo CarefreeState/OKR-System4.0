@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static cn.lbcmmszdntnt.common.enums.EmailTemplate.EMAIL_IDENTIFY;
 import static cn.lbcmmszdntnt.domain.auth.constants.AuthConstants.*;
-import static cn.lbcmmszdntnt.email.enums.EmailTemplate.EMAIL_IDENTIFY;
 
 
 /**

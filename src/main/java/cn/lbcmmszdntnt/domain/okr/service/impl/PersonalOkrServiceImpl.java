@@ -5,6 +5,7 @@ import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
+import cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
 import cn.lbcmmszdntnt.domain.core.service.OkrOperateService;
 import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
@@ -21,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,6 +93,14 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
             redisCache.setObject(redisKey, userId, OkrConstants.USER_CORE_MAP_TTL, OkrConstants.USER_CORE_MAP_TTL_UNIT);
             return userId;
         });
+    }
+
+    @Override
+    public List<UserStatusFlagsVO> getStatusFlagsByUserId(List<Long> ids) {
+        if(CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+        return personalOkrMapper.getStatusFlagsByUserId(ids);
     }
 
 

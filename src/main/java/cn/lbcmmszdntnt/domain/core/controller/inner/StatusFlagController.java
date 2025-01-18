@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -119,7 +121,7 @@ public class StatusFlagController {
     public SystemJsonResponse<Boolean> updateKeyResult() {
         // 校验
         Long userId = InterceptorContext.getUser().getId();
-        double average = statusFlagConfig.calculateStatusFlag(userId);
+        double average = statusFlagConfig.calculateStatusFlag(List.of(userId)).get(userId);
         boolean isTouch = statusFlagConfig.isTouch(average);
         log.info("检查用户 {} 状态指标 {}", userId, isTouch);
         return SystemJsonResponse.SYSTEM_SUCCESS(isTouch);
