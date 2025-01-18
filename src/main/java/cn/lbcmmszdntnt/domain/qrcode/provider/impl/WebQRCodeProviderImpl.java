@@ -3,7 +3,6 @@ package cn.lbcmmszdntnt.domain.qrcode.provider.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
 import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
-import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.config.FontTextConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.WebQRCodeConfig;
@@ -43,7 +42,7 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
         String url = HttpRequestUtil.buildUrl(webQRCode.getPage(), Map.of(WEB_QR_CODE_SCENE_KEY, List.of(scene)));
         Integer width = webQRCode.getWidth();
         log.info("生成二维码 -> {}  {}  {} ", url, width, width);
-        byte[] codeBytes = ImageUtil.getUrlQRCodeBytes(url, width, width);
+        byte[] codeBytes = ImageUtil.getUrlQRCodeBytes(url, width, width, webQRCode.getLineColor().color());
         codeBytes = strategy.process(codeBytes);
         return fileMediaService.uploadImage(QRCodeConstants.DEFAULT_ORIGINAL_NAME, codeBytes, activeLimit);
     }
@@ -52,12 +51,13 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
     public String getInviteQRCode(Long teamId, String teamName, String secret) {
         WebQRCode qrCode = webQRCodeConfig.getInvite();
         String scene = String.format(INVITE_CODE_SCENE_FORMAT, teamId, secret);
-        return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, INVITE_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     teamName,
                     fontTextConfig.getInvite(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }
@@ -76,7 +76,8 @@ public class WebQRCodeProviderImpl implements QRCodeProvider {
                     bytes,
                     LOGIN_CODE_MESSAGE,
                     fontTextConfig.getLogin(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }

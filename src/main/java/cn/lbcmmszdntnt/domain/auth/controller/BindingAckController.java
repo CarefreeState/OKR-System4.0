@@ -15,9 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,20 +57,17 @@ public class BindingAckController {
             
             在绑定接口，选择微信绑定策略，用获取二维码时返回的 secret 去绑定；
             """)
-    @GetMapping(value = "/sse/binding/qrcode", consumes = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/sse/binding/qrcode")
     @Intercept(authenticate = false, authorize = false)
-    @ApiResponse(content = @Content(
-            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
-            oneOf = @Schema(oneOf = BindingQRCodeVO.class)
-    ))
+    @ApiResponse(content = @Content(schema = @Schema(implementation = BindingQRCodeVO.class)))
     public SseEmitter getBindingQRCode() {
         // 获得绑定码
-        BindingQRCodeVO bindingQRCodeVO = bindingAckIdentifyService.getBindingQRCode();
+        String secret = bindingAckIdentifyService.getSecret();
         // 连接并发送一条信息
         return SseSessionUtil.createConnect(
                 QRCodeConstants.BINDING_CODE_ACTIVE_LIMIT,
-                AuthConstants.BINDING_ACK_SSE_SERVER + bindingQRCodeVO.getSecret(),
-                () -> bindingQRCodeVO
+                AuthConstants.BINDING_ACK_SSE_SERVER + secret,
+                () -> bindingAckIdentifyService.getBindingQRCode(secret)
         );
     }
 

@@ -8,6 +8,8 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.monio.engine.MinioEngine;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
 /**
  * 本服务由 SPI 加载，故必须提供无参构造方法
  */
+@Slf4j
 public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
 
     @Resource
@@ -69,6 +72,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     @Override
     public void remove(String fileName) {
         try {
+            log.info("删除资源 {}", fileName);
             minioEngine.remove(fileName);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.FILE_RESOURCE_REMOVE_FAILED);
@@ -78,6 +82,10 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
     @Override
     public void remove(List<String> fileNameList) {
         try {
+            log.info("删除资源 {}", fileNameList);
+            if(CollectionUtils.isEmpty(fileNameList)) {
+                return;
+            }
             minioEngine.remove(fileNameList);
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.FILE_RESOURCE_REMOVE_FAILED);

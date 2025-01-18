@@ -3,6 +3,8 @@ package cn.lbcmmszdntnt.wxtoken.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.awt.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -45,6 +47,10 @@ public class WxQRCode {
 
         @JsonProperty("b")
         private Integer blue;
+
+        public Color color() {
+            return new Color(red, green, blue);
+        }
 
     }
 

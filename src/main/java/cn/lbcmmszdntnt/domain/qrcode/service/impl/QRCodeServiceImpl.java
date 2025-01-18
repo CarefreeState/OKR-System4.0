@@ -1,8 +1,6 @@
 package cn.lbcmmszdntnt.domain.qrcode.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.auth.generator.BindingShortCodeGenerator;
-import cn.lbcmmszdntnt.domain.auth.generator.LoginShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.enums.QRCodeType;
@@ -33,10 +31,6 @@ public class QRCodeServiceImpl implements QRCodeService {
     private final RedisCache redisCache;
 
     private final RedisLock redisLock;
-
-    private final LoginShortCodeGenerator loginShortCodeGenerator;
-
-    private final BindingShortCodeGenerator bindingShortCodeGenerator;
 
     private final QRCodeProviderFactory qrCodeProviderFactory;
 

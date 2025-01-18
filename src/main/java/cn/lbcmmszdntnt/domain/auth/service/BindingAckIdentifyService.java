@@ -12,7 +12,9 @@ import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
  */
 public interface BindingAckIdentifyService {
 
-    BindingQRCodeVO getBindingQRCode();
+    String getSecret();
+
+    BindingQRCodeVO getBindingQRCode(String secret);
 
     void ackSecret(String secret, String code);
 

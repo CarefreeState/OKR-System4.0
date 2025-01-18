@@ -1,13 +1,16 @@
 package cn.lbcmmszdntnt.domain.user.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
+import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserQueryDTO;
 import cn.lbcmmszdntnt.domain.user.model.dto.UserTypeUpdateDTO;
 import cn.lbcmmszdntnt.domain.user.model.vo.UserQueryVO;
 import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
+import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +43,10 @@ public class UserManageController {
     @PostMapping("/update/type/{userId}")
     public SystemJsonResponse<?> updateUserType(@PathVariable("userId") @NotNull(message = "用户 id 不能为空") @Parameter(description = "用户 id") Long userId,
                                                 @Valid @RequestBody UserTypeUpdateDTO userTypeUpdateDTO) {
+        Long currentUserId = InterceptorContext.getUser().getId();
+        if(currentUserId.equals(userId)) {
+            throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
+        }
         userService.updateUserType(userId, userTypeUpdateDTO.getUserType());
         return SystemJsonResponse.SYSTEM_SUCCESS();
     }

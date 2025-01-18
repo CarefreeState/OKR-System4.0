@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.qrcode.enums;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public enum QRCodeType {
 
     ;
 
+    @JsonValue
     private final String type;
     private final String description;
 

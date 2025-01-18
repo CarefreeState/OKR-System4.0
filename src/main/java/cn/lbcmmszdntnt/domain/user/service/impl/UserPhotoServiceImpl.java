@@ -61,12 +61,14 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     public String updateUserPhoto(Supplier<String> getCode, Long userId, String originPhoto) {
         String lock = UserConstants.USER_PHOTO_LOCK + userId; // 避免因为上传过慢，上传了多次重复的
         return redisLock.tryLockGetSomething(lock, 0L, redisLockProperties.getTimeout(), TimeUnit.SECONDS, () -> {
-            // 删除原头像
-            IOThreadPool.submit(() -> {
-                fileMediaService.remove(originPhoto);
-            });
             // 获取头像资源码
             String code = getCode.get();
+            // 删除原头像
+            IOThreadPool.submit(() -> {
+                if(!code.equals(originPhoto) && !defaultPhotoService.getDefaultPhotoList().contains(originPhoto)) {
+                    fileMediaService.remove(originPhoto);
+                }
+            });
             // 修改数据库
             userService.lambdaUpdate()
                     .set(User::getPhoto, code)

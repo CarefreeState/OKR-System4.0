@@ -13,7 +13,9 @@ import cn.lbcmmszdntnt.domain.user.model.entity.User;
  */
 public interface LoginAckIdentifyService {
 
-    LoginQRCodeVO getLoginQRCode(QRCodeType codeType);
+    String getSecret();
+
+    LoginQRCodeVO getLoginQRCode(String secret, QRCodeType codeType);
 
     void ackSecret(String secret, Long userId);
 

@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.user.service.impl;
 
+import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.user.model.entity.DefaultPhoto;
 import cn.lbcmmszdntnt.domain.user.model.mapper.DefaultPhotoMapper;
@@ -56,7 +57,9 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
         redisLock.tryLockDoSomething(DEFAULT_PHOTO_LIST_LOCK, () -> {
             this.lambdaUpdate().eq(DefaultPhoto::getCode, code).remove();
             redisCache.deleteObject(DEFAULT_PHOTO_LIST_CACHE);
-            fileMediaService.remove(code);
+            IOThreadPool.submit(() -> {
+                fileMediaService.remove(code);
+            });
         }, () -> {}, writeLockStrategy);
     }
 
@@ -67,7 +70,6 @@ public class DefaultPhotoServiceImpl extends ServiceImpl<DefaultPhotoMapper, Def
             defaultPhoto.setCode(code);
             this.save(defaultPhoto);
             redisCache.deleteObject(DEFAULT_PHOTO_LIST_CACHE);
-            fileMediaService.remove(code);
         }, () -> {}, writeLockStrategy);
     }
 

@@ -2,7 +2,6 @@ package cn.lbcmmszdntnt.domain.qrcode.provider.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
-import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;
 import cn.lbcmmszdntnt.domain.qrcode.config.FontTextConfig;
 import cn.lbcmmszdntnt.domain.qrcode.config.WxQRCodeConfig;
@@ -47,12 +46,13 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     public String getInviteQRCode(Long teamId, String teamName, String secret) {
         WxQRCode qrCode = wxQRCodeConfig.getInvite();
         String scene = String.format(INVITE_CODE_SCENE_FORMAT, teamId, secret);
-        return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, INVITE_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     teamName,
                     fontTextConfig.getInvite(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }
@@ -61,12 +61,13 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
     public String getCommonQRCode() {
         WxQRCode qrCode = wxQRCodeConfig.getCommon();
         String scene = "you=nice";
-        return getQRCode(qrCode, scene, FileMediaConstants.DEFAULT_ACTIVE_LIMIT, bytes -> {
+        return getQRCode(qrCode, scene, QRCodeConstants.COMMON_CODE_ACTIVE_LIMIT, bytes -> {
             return ImageUtil.signatureWrite(
                     bytes,
                     COMMON_CODE_MESSAGE,
                     fontTextConfig.getCommon(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }
@@ -80,7 +81,8 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
                     bytes,
                     LOGIN_CODE_MESSAGE,
                     fontTextConfig.getLogin(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }
@@ -94,7 +96,8 @@ public class WxQRCodeProviderImpl implements QRCodeProvider {
                     bytes,
                     BINDING_CODE_MESSAGE,
                     fontTextConfig.getBinding(),
-                    fontTextConfig.getColor()
+                    fontTextConfig.getColor(),
+                    qrCode.getLineColor().color()
             );
         });
     }

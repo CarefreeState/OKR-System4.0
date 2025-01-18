@@ -13,6 +13,7 @@ import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,7 @@ import java.util.List;
 */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMapper, DigitalResource>
     implements DigitalResourceService{
 
@@ -100,6 +102,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
 
     @Override
     public void removeResource(List<String> codeList) {
+        log.info("删除资源 {}", codeList);
         if(CollectionUtils.isEmpty(codeList)) {
             return;
         }

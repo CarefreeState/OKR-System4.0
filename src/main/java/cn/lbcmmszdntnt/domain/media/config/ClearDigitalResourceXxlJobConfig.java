@@ -27,7 +27,7 @@ public class ClearDigitalResourceXxlJobConfig {
     private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static String CRON = "0 0 * * * ? *"; // 每小时
-    private final static int RIGGER_STATUS = 0;
+    private final static int RIGGER_STATUS = 1;
 
     private final DigitalResourceService digitalResourceService;
 

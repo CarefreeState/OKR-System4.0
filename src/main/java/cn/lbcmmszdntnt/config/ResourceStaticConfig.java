@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Created With Intellij IDEA
@@ -18,9 +20,11 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "resource.static")
-public class ResourceStaticConfig {
+public class ResourceStaticConfig  implements WebMvcConfigurer {
 
-    private String defaultPhoto;
+    private String patten;
+
+    private String location;
 
     private String font;
 
@@ -34,5 +38,14 @@ public class ResourceStaticConfig {
     public void init() {
         this.fontBytes = ClassPathResourceUtil.getBytes(font);
         this.boardBytes = ClassPathResourceUtil.getBytes(board);
+    }
+
+    /**
+     * 配置静态访问资源
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(patten).addResourceLocations(location);
     }
 }

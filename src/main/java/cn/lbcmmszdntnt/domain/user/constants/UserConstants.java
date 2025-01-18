@@ -1,7 +1,5 @@
 package cn.lbcmmszdntnt.domain.user.constants;
 
-import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.config.ResourceStaticConfig;
 import cn.lbcmmszdntnt.domain.user.enums.UserType;
 
 import java.util.concurrent.TimeUnit;
@@ -19,7 +17,7 @@ public interface UserConstants {
     String DEFAULT_EMAIL_USER_NICKNAME = "邮箱用户";
     String DEFAULT_WX_USER_NICKNAME = "微信用户";
 
-    String DEFAULT_PHOTO = SpringUtil.getBean(ResourceStaticConfig.class).getDefaultPhoto();
+    String DEFAULT_PHOTO = "static/default.png";
     String USER_PHOTO_LOCK = "userPhotoLock:";
 
     String DEFAULT_PHOTO_LIST_CACHE = "defaultPhotoListCache";

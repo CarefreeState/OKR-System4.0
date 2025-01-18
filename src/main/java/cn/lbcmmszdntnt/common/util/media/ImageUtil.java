@@ -163,7 +163,7 @@ public class ImageUtil {
         return signatureWrite(bytes, text, flag, textColor, Color.BLACK);
     }
 
-    public static byte[] getUrlQRCodeBytes(String url, int width, int height) {
+    public static byte[] getUrlQRCodeBytes(String url, int width, int height, Color color) {
         // 配置生成二维码的参数
         Map<EncodeHintType, String> hintMap = new HashMap<>();
         hintMap.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8.displayName());
@@ -177,7 +177,7 @@ public class ImageUtil {
             // 将二维码矩阵渲染到图片上
             Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
             graphics.fillRect(0, 0, width, height);
-            graphics.setColor(Color.BLACK);
+            graphics.setColor(color);
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
                     if (bitMatrix.get(i, j)) {

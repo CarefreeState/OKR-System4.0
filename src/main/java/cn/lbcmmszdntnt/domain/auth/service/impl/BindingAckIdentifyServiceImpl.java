@@ -41,8 +41,12 @@ public class BindingAckIdentifyServiceImpl implements BindingAckIdentifyService 
     private final BindingShortCodeGenerator bindingShortCodeGenerator;
 
     @Override
-    public BindingQRCodeVO getBindingQRCode() {
-        String secret = bindingShortCodeGenerator.generate();
+    public String getSecret() {
+        return bindingShortCodeGenerator.generate();
+    }
+
+    @Override
+    public BindingQRCodeVO getBindingQRCode(String secret) {
         String path = qrCodeService.getBindingQRCode(secret);
         return BindingQRCodeVO.builder()
                 .path(path)

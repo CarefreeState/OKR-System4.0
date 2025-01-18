@@ -28,6 +28,7 @@ public class EmailController {
 
     private final EmailIdentifyService emailIdentifyService;
 
+    // 其实还不一定需要存在这个邮箱，只不过不存在邮箱，除了服务器谁都不知道验证码
     @PostMapping("/user/check/email")
     @Operation(summary = "发送邮箱验证码")
     @Intercept(authenticate = false, authorize = false)

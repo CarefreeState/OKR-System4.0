@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 @Component
 @WebFilter(urlPatterns = "/sse/**") // 约定 sse 请求必须有 /sse 前缀
+// 如果没有这个类，就需要其他的请求代理服务群设置这些响应头部，不然 https 的 sse 请求没法建立连接
 public class SseFilter implements Filter {
 
     @Override

@@ -10,7 +10,7 @@ SET @@FOREIGN_KEY_CHECKS = 0;
 drop table if exists `digital_resource`;
 create table `digital_resource` (
     `id` bigint primary key auto_increment comment '资源 id',
-    `code` char(32) unique not null comment '资源码',
+    `code` char(8) unique not null comment '资源码',
     `original_name` varchar(100) not null comment '上传时的文件名',
     `file_name` varchar(256) not null comment '在对象存储服务中存储的对象名',
     `active_limit` bigint not null default -1 comment '最后一次更新时间 update_time 必须在活跃时间限制（距离当前时间 active_limit(ms) 的时间戳内），小于 0 代表不限制',

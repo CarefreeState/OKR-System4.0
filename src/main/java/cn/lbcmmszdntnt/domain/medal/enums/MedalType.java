@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.domain.medal.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -31,6 +32,7 @@ public enum MedalType {
 
     ;
 
+    @JsonValue
     private final Long medalId;
     private final Integer coefficient;
 

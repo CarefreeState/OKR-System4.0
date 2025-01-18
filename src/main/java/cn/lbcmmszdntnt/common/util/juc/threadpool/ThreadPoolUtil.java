@@ -194,9 +194,14 @@ public class ThreadPoolUtil {
             int from = i;
             int to = Math.min(i + taskNumber, size);
             threadPool.submit(() -> {
-                log.info("分段操作 [{}, {})", from, to);
-                subListConsumer.accept(dataList.subList(from, to));
-                latch.countDown();
+                try {
+                    log.info("分段操作 [{}, {})", from, to);
+                    subListConsumer.accept(dataList.subList(from, to));
+                } catch (Exception e) {
+                    log.warn(e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
             });
         }
         try {

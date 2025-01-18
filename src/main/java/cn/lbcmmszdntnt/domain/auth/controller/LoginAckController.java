@@ -19,9 +19,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -61,20 +63,19 @@ public class LoginAckController {
             
             在登录接口，选择授权登录策略，用获取二维码时返回的 secret 去登录；
             """)
-    @GetMapping(value = "/sse/login/qrcode", consumes = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/sse/login/qrcode")
     @Intercept(authenticate = false, authorize = false)
     @ApiResponse(content = @Content(
-            mediaType = MediaType.TEXT_EVENT_STREAM_VALUE,
-            oneOf = @Schema(oneOf = LoginQRCodeVO.class)
+            schema = @Schema(implementation = LoginQRCodeVO.class)
     ))
     public SseEmitter getLoginQRCode(@Valid @RequestBody LoginQRCodeDTO loginQRCodeDTO) {
         // 获得邀请码
-        LoginQRCodeVO loginQRCode = loginAckIdentifyService.getLoginQRCode(loginQRCodeDTO.getType());
+        String secret = loginAckIdentifyService.getSecret();
         // 连接并发送一条信息
         return SseSessionUtil.createConnect(
                 QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT,
-                AuthConstants.LOGIN_ACK_SSE_SERVER + loginQRCode.getSecret(),
-                () -> loginQRCode
+                AuthConstants.LOGIN_ACK_SSE_SERVER + secret,
+                () -> loginAckIdentifyService.getLoginQRCode(secret, loginQRCodeDTO.getType())
         );
     }
 

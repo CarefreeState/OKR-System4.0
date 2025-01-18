@@ -3,6 +3,8 @@ package cn.lbcmmszdntnt.domain.qrcode.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.awt.*;
+
 /**
  * Created With Intellij IDEA
  * Description:
@@ -18,5 +20,26 @@ public class WebQRCode {
 
     @JsonProperty("width")
     private Integer width;
+
+    @JsonProperty("line_color")
+    private LineColor lineColor;
+
+    @Data
+    public static class LineColor {
+
+        @JsonProperty("r")
+        private Integer red;
+
+        @JsonProperty("g")
+        private Integer green;
+
+        @JsonProperty("b")
+        private Integer blue;
+
+        public Color color() {
+            return new Color(red, green, blue);
+        }
+
+    }
 
 }

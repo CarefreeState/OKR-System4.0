@@ -42,8 +42,12 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
     private final LoginShortCodeGenerator loginShortCodeGenerator;
 
     @Override
-    public LoginQRCodeVO getLoginQRCode(QRCodeType codeType) {
-        String secret = loginShortCodeGenerator.generate();
+    public String getSecret() {
+        return loginShortCodeGenerator.generate();
+    }
+
+    @Override
+    public LoginQRCodeVO getLoginQRCode(String secret, QRCodeType codeType) {
         String path = qrCodeService.getLoginQRCode(secret, codeType);
         return LoginQRCodeVO.builder()
                 .path(path)

@@ -31,14 +31,15 @@ public class EmailAsynchronousSendAspect {
     @Around("send()")
     public Object doAround(ProceedingJoinPoint joinPoint) {
         // 如果是自调用则不会触发切点
-        EXECUTOR.submit(() -> {
+//        EXECUTOR.submit(() -> {
             try {
                 log.info("异步发送邮件");
                 joinPoint.proceed();
             } catch (Throwable e) {
+                log.error(e.getMessage());
                 throw new GlobalServiceException(e.getMessage());
             }
-        });
+//        });
         return null;
     }
 

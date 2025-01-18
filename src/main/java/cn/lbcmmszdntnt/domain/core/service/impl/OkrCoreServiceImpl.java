@@ -213,7 +213,7 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
                     .build();
             // 构造邮件
             EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setTitle(emailMessage.getTitle());
+            emailMessage.setTitle(emailTemplate.getTitle());
             emailMessage.setRecipient(u.getEmail());
             emailMessage.setContent(htmlEngine.builder().append(emailTemplate.getTemplate(), noticeTemplateVO).build());
             emailSender.send(emailMessage);

@@ -55,12 +55,12 @@ public final class FileMediaServiceImpl implements FileMediaService {
 
     @Override
     public void remove(String code) {
-        objectStorageService.remove(analyzeCode(code));
-        digitalResourceService.removeResource(List.of(code));
+        remove(List.of(code));
     }
 
     @Override
     public void remove(List<String> codeList) {
+        log.info("删除资源 {}", codeList);
         if(CollectionUtils.isEmpty(codeList)) {
             return;
         }

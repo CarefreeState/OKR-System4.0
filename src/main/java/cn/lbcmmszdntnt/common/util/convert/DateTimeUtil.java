@@ -5,6 +5,7 @@ import cn.lbcmmszdntnt.common.constants.DateTimeConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created With Intellij IDEA
@@ -16,15 +17,15 @@ import java.util.Date;
 public class DateTimeUtil {
 
     public static String getDateFormat(Date date) {
-        return new SimpleDateFormat(DateTimeConstants.DATE_TIME_PATTERN).format(date);
+        return Optional.ofNullable(date).map(d -> new SimpleDateFormat(DateTimeConstants.DATE_TIME_PATTERN).format(d)).orElse(null);
     }
 
     public static String getOnlyDateFormat(Date date) {
-        return new SimpleDateFormat(DateTimeConstants.DATE_PATTERN).format(date);
+        return Optional.ofNullable(date).map(d -> new SimpleDateFormat(DateTimeConstants.DATE_PATTERN).format(d)).orElse(null);
     }
 
     public static Date beginOfDay(Date date) {
-        return DateUtil.beginOfDay(date);
+        return Optional.ofNullable(date).map(DateUtil::beginOfDay).orElse(null);
     }
 
 }

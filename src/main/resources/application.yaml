@@ -96,6 +96,8 @@ resource:
     max-request-size: 100
     data-unit: megabytes
   static:
+    patten: /static/** # 路由前缀
+    location: classpath:/static/ # 类路径
     default-photo: /static/default.png
     font: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
     board: /static/board.png
@@ -113,6 +115,7 @@ secure:
           - /swagger-ui/**
           - /swagger-ui.html/**
           - /media/**
+          - /static/**
         properties:
           permit:
           authenticate: false
@@ -170,16 +173,24 @@ qrcode:
       width: 500          # 图片大小
       auto_color: false    # 颜色是否默认
       line-color: # 颜色
-        red: 0
-        green: 0
-        blue: 0
+        red: 20
+        green: 86
+        blue: 204
       is-hyaline: false    # 透明底
   web:
     invite:
       page: ${spring.domain}/pages/invite   # 页面
       width: 500           # 图片大小
+      line-color: # 颜色
+        red: 20
+        green: 133
+        blue: 238
     login:
       page: ${spring.domain}/pages/confirm   # 页面
       width: 500           # 图片大小
+      line-color: # 颜色
+        red: 20
+        green: 86
+        blue: 204
 
 
