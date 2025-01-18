@@ -49,7 +49,7 @@ create table `user` (
 
 -- mms 123456
 insert into `user`(`id`, `username`, `nickname`, `password`, `photo`, `user_type`) values
-    (10000, 'mms', '马铭胜', '8f687f9a47e14aaf92f5d861355d3cce$8960081935ccd38123476bb232573024', 'default.png', 2)
+    (10000, 'mms', '马铭胜', '8f687f9a47e14aaf92f5d861355d3cce$8960081935ccd38123476bb232573024', 'static/default.png', 2)
 ;
 
 -- 创建默认头像表

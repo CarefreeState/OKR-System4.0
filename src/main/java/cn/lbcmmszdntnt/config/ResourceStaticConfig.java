@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "resource.static")
 public class ResourceStaticConfig {
 
+    private String defaultPhoto;
+
     private String font;
 
     private String board;

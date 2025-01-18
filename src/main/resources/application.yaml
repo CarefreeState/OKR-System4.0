@@ -96,6 +96,7 @@ resource:
     max-request-size: 100
     data-unit: megabytes
   static:
+    default-photo: /static/default.png
     font: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
     board: /static/board.png
 
@@ -111,13 +112,7 @@ secure:
           - /swagger-resources/**
           - /swagger-ui/**
           - /swagger-ui.html/**
-        properties:
-          permit:
-          authenticate: false
-          authorize: false
-      # websocket 接口在这里配置拦截参数
-      - urls:
-          - /web/wxloginws
+          - /media/**
         properties:
           permit:
           authenticate: false
