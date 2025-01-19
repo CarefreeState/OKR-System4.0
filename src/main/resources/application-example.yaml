@@ -1,0 +1,192 @@
+
+server:
+  port: 1701
+  ip: 127.0.0.1 # 运行时 ip
+
+
+okr:
+  db:
+    host:
+    port:
+    database: db_okr_system
+    username:
+    password:
+  mail:
+#    strategy: random # 随机
+    strategy: roundRobin # 轮询
+    senders:
+      - host: smtp.yeah.net
+        port: 465
+        username:
+        password:
+        protocol: smtp
+        default-encoding: UTF-8
+        properties:
+          mail:
+#            debug: true
+            smtp:
+              ssl:
+                enable: true
+      - host: smtp.qq.com
+        port: 465
+        username:
+        password:
+        protocol: smtp
+        default-encoding: UTF-8
+        properties:
+          mail:
+#            debug: true
+            smtp:
+              ssl:
+                enable: true
+  wx:
+    env-version: develop
+#    env-version: trial
+#    env-version: release
+    appid:
+    secret:
+  jwt:
+    secret-key:
+    application-name: ${spring.application.name}
+    ttl: 365
+    refresh-time: 7
+    unit: days
+    token-name: Token
+    custom-key: custom
+  cors:
+    allow-origin:
+    allow-methods: GET, POST, PUT, DELETE, OPTIONS
+    max-age: 3600
+    allow-headers: Content-Type, Accept, ${okr.jwt.token-name}
+    allow-credentials: true
+  redis:
+    # 地址
+    host:
+    # 端口
+    port:
+    # 数据库索引
+    database:
+    # 密码（如没有密码请注释掉）
+    password:
+    # 连接超时时间
+    connect-timeout: 10s
+  redisson:
+    # 地址
+    url: redis://${okr.redis.host}:${okr.redis.port}
+    # 数据库索引
+    database: ${okr.redis.database}
+    # 密码
+    password: ${okr.redis.password}
+    lock:
+      wait: 10
+      timeout: 10
+      unit: seconds
+  xxl-job:
+    host:
+    port:
+    admin:
+      addresses: http://${okr.xxl-job.host}:${okr.xxl-job.port}/xxl-job-admin
+      username:
+      password:
+    access-token: default_token
+    executor:
+      title: okr-strategy
+      appname: xxl-job-executor-okr
+      address:
+      ip: ${server.ip}
+      port: 9999
+      logpath: ./logs/xxljob/jobhandler
+      logretentiondays: 30
+      address-type: 1
+      address-list: http://${okr.xxl-job.executor.ip}:${okr.xxl-job.executor.port}
+  mq:
+    host:  # rabbitMQ 的 ip 地址
+    port:  # 端口
+    username:
+    password:
+    virtual-host:
+  minio:
+    endpoint: # Minio 服务所在地址
+    bucket-name: okr-server # 存储桶名称
+    access-key:  # 访问的key
+    secret-key:  # 访问的秘钥
+
+# 数据源配置
+spring:
+  domain: http://${server.ip}:${server.port} # 如果是域名需要专门改一下这里
+  datasource:
+    url: jdbc:mysql://${okr.db.host}:${okr.db.port}/${okr.db.database}?serverTimezone=Asia/Shanghai&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${okr.db.username}
+    password: ${okr.db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      # 地址
+      host: ${okr.redis.host}
+      # 端口
+      port: ${okr.redis.port}
+      # 数据库索引
+      database: ${okr.redis.database}
+      # 密码
+      password: ${okr.redis.password}
+      # 连接超时时间
+      connect-timeout: ${okr.redis.connect-timeout}
+  rabbitmq:
+    host: ${okr.mq.host} # rabbitMQ 的 ip 地址
+    port: ${okr.mq.port} # 端口
+    username: ${okr.mq.username}
+    password: ${okr.mq.password}
+    virtual-host: ${okr.mq.virtual-host}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true # 若是 false 则直接丢弃了，并不会发送者回执
+    listener:
+      simple:
+        prefetch: 1 # 预取为一个（消费完才能拿下一个）
+        concurrency: 2 # 消费者最少 2 个线程
+        max-concurrency: 10 # 消费者最多 10 个线程
+        auto-startup: true # 为 false 监听者不会实时创建和监听，为 true 监听的过程中，若 queue 不存在，会再根据注解进行创建，创建后只监听 queue，declare = "false" 才是不自动声明
+        default-requeue-rejected: false # 拒绝后不 requeue（成为死信，若没有绑定死信交换机，就真的丢了）
+        acknowledge-mode: auto # 消费者执行成功 ack、异常 nack（manual 为手动、none 代表无论如何都是 ack）
+        retry: # 这个属于 spring amqp 的 retry 机制
+          enabled: false # 不开启失败重试
+#          initial-interval: 1000
+#          multiplier: 2
+#          max-attempts: 3
+#          stateless: true # true 代表没有状态，若有消费者包含事务，这里改为 false
+
+bloom-filter:
+  digital-resource-code:
+    name: DigitalResourceCodeBloomFilter
+    pre-size: 100000
+    rate: 0.03
+    timeout: 365
+    unit: days
+
+short-code-generator:
+  normal:
+    key:
+    length: 6
+  login:
+    length: 4
+  binding:
+    length: 4
+  digital-resource:
+    length: 8
+
+resource:
+  locate:
+    location: file:/root/media/ # 本地存储的根路径
+#    location: file:D:/media/ # 本地存储的根路径
+
+quadrant-cycle:
+  limit:
+    second: 10
+
+secure:
+  refused:
+    # 上线后，强制拒绝以下接口
+    urls:
+      # 根据 userId 生成 jwt
+      - /jwt/{userId}

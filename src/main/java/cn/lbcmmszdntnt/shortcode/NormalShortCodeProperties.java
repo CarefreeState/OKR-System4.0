@@ -22,6 +22,4 @@ public class NormalShortCodeProperties {
 
     private Integer length;
 
-    private Boolean unique;
-
 }
