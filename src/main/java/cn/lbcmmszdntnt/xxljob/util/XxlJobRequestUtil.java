@@ -17,7 +17,6 @@ import cn.lbcmmszdntnt.xxljob.model.vo.GroupPageListVO;
 import cn.lbcmmszdntnt.xxljob.model.vo.InfoPageListVO;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.HttpCookie;
 import java.util.List;
 
 /**
@@ -43,8 +42,11 @@ public class XxlJobRequestUtil {
                     .stream()
                     .filter(cookie -> cookie.getName().equals(XXL_JOB_LOGIN_IDENTITY))
                     .findFirst()
-                    .map(HttpCookie::getValue)
-                    .map(cookie -> String.format("%s=%s", XXL_JOB_LOGIN_IDENTITY, cookie))
+                    .map(httpCookie ->{
+                        String cookie = String.format("%s=%s", XXL_JOB_LOGIN_IDENTITY, httpCookie.getValue());
+                        log.info("xxljob cookie {}", cookie);
+                        return cookie;
+                    })
                     .orElseThrow(() ->
                             new GlobalServiceException("get xxl-job cookie error!")
                     );

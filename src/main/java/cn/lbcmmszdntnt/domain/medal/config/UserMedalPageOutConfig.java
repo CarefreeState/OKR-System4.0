@@ -40,7 +40,7 @@ public class UserMedalPageOutConfig {
     // 渐入佳境勋章
     @XxlJob(value = "pageOutUserMedal")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的写入用户勋章的任务")
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的用户勋章缓存写入数据库")
     public void pageOutUserMedal() {
         List<UserMedal> userMedalUpdateList = new ArrayList<>();
         List<UserMedal> userMedalSaveList = new ArrayList<>();

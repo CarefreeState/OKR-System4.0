@@ -47,7 +47,7 @@
 				<logging.level>warn</logging.level>
 			</properties>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+<!--				<activeByDefault>true</activeByDefault>-->
 			</activation>
 		</profile>
 

@@ -28,7 +28,7 @@ public class OkrCoreDeadlineXxlJobConfig {
 
     @XxlJob(value = "checkDeadline")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】检查 OKR 截止时间")
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间")
     public void checkDeadline() {
         log.warn("--> --> --> --> 开始检查 OKR 截止时间 --> --> --> -->");
         okrCoreDeadlineService.checkDeadline();

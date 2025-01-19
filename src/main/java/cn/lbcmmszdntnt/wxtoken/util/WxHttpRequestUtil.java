@@ -36,13 +36,15 @@ public class WxHttpRequestUtil {
         accessTokenDTO.setAppid(WX_ADMIN.getAppid());
         accessTokenDTO.setSecret(WX_ADMIN.getSecret());
         WxHttpRequest accessToken = WxHttpRequest.ACCESS_TOKEN;
-        return HttpRequestUtil.jsonRequest(
+        AccessTokenVO accessTokenVO = HttpRequestUtil.jsonRequest(
                 accessToken.getUrl(),
                 accessToken.getMethod(),
                 accessTokenDTO,
                 AccessTokenVO.class,
                 null
         );
+        log.info("wx token {}", accessTokenDTO);
+        return accessTokenVO;
     }
 
     public static JsCode2SessionVO jsCode2Session(JsCode2SessionDTO jsCode2SessionDTO) {

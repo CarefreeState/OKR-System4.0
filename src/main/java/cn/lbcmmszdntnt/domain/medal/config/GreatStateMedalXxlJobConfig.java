@@ -43,7 +43,7 @@ public class GreatStateMedalXxlJobConfig {
     // 渐入佳境勋章
     @XxlJob(value = "issueGreatStateMedal")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的勋章检查")
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的渐入佳境勋章检查")
     public void issueGreatStateMedal() {
         List<Long> userIds = userService.lambdaQuery()
                 .select(User::getId)

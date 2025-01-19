@@ -24,4 +24,8 @@ public class InfoPageListDTO {
 
     private Integer triggerStatus;
 
+    private String jobDesc;
+
+    private String author;
+
 }

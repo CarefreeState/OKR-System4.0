@@ -21,6 +21,8 @@ public class JobInfoServiceImpl implements JobInfoService {
                 .jobGroup(jobGroupId)
                 .executorHandler(executorHandler)
                 .triggerStatus(-1)
+                .jobDesc("")
+                .author("")
                 .build();
         return XxlJobRequestUtil.infoPageList(infoPageListDTO);
     }

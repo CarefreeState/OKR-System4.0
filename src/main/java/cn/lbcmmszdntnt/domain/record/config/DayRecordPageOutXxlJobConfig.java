@@ -42,7 +42,7 @@ public class DayRecordPageOutXxlJobConfig {
     // 渐入佳境勋章
     @XxlJob(value = "pageOutDayRecord")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的写入昨日 OKR 日记录的任务")
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
     public void pageOutDayRecord() {
         String yesterday = DateTimeUtil.getDateFormat(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1)));
         List<DayRecord> dayRecordList = new ArrayList<>();

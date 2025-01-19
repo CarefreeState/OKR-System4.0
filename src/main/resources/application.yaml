@@ -98,7 +98,6 @@ resource:
   static:
     patten: /static/** # 路由前缀
     location: classpath:/static/ # 类路径
-    default-photo: /static/default.png
     font: /static/XiangJiaoDaJiangJunLingGanTi-2.ttf
     board: /static/board.png
 
