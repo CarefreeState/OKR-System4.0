@@ -53,11 +53,6 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public DigitalResource createResource(String originalName, String fileName) {
-        return createResource(originalName, fileName, -1L);
-    }
-
-    @Override
     public DigitalResource getResourceByCode(String code) {
         return this.lambdaQuery()
                 .eq(DigitalResource::getCode, code)
@@ -92,15 +87,6 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
     }
 
     @Override
-    public void removeFileNameCache(List<String> codeList) {
-        List<String> redisKeys = ObjectUtil.distinctNonNullStream(codeList)
-                .filter(StringUtils::hasText)
-                .map(code -> FileMediaConstants.CODE_RESOURCE_MAP + code)
-                .toList();
-        redisCache.deleteObjects(redisKeys);
-    }
-
-    @Override
     public void removeResource(List<String> codeList) {
         log.info("删除资源 {}", codeList);
         if(CollectionUtils.isEmpty(codeList)) {
@@ -109,7 +95,12 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         this.lambdaUpdate()
                 .in(DigitalResource::getCode, codeList)
                 .remove();
-        removeFileNameCache(codeList);
+        // todo 延时双删
+        List<String> redisKeys = ObjectUtil.distinctNonNullStream(codeList)
+                .filter(StringUtils::hasText)
+                .map(code -> FileMediaConstants.CODE_RESOURCE_MAP + code)
+                .toList();
+        redisCache.deleteObjects(redisKeys);
     }
 
 }

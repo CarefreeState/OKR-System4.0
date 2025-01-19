@@ -13,12 +13,10 @@ import java.util.List;
 public interface DigitalResourceService extends IService<DigitalResource> {
 
     DigitalResource createResource(String originalName, String fileName, Long activeLimit);
-    DigitalResource createResource(String originalName, String fileName);
 
     DigitalResource getResourceByCode(String code);
 
     String getFileName(String code);
-    void removeFileNameCache(List<String> code);
     void removeResource(List<String> codeList);
 
 }

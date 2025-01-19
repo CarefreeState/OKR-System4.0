@@ -145,7 +145,7 @@
         select
             u.id user_id, s.id s_id, s.color s_color, s.label s_label
         from
-            user u left join team_okr t on u.id = t.user_id and u.is_deleted = 0 and t.is_deleted = 0
+            user u left join team_okr t on u.id = t.manager_id and u.is_deleted = 0 and t.is_deleted = 0
             left join okr_core o on t.core_id = o.id and t.is_deleted = 0 and o.is_deleted = 0
             left join fourth_quadrant f on o.id = f.core_id and o.is_deleted = 0 and f.is_deleted = 0
             left join status_flag s on f.id = s.fourth_quadrant_id and s.is_deleted = 0 and f.is_deleted = 0
