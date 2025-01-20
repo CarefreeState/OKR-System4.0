@@ -2,16 +2,14 @@ package cn.lbcmmszdntnt.domain.okr.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
+import cn.lbcmmszdntnt.domain.center.util.CacheDelayClearUtil;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
-import cn.lbcmmszdntnt.mq.sender.RabbitMQSender;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.cache.RedisListCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,14 +23,12 @@ import static cn.lbcmmszdntnt.domain.okr.constants.OkrConstants.*;
  * Date: 2024-01-26
  * Time: 0:38
  */
-@Component
 @Slf4j
 public class TeamOkrUtil {
 
     private final static RedisCache REDIS_CACHE = SpringUtil.getBean(RedisCache.class);
     private final static RedisListCache REDIS_LIST_CACHE = SpringUtil.getBean(RedisListCache.class);
     private final static TeamOkrService TEAM_OKR_SERVICE = SpringUtil.getBean(TeamOkrService.class);
-    private final static RabbitMQSender RABBIT_MQ_SENDER = SpringUtil.getBean(RabbitMQSender.class);
 
     public static Long getTeamRootId(Long id) {
         String redisKey = TEAM_ROOT_MAP + id;
@@ -64,15 +60,8 @@ public class TeamOkrUtil {
         log.info("清除 {} 所在团队树的缓存", teamId);
         List<String> redisKeys = getAllChildIds(teamId).stream().map(id -> TEAM_CHILD_LIST + id).toList();
         REDIS_CACHE.deleteObjects(redisKeys);
-    }
-
-    public static void sendTeamOkrClearCache(Long teamId) {
-        RABBIT_MQ_SENDER.sendDelayMessage(
-                OkrConstants.TEAM_OKR_CLEAR_CACHE_DELAY_DIRECT,
-                OkrConstants.TEAM_OKR_CLEAR_CACHE,
-                teamId,
-                OkrConstants.TEAM_OKR_CLEAR_CACHE_DELAY
-        );
+        // 延时再次删除（延时双删的方式保证双写一致）
+        CacheDelayClearUtil.delayClear(redisKeys);
     }
 
     public static String getTeamName(Long id) {

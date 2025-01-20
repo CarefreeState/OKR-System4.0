@@ -13,11 +13,6 @@ public interface OkrConstants {
 
     Long ALLOW_NOT_COMPLETED_PERSONAL_OKR_COUNT = 1L; // 允许同时存在多少个未完成的 OKR
 
-    String TEAM_OKR_CLEAR_CACHE_DELAY_DIRECT = "teamokr.clearcache.delay.direct";
-    String TEAM_OKR_CLEAR_CACHE_QUEUE = "teamokr.clearcache.queue";
-    String TEAM_OKR_CLEAR_CACHE = "teamokr.clearcache";
-    Long TEAM_OKR_CLEAR_CACHE_DELAY = 5_000L;
-
     String USER_CORE_MAP = "userCoreMap:";
     String TEAM_ID_NAME_MAP = "teamIdNameMap:";
     String TEAM_ID_MANAGER_MAP = "teamIdManagerMap:";

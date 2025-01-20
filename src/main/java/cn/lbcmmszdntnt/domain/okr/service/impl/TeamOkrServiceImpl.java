@@ -143,8 +143,6 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
                 managerId, userId, teamId, id, coreId);
         // 删除缓存
         TeamOkrUtil.deleteChildListCache(teamId);
-        // 延时再次删除（延时双删的方式保证双写一致）
-        TeamOkrUtil.sendTeamOkrClearCache(teamId);
         return OKRCreateVO.builder().id(id).coreId(coreId).build();
     }
 

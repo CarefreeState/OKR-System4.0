@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.media.service.impl;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.IOThreadPool;
+import cn.lbcmmszdntnt.domain.center.util.CacheDelayClearUtil;
 import cn.lbcmmszdntnt.domain.media.constants.FileMediaConstants;
 import cn.lbcmmszdntnt.domain.media.generator.DigitalResourceCodeBloomFilter;
 import cn.lbcmmszdntnt.domain.media.generator.DigitalResourceCodeGenerator;
@@ -48,7 +49,7 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         digitalResource.setActiveLimit(activeLimit);
         this.save(digitalResource);
         // 删除 code 的缓存
-        redisCache.deleteObject(FileMediaConstants.CODE_RESOURCE_MAP + code);
+        clearCache(List.of(code));
         return digitalResource;
     }
 
@@ -95,12 +96,17 @@ public class DigitalResourceServiceImpl extends ServiceImpl<DigitalResourceMappe
         this.lambdaUpdate()
                 .in(DigitalResource::getCode, codeList)
                 .remove();
-        // todo 延时双删
+        clearCache(codeList);
+    }
+
+    @Override
+    public void clearCache(List<String> codeList) {
         List<String> redisKeys = ObjectUtil.distinctNonNullStream(codeList)
                 .filter(StringUtils::hasText)
                 .map(code -> FileMediaConstants.CODE_RESOURCE_MAP + code)
                 .toList();
         redisCache.deleteObjects(redisKeys);
+        CacheDelayClearUtil.delayClear(redisKeys); // 延时双删
     }
 
 }

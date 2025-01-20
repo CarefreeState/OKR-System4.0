@@ -18,5 +18,6 @@ public interface DigitalResourceService extends IService<DigitalResource> {
 
     String getFileName(String code);
     void removeResource(List<String> codeList);
+    void clearCache(List<String> codeList);
 
 }
