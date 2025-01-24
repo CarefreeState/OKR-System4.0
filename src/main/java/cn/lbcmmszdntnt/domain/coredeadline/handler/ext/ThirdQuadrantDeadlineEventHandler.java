@@ -6,6 +6,7 @@ import cn.lbcmmszdntnt.domain.core.service.quadrant.ThirdQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.DeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.event.DeadlineEvent;
+import cn.lbcmmszdntnt.domain.coredeadline.util.DeadlineUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -39,11 +40,7 @@ public class ThirdQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         if(Objects.nonNull(thirdQuadrantDeadline) && Objects.nonNull(thirdQuadrantCycle)) {
             // 获取一个正确的截止点
             long deadTimestamp = thirdQuadrantDeadline.getTime();
-            long nextDeadTimestamp = deadTimestamp;
-            final long cycle = TimeUnit.SECONDS.toMillis(thirdQuadrantCycle);
-            while(nextDeadTimestamp <= nowTimestamp) {
-                nextDeadTimestamp += cycle;
-            }
+            long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
             Date nextDeadline = new Date(nextDeadTimestamp);
             Boolean flag = nextDeadTimestamp != deadTimestamp;
             // 更新截止时间

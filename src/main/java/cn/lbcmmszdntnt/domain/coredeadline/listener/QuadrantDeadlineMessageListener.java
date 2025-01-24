@@ -15,6 +15,7 @@ import cn.lbcmmszdntnt.domain.core.service.quadrant.SecondQuadrantService;
 import cn.lbcmmszdntnt.domain.core.service.quadrant.ThirdQuadrantService;
 import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.domain.coredeadline.constants.CoreDeadlineConstants;
+import cn.lbcmmszdntnt.domain.coredeadline.util.DeadlineUtil;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
 import cn.lbcmmszdntnt.exception.GlobalServiceException;
@@ -29,7 +30,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -81,10 +81,9 @@ public class QuadrantDeadlineMessageListener {
         long nowTimestamp = System.currentTimeMillis();
         log.info("处理事件：内核 ID {}，第一象限截止时间 {}", coreId, firstQuadrantDeadline);
         // 1. 判断是否截止
-        if(Objects.nonNull(firstQuadrantDeadline) &&
-                firstQuadrantDeadline.getTime() <= nowTimestamp) {
+        if(firstQuadrantDeadline.getTime() <= nowTimestamp) {
             okrCoreService.complete(coreId);
-            // 到这里未报错说明成功了
+            // 到这里未报错说明成功了（重复消费的话，其中一个到不了这里）
             okrCoreService.noticeOkr(
                     getUserByCoreId(coreId),
                     okrCoreService.searchOkrCore(coreId),
@@ -93,10 +92,8 @@ public class QuadrantDeadlineMessageListener {
             );
             return;
         }
-        // 2. 是否设置了第一象限截止时间（这里一定代表未截止）
-        if(Objects.nonNull(firstQuadrantDeadline)) {
-            QuadrantDeadlineMessageUtil.scheduledComplete(firstQuadrantEvent);
-        }
+        // 2. 到这里一定代表未截止
+        QuadrantDeadlineMessageUtil.scheduledComplete(firstQuadrantEvent);
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -121,36 +118,29 @@ public class QuadrantDeadlineMessageListener {
                 }
                 log.info("处理事件：内核 ID {}，第二象限 ID {}，第二象限截止时间 {}，第二象限周期 {}",
                         coreId, secondQuadrantId, secondQuadrantDeadline, secondQuadrantCycle);
-                // 是否设置了第二象限截止时间和周期
-                if(Objects.nonNull(secondQuadrantCycle)) {
-                    // 判断是否结束
-                    Boolean isOver = okrCoreService.getOkrCore(coreId).getIsOver();
-                    if(Boolean.TRUE.equals(isOver)) {
-                        log.warn("OKR {} 已结束，第二象限 {} 停止对截止时间的刷新", coreId, secondQuadrantId);
-                        return;
-                    }
-                    // 1. 获取一个正确的截止点
-                    long nextDeadTimestamp = deadTimestamp;
-                    final long cycle = TimeUnit.SECONDS.toMillis(secondQuadrantCycle);
-                    while(nextDeadTimestamp <= nowTimestamp) {
-                        nextDeadTimestamp += cycle;
-                    }
-                    Date nextDeadline = new Date(nextDeadTimestamp);
-                    // 2. 更新截止时间
-                    if(nextDeadTimestamp != deadTimestamp) {
-                        secondQuadrantService.updateDeadline(secondQuadrantId, nextDeadline);
-                        // 更新的时候再发送
-                        okrCoreService.noticeOkr(
-                                getUserByCoreId(coreId),
-                                okrCoreVO,
-                                nextDeadline,
-                                EmailTemplate.SHORT_TERM_NOTICE
-                        );
-                    }
-                    // 3. 发起延时任务
-                    secondQuadrantEvent.setDeadline(nextDeadline);
-                    QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
+                // 判断是否结束
+                Boolean isOver = okrCoreVO.getIsOver();
+                if(Boolean.TRUE.equals(isOver)) {
+                    log.warn("OKR {} 已结束，第二象限 {} 停止对截止时间的刷新", coreId, secondQuadrantId);
+                    return;
                 }
+                // 1. 获取一个正确的截止点
+                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, secondQuadrantCycle, TimeUnit.SECONDS);
+                Date nextDeadline = new Date(nextDeadTimestamp);
+                // 2. 更新截止时间
+                if(nextDeadTimestamp != deadTimestamp) {
+                    secondQuadrantService.updateDeadline(secondQuadrantId, nextDeadline);
+                    // 更新的时候再发送
+                    okrCoreService.noticeOkr(
+                            getUserByCoreId(coreId),
+                            okrCoreVO,
+                            nextDeadline,
+                            EmailTemplate.SHORT_TERM_NOTICE
+                    );
+                }
+                // 3. 发起延时任务
+                secondQuadrantEvent.setDeadline(nextDeadline);
+                QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
             });
         }, () -> {});
     }
@@ -177,36 +167,29 @@ public class QuadrantDeadlineMessageListener {
                 }
                 log.info("处理事件：内核 ID {}，第三象限 ID {}，第三象限截止时间 {}，第三象限周期 {}",
                         coreId, thirdQuadrantId, thirdQuadrantDeadline, thirdQuadrantCycle);
-                // 是否设置了第三象限截止时间和周期
-                if(Objects.nonNull(thirdQuadrantCycle)) {
-                    // 判断是否结束
-                    Boolean isOver = okrCoreService.getOkrCore(coreId).getIsOver();
-                    if(Boolean.TRUE.equals(isOver)) {
-                        log.warn("OKR {} 已结束，第三象限 {} 停止对截止时间的刷新", coreId, thirdQuadrantId);
-                        return;
-                    }
-                    // 1. 获取一个正确的截止点
-                    long nextDeadTimestamp = deadTimestamp;
-                    final long cycle = TimeUnit.SECONDS.toMillis(thirdQuadrantCycle);
-                    while(nextDeadTimestamp <= nowTimestamp) {
-                        nextDeadTimestamp += cycle;
-                    }
-                    Date nextDeadline = new Date(nextDeadTimestamp);
-                    // 2. 更新截止时间
-                    if(nextDeadTimestamp != deadTimestamp) {
-                        thirdQuadrantService.updateDeadline(thirdQuadrantId, nextDeadline);
-                        // 更新的时候再发送
-                        okrCoreService.noticeOkr(
-                                getUserByCoreId(coreId),
-                                okrCoreVO,
-                                nextDeadline,
-                                EmailTemplate.LONG_TERM_NOTICE
-                        );
-                    }
-                    // 3. 发起延时任务
-                    thirdQuadrantEvent.setDeadline(nextDeadline);
-                    QuadrantDeadlineMessageUtil.scheduledUpdateThirdQuadrant(thirdQuadrantEvent);
+                // 判断是否结束
+                Boolean isOver = okrCoreVO.getIsOver();
+                if(Boolean.TRUE.equals(isOver)) {
+                    log.warn("OKR {} 已结束，第三象限 {} 停止对截止时间的刷新", coreId, thirdQuadrantId);
+                    return;
                 }
+                // 1. 获取一个正确的截止点
+                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
+                Date nextDeadline = new Date(nextDeadTimestamp);
+                // 2. 更新截止时间
+                if(nextDeadTimestamp != deadTimestamp) {
+                    thirdQuadrantService.updateDeadline(thirdQuadrantId, nextDeadline);
+                    // 更新的时候再发送
+                    okrCoreService.noticeOkr(
+                            getUserByCoreId(coreId),
+                            okrCoreVO,
+                            nextDeadline,
+                            EmailTemplate.LONG_TERM_NOTICE
+                    );
+                }
+                // 3. 发起延时任务
+                thirdQuadrantEvent.setDeadline(nextDeadline);
+                QuadrantDeadlineMessageUtil.scheduledUpdateThirdQuadrant(thirdQuadrantEvent);
             });
 
         }, () -> {});
