@@ -3,6 +3,7 @@ package cn.lbcmmszdntnt.domain.coredeadline.handler.ext;
 
 import cn.lbcmmszdntnt.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.service.OkrCoreService;
+import cn.lbcmmszdntnt.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.DeadlineEventHandler;
 import cn.lbcmmszdntnt.domain.coredeadline.handler.event.DeadlineEvent;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
     private final OkrCoreService okrCoreService;
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp) {
+    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
         FirstQuadrantEvent firstQuadrantEvent = deadlineEvent.getFirstQuadrantEvent();
         Long id = firstQuadrantEvent.getCoreId();
         Date firstQuadrantDeadline = firstQuadrantEvent.getDeadline();
@@ -38,6 +39,9 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
             okrCoreService.complete(id);
             return; // 责任链终止
         }
-        super.doNextHandler(deadlineEvent, nowTimestamp);//执行下一个责任处理器
+        if(Boolean.TRUE.equals(needSend)) {
+            QuadrantDeadlineMessageUtil.scheduledComplete(firstQuadrantEvent);
+        }
+        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器
     }
 }

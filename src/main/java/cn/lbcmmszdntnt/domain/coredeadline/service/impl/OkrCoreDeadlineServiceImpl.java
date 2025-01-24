@@ -28,14 +28,14 @@ public class OkrCoreDeadlineServiceImpl implements OkrCoreDeadlineService {
     private final DeadlineDeadlineEventHandlerChain deadlineEventHandlerChain;
 
     @Override
-    public void checkDeadline() {
+    public void checkDeadline(Boolean needSend) {
         // 获取任务
         List<DeadlineEvent> deadlineEvents = okrCoreMapper.getDeadlineEvents();
         final long nowTimestamp = System.currentTimeMillis();// 当前时间
         // 处理任务
         IOThreadPool.operateBatch(deadlineEvents, events -> {
             events.forEach(event -> {
-                deadlineEventHandlerChain.handle(event, nowTimestamp);
+                deadlineEventHandlerChain.handle(event, nowTimestamp, needSend);
             });
         });
     }

@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class IOThreadPool {
 
-    private static final ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("OKR-System-Thread-IO");
+    private static final ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("OKR-System-Thread");
     private static final int DEFAULT_TASK_NUMBER = 30; // 在分批处理任务时默认的任务数
 
     public static void submit(Runnable... tasks) {

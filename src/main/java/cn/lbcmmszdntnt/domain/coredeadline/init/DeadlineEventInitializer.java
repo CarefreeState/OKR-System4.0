@@ -18,7 +18,7 @@ public class DeadlineEventInitializer implements ApplicationListener<Application
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         log.warn("--> --> --> --> 开始检查 OKR 截止时间 --> --> --> -->");
-        okrCoreDeadlineService.checkDeadline();
+        okrCoreDeadlineService.checkDeadline(Boolean.FALSE);
         log.warn("<-- <-- <-- <-- <-- 检查完毕成功 <-- <-- <-- <-- <--");
     }
 }

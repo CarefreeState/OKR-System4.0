@@ -9,5 +9,5 @@ package cn.lbcmmszdntnt.domain.coredeadline.service;
  */
 public interface OkrCoreDeadlineService {
 
-    void checkDeadline();
+    void checkDeadline(Boolean needSend);
 }

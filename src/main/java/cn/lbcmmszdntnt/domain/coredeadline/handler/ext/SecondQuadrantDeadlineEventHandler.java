@@ -29,15 +29,15 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
     private final SecondQuadrantService secondQuadrantService;
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp) {
+    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
         SecondQuadrantEvent secondQuadrantEvent = deadlineEvent.getSecondQuadrantEvent();
         Long id = secondQuadrantEvent.getCoreId();
         Long secondQuadrantId = secondQuadrantEvent.getId();
         Date secondQuadrantDeadline = secondQuadrantEvent.getDeadline();
         Integer secondQuadrantCycle = secondQuadrantEvent.getCycle();
-        // 3. 是否设置了第二象限截止时间和周期
+        // 是否设置了第二象限截止时间和周期
         if(Objects.nonNull(secondQuadrantDeadline) && Objects.nonNull(secondQuadrantCycle)) {
-            // 3.1 获取一个正确的截止点
+            // 获取一个正确的截止点
             long deadTimestamp = secondQuadrantDeadline.getTime();
             long nextDeadTimestamp = deadTimestamp;
             final long cycle = TimeUnit.SECONDS.toMillis(secondQuadrantCycle);
@@ -45,16 +45,19 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
                 nextDeadTimestamp += cycle;
             }
             Date nextDeadline = new Date(nextDeadTimestamp);
-            // 3.2 更新截止时间
-            if(nextDeadTimestamp != deadTimestamp) {
+            Boolean flag = nextDeadTimestamp != deadTimestamp;
+            // 更新截止时间
+            if(Boolean.TRUE.equals(flag)) {
                 log.info("处理事件：内核 ID {}，第二象限 ID {}，第二象限截止时间 {}，第二象限周期 {}",
                         id, secondQuadrantId, secondQuadrantDeadline, secondQuadrantCycle);
                 secondQuadrantService.updateDeadline(secondQuadrantId, nextDeadline);
-                // 3.3 发起定时任务
+            }
+            if(flag || needSend) {
+                // 发起定时任务
                 secondQuadrantEvent.setDeadline(nextDeadline);
                 QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
             }
         }
-        super.doNextHandler(deadlineEvent, nowTimestamp);//执行下一个责任处理器
+        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器
     }
 }

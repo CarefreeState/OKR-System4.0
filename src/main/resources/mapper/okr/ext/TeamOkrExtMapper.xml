@@ -23,6 +23,7 @@
     </resultMap>
 
     <update id="createFindTeamRootProcedure">
+        drop procedure if exists `find_team_root`;
         create procedure `find_team_root` (in start_id bigint)
         begin
             declare current_id bigint;
@@ -49,10 +50,11 @@
             from team_okr t
             where t.id = current_id and t.is_deleted = 0;
 
-        end
+        end;
     </update>
 
     <update id="creatQueryTeamTreeProcedure">
+        drop procedure if exists `query_team_tree`;
         create procedure `query_team_tree` (in root_id bigint)
         begin
 
@@ -67,10 +69,12 @@
             select t.id, t.parent_team_id, t.team_name from temp_team_nodes t order by t.id;
             drop temporary table if exists `temp_team_nodes`;
 
-        end
+        end;
+
     </update>
 
     <update id="createPrepareTeamTreeProcedure">
+        drop procedure if exists `prepare_team_tree`;
         create procedure `prepare_team_tree` (in root_id bigint)
         begin
 
@@ -98,7 +102,7 @@
                 call prepare_team_tree(current_id);
             end loop;
             close cur;
-        end
+        end;
     </update>
 
     <select id="queryTeamTree" statementType="CALLABLE" resultMap="BaseResultMap" >

@@ -37,8 +37,8 @@ public class DeadlineDeadlineEventHandlerChain extends DeadlineEventHandler {
     }
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp) {
-        super.doNextHandler(deadlineEvent, nowTimestamp);
+    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
+        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);
         log.warn("责任链处理完毕！");
     }
 }

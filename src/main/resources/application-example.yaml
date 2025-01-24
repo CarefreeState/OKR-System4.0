@@ -115,7 +115,8 @@ okr:
 spring:
   domain: http://${server.ip}:${server.port} # 如果是域名需要专门改一下这里
   datasource:
-    url: jdbc:mysql://${okr.db.host}:${okr.db.port}/${okr.db.database}?serverTimezone=Asia/Shanghai&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true
+    # allowMultiQueries=true 代表允许为多条 sql 拼接
+    url: jdbc:mysql://${okr.db.host}:${okr.db.port}/${okr.db.database}?serverTimezone=Asia/Shanghai&characterEncoding=UTF8&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
     username: ${okr.db.username}
     password: ${okr.db.password}
     driver-class-name: com.mysql.cj.jdbc.Driver

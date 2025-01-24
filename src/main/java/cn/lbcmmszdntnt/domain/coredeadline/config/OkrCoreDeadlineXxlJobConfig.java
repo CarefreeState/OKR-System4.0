@@ -28,10 +28,19 @@ public class OkrCoreDeadlineXxlJobConfig {
 
     @XxlJob(value = "checkDeadline")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间")
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（只有更新时才发生延时消息）")
     public void checkDeadline() {
         log.warn("--> --> --> --> 开始检查 OKR 截止时间 --> --> --> -->");
-        okrCoreDeadlineService.checkDeadline();
+        okrCoreDeadlineService.checkDeadline(Boolean.FALSE);
+        log.warn("<-- <-- <-- <-- <-- 检查完毕成功 <-- <-- <-- <-- <--");
+    }
+
+    @XxlJob(value = "recoverDeadline")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
+            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（无论如何都发送延时消息）")
+    public void recoverDeadline() {
+        log.warn("--> --> --> --> 开始恢复 OKR 周期任务 --> --> --> -->");
+        okrCoreDeadlineService.checkDeadline(Boolean.TRUE);
         log.warn("<-- <-- <-- <-- <-- 检查完毕成功 <-- <-- <-- <-- <--");
     }
 
