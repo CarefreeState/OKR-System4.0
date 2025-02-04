@@ -1,5 +1,6 @@
 package cn.lbcmmszdntnt.filter;
 
+import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -39,16 +41,14 @@ public class CorsFilter implements Filter {
 
     @PostConstruct
     public void init() {
-        allowOriginSet = new HashSet<>();
-        Optional.ofNullable(allowOrigin)
+        allowOriginSet = Optional.ofNullable(allowOrigin)
                 .stream()
                 .filter(StringUtils::hasText)
                 .map(origins -> origins.split(","))
                 .flatMap(Arrays::stream)
                 .map(String::trim)
                 .filter(StringUtils::hasText)
-                .distinct()
-                .forEach(allowOriginSet::add);
+                .collect(Collectors.toSet());
         log.info("允许跨域的请求源：{}", allowOriginSet);
     }
 

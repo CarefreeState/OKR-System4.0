@@ -6,6 +6,7 @@ import cn.lbcmmszdntnt.domain.auth.service.BindingAckIdentifyService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.BindingQRCodeVO;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
+import cn.lbcmmszdntnt.sse.annotation.SseRequest;
 import cn.lbcmmszdntnt.sse.util.SseMessageSender;
 import cn.lbcmmszdntnt.sse.util.SseSessionUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -32,6 +34,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 @Tag(name = "绑定授权")
 @Validated
+@RequestMapping("/user/binding")
 public class BindingAckController {
 
     private final BindingAckIdentifyService bindingAckIdentifyService;
@@ -57,7 +60,8 @@ public class BindingAckController {
             
             在绑定接口，选择微信绑定策略，用获取二维码时返回的 secret 去绑定；
             """)
-    @PostMapping(value = "/sse/binding/qrcode")
+    @SseRequest
+    @PostMapping(value = "/qrcode")
     @Intercept(authenticate = false, authorize = false)
     @ApiResponse(content = @Content(schema = @Schema(implementation = BindingQRCodeVO.class)))
     public SseEmitter getBindingQRCode() {
@@ -71,7 +75,7 @@ public class BindingAckController {
         );
     }
 
-    @PostMapping("/user/binding/ack/{secret}/{code}")
+    @PostMapping("/ack/{secret}/{code}")
     @Operation(summary = "用户授权")
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<?> bindingAck(@PathVariable("secret") @Parameter(description = "secret") String secret,
