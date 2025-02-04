@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.filter;
+package cn.lbcmmszdntnt.sse.filter;
 
 import cn.lbcmmszdntnt.sse.annotation.SseRequest;
 import jakarta.servlet.*;

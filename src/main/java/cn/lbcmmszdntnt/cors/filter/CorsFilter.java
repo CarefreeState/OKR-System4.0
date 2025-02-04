@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.filter;
+package cn.lbcmmszdntnt.cors.filter;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.*;

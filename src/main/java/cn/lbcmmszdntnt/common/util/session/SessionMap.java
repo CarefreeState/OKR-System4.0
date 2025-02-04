@@ -35,8 +35,7 @@ public class SessionMap <T> extends ConcurrentHashMap<String, T> {
     }
 
     public Set<String> getKeys(String prefix) {
-        return super.entrySet().stream()
-                .map(Entry::getKey)
+        return super.keySet().stream()
                 .parallel()
                 .filter(key -> key.matches(String.format("^%s.*", prefix)))
                 .collect(Collectors.toSet());
