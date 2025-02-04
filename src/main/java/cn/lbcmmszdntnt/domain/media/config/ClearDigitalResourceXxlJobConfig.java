@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 public class ClearDigitalResourceXxlJobConfig {
 
-    private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static String CRON = "0 0 * * * ? *"; // 每小时
     private final static int RIGGER_STATUS = 1;
@@ -34,8 +33,7 @@ public class ClearDigitalResourceXxlJobConfig {
     private final ObjectStorageService objectStorageService;
 
     @XxlJob(value = "clearDigitalResource")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR, triggerStatus = RIGGER_STATUS, jobDesc = "【固定任务】每小时一次的清除不活跃资源")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = RIGGER_STATUS, jobDesc = "【固定任务】每小时一次的清除不活跃资源")
     private void clearDigitalResource() {
         long now = System.currentTimeMillis();
         List<DigitalResource> list = digitalResourceService.lambdaQuery()

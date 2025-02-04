@@ -1,5 +1,7 @@
 package cn.lbcmmszdntnt.xxljob.annotation;
 
+import cn.lbcmmszdntnt.xxljob.constants.XxlJobConstants;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,15 +13,15 @@ public @interface XxlRegister {
 
     String cron();
 
-    String jobDesc() default "default jobDesc";
+    String jobDesc() default "";
 
-    String author() default "default Author";
+    String author() default XxlJobConstants.AUTHOR;
 
     /*
      * 默认为 ROUND 轮询方式
      * 可选： FIRST 第一个
      * */
-    String executorRouteStrategy() default "ROUND";
+    String executorRouteStrategy();
 
-    int triggerStatus() default 0;
+    int triggerStatus();
 }

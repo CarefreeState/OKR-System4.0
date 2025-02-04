@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class OkrCoreDeadlineXxlJobConfig {
 
-    private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static int TRIGGER_STATUS = 0; // 不启动
     private final static String CRON = "59 59 23 ? * 1 *"; // 每周日结束前一刻
@@ -27,8 +26,7 @@ public class OkrCoreDeadlineXxlJobConfig {
     private final OkrCoreDeadlineService okrCoreDeadlineService;
 
     @XxlJob(value = "checkDeadline")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（只有更新时才发生延时消息）")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（只有更新时才发生延时消息）")
     public void checkDeadline() {
         log.warn("--> --> --> --> 开始检查 OKR 截止时间 --> --> --> -->");
         okrCoreDeadlineService.checkDeadline(Boolean.FALSE);
@@ -36,8 +34,7 @@ public class OkrCoreDeadlineXxlJobConfig {
     }
 
     @XxlJob(value = "recoverDeadline")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（无论如何都发送延时消息）")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的检查所有 OKR 四象限截止时间（无论如何都发送延时消息）")
     public void recoverDeadline() {
         log.warn("--> --> --> --> 开始恢复 OKR 周期任务 --> --> --> -->");
         okrCoreDeadlineService.checkDeadline(Boolean.TRUE);

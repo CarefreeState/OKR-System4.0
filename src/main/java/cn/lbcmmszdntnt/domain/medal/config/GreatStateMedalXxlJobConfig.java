@@ -29,7 +29,6 @@ import java.util.Objects;
 @Slf4j
 public class GreatStateMedalXxlJobConfig {
 
-    private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static int TRIGGER_STATUS = 1;
     private final static String CRON = "59 59 23 ? * 1 *"; // 每周日结束前一刻
@@ -42,8 +41,7 @@ public class GreatStateMedalXxlJobConfig {
 
     // 渐入佳境勋章
     @XxlJob(value = "issueGreatStateMedal")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的渐入佳境勋章检查")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每周一次的渐入佳境勋章检查")
     public void issueGreatStateMedal() {
         List<Long> userIds = userService.lambdaQuery()
                 .select(User::getId)

@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.xxljob.service.impl;
 
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.xxljob.config.Executor;
-import cn.lbcmmszdntnt.xxljob.constants.XxlJobGroupConstants;
+import cn.lbcmmszdntnt.xxljob.constants.XxlJobConstants;
 import cn.lbcmmszdntnt.xxljob.model.dto.GroupPageListDTO;
 import cn.lbcmmszdntnt.xxljob.model.dto.GroupSaveDTO;
 import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
@@ -40,7 +40,7 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     public void addJobGroup() {
-        String lock = String.format(XxlJobGroupConstants.XXL_JOB_GROUP_LOCK, executor.getAppname(), executor.getTitle());
+        String lock = String.format(XxlJobConstants.XXL_JOB_GROUP_LOCK, executor.getAppname(), executor.getTitle());
         redisLock.tryLockDoSomething(lock, () -> {
             if (getJobGroup().stream().noneMatch(Objects::nonNull)) {
                 String appname = executor.getAppname();

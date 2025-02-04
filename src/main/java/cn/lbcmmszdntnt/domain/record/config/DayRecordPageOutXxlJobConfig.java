@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DayRecordPageOutXxlJobConfig {
 
-    private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static int TRIGGER_STATUS = 1;
     private final static String CRON = "0 0 0 * * ? *"; // 每天 0 点
@@ -41,8 +40,7 @@ public class DayRecordPageOutXxlJobConfig {
 
     // 渐入佳境勋章
     @XxlJob(value = "pageOutDayRecord")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
     public void pageOutDayRecord() {
         String yesterday = DateTimeUtil.getDateFormat(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1)));
         List<DayRecord> dayRecordList = new ArrayList<>();

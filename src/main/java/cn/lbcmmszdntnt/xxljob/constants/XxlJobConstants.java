@@ -7,7 +7,9 @@ package cn.lbcmmszdntnt.xxljob.constants;
  * Date: 2025-01-18
  * Time: 1:04
  */
-public interface XxlJobGroupConstants {
+public interface XxlJobConstants {
+
+    String AUTHOR = "macaku";
 
     String XXL_JOB_GROUP_LOCK = "xxlJobGroupLock:%s:%s";
 

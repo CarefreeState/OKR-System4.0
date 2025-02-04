@@ -26,7 +26,6 @@ import java.util.*;
 @Slf4j
 public class UserMedalPageOutConfig {
 
-    private final static String AUTHOR = "macaku";
     private final static String ROUTE = "ROUND";
     private final static int TRIGGER_STATUS = 1;
     private final static String CRON = "0 0 0 * * ? *"; // 每天 0 点
@@ -39,8 +38,7 @@ public class UserMedalPageOutConfig {
 
     // 渐入佳境勋章
     @XxlJob(value = "pageOutUserMedal")
-    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE,
-            author = AUTHOR,  triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的用户勋章缓存写入数据库")
+    @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的用户勋章缓存写入数据库")
     public void pageOutUserMedal() {
         List<UserMedal> userMedalUpdateList = new ArrayList<>();
         List<UserMedal> userMedalSaveList = new ArrayList<>();
