@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.core.model.dto.OkrOperateDTO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OKRCreateVO;
 import cn.lbcmmszdntnt.domain.core.model.vo.OkrCoreVO;
@@ -14,7 +15,6 @@ import cn.lbcmmszdntnt.domain.okr.model.mapper.PersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.PersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.PersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;

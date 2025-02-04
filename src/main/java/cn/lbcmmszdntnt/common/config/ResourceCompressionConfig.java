@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.config;
+package cn.lbcmmszdntnt.common.config;
 
 import lombok.Getter;
 import lombok.Setter;

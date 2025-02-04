@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.login.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.service.WxIdentifyService;
 import cn.lbcmmszdntnt.domain.login.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.login.model.dto.WxLoginDTO;
@@ -9,7 +10,6 @@ import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
 import lombok.RequiredArgsConstructor;

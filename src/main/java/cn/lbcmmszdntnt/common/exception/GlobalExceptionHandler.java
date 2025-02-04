@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.exception;
+package cn.lbcmmszdntnt.common.exception;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;

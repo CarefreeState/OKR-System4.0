@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
 import cn.lbcmmszdntnt.domain.auth.generator.LoginShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.auth.service.LoginAckIdentifyService;
@@ -11,7 +12,6 @@ import cn.lbcmmszdntnt.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

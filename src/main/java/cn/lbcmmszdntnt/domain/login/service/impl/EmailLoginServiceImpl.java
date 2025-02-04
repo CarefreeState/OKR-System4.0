@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.login.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.enums.EmailIdentifyType;
 import cn.lbcmmszdntnt.domain.auth.service.EmailIdentifyService;
 import cn.lbcmmszdntnt.domain.login.model.dto.EmailLoginDTO;
@@ -10,7 +11,6 @@ import cn.lbcmmszdntnt.domain.user.constants.UserConstants;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserPhotoService;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

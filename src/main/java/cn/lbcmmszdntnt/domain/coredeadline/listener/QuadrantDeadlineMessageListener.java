@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.coredeadline.listener;
 
 import cn.lbcmmszdntnt.common.enums.EmailTemplate;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.core.constants.DelayExchangeConstants;
 import cn.lbcmmszdntnt.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.lbcmmszdntnt.domain.core.model.message.deadline.SecondQuadrantEvent;
@@ -18,7 +19,6 @@ import cn.lbcmmszdntnt.domain.coredeadline.constants.CoreDeadlineConstants;
 import cn.lbcmmszdntnt.domain.coredeadline.util.DeadlineUtil;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
 import cn.lbcmmszdntnt.domain.user.service.UserService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.lock.RedisLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

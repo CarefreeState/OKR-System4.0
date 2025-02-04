@@ -2,13 +2,13 @@ package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.enums.EmailIdentifyType;
 import cn.lbcmmszdntnt.domain.auth.model.vo.EmailIdentifyTemplateVO;
 import cn.lbcmmszdntnt.domain.auth.service.EmailIdentifyService;
 import cn.lbcmmszdntnt.domain.auth.service.ValidateService;
 import cn.lbcmmszdntnt.email.model.po.EmailMessage;
 import cn.lbcmmszdntnt.email.sender.EmailSender;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.cache.RedisMapCache;
 import cn.lbcmmszdntnt.template.engine.HtmlEngine;

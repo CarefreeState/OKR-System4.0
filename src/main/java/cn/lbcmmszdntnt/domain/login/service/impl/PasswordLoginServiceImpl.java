@@ -1,12 +1,12 @@
 package cn.lbcmmszdntnt.domain.login.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.service.PasswordIdentifyService;
 import cn.lbcmmszdntnt.domain.login.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.domain.login.model.dto.PasswordLoginDTO;
 import cn.lbcmmszdntnt.domain.login.service.LoginService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

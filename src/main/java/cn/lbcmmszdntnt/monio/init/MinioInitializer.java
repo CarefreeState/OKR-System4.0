@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.monio.init;
 
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.monio.config.MinioConfig;
 import cn.lbcmmszdntnt.monio.engine.MinioBucketEngine;
 import cn.lbcmmszdntnt.monio.enums.MinioPolicyTemplate;

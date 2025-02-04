@@ -2,10 +2,10 @@ package cn.lbcmmszdntnt.email.provider;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.common.util.convert.ObjectUtil;
 import cn.lbcmmszdntnt.email.config.EmailSenderConfig;
 import cn.lbcmmszdntnt.email.provider.strategy.ProvideStrategy;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;

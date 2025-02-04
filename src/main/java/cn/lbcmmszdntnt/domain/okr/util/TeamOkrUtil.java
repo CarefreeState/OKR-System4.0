@@ -2,10 +2,10 @@ package cn.lbcmmszdntnt.domain.okr.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.center.util.CacheDelayClearUtil;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.redis.cache.RedisListCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;

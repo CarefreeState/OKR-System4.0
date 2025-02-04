@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.common.util.convert;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 
 public class ShortCodeUtil {
 

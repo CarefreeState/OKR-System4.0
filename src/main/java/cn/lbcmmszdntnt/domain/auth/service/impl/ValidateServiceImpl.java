@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
 import cn.lbcmmszdntnt.domain.auth.service.ValidateService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

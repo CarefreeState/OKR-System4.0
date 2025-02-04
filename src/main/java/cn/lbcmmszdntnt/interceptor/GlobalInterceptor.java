@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.interceptor;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import cn.lbcmmszdntnt.interceptor.handler.chain.after.AfterHandlerChain;
 import cn.lbcmmszdntnt.interceptor.handler.chain.pre.AuthenticationPreHandlerChain;

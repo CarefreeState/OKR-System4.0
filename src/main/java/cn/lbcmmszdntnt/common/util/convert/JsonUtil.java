@@ -2,7 +2,7 @@ package cn.lbcmmszdntnt.common.util.convert;
 
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

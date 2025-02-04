@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.config;
+package cn.lbcmmszdntnt.common.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

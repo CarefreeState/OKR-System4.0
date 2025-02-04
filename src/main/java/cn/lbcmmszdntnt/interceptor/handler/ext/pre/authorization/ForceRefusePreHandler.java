@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.interceptor.handler.ext.pre.authorization;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.config.ForceRefuseUrlsConfig;
 import cn.lbcmmszdntnt.interceptor.handler.InterceptorHandler;
 import jakarta.servlet.http.HttpServletRequest;

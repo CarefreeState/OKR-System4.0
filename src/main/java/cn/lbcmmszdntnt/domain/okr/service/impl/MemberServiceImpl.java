@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.okr.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.okr.constants.OkrConstants;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
@@ -8,7 +9,6 @@ import cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
 import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.util.TeamOkrUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisMapCache;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;

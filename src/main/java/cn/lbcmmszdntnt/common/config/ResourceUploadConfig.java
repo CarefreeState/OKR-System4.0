@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.config;
+package cn.lbcmmszdntnt.common.config;
 
 import jakarta.servlet.MultipartConfigElement;
 import lombok.Getter;

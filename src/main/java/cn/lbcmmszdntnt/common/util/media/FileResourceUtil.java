@@ -2,9 +2,9 @@ package cn.lbcmmszdntnt.common.util.media;
 
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.common.util.convert.DateTimeUtil;
 import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 

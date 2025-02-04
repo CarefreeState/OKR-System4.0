@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.common.util.media;
 
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;

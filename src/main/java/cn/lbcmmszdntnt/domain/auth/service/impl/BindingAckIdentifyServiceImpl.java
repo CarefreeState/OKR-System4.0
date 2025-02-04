@@ -1,6 +1,7 @@
 package cn.lbcmmszdntnt.domain.auth.service.impl;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.auth.constants.AuthConstants;
 import cn.lbcmmszdntnt.domain.auth.generator.BindingShortCodeGenerator;
 import cn.lbcmmszdntnt.domain.auth.service.BindingAckIdentifyService;
@@ -9,7 +10,6 @@ import cn.lbcmmszdntnt.domain.auth.service.WxIdentifyService;
 import cn.lbcmmszdntnt.domain.qrcode.constants.QRCodeConstants;
 import cn.lbcmmszdntnt.domain.qrcode.model.vo.BindingQRCodeVO;
 import cn.lbcmmszdntnt.domain.qrcode.service.QRCodeService;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import cn.lbcmmszdntnt.wxtoken.model.vo.JsCode2SessionVO;
 import lombok.RequiredArgsConstructor;

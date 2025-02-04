@@ -2,6 +2,7 @@ package cn.lbcmmszdntnt.domain.okr.controller;
 
 import cn.lbcmmszdntnt.common.SystemJsonResponse;
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.domain.okr.model.entity.TeamPersonalOkr;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO;
 import cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO;
@@ -9,7 +10,6 @@ import cn.lbcmmszdntnt.domain.okr.service.MemberService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamOkrService;
 import cn.lbcmmszdntnt.domain.okr.service.TeamPersonalOkrService;
 import cn.lbcmmszdntnt.domain.user.model.entity.User;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.annotation.Intercept;
 import cn.lbcmmszdntnt.interceptor.context.InterceptorContext;
 import com.baomidou.mybatisplus.extension.toolkit.Db;

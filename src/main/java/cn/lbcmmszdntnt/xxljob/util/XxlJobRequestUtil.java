@@ -2,8 +2,8 @@ package cn.lbcmmszdntnt.xxljob.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpResponse;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.common.util.web.HttpRequestUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.xxljob.config.Admin;
 import cn.lbcmmszdntnt.xxljob.cookie.XxlJobCookie;
 import cn.lbcmmszdntnt.xxljob.enums.XxlJobRequest;

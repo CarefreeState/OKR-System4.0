@@ -1,10 +1,10 @@
 package cn.lbcmmszdntnt.domain.media.service.impl;
 
+import cn.lbcmmszdntnt.common.config.ResourceCompressionConfig;
 import cn.lbcmmszdntnt.common.enums.FileResourceType;
 import cn.lbcmmszdntnt.common.util.media.FileResourceUtil;
 import cn.lbcmmszdntnt.common.util.media.ImageUtil;
 import cn.lbcmmszdntnt.common.util.media.MediaUtil;
-import cn.lbcmmszdntnt.config.ResourceCompressionConfig;
 import cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource;
 import cn.lbcmmszdntnt.domain.media.service.DigitalResourceService;
 import cn.lbcmmszdntnt.domain.media.service.FileMediaService;

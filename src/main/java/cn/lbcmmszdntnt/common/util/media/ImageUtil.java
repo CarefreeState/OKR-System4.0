@@ -1,8 +1,8 @@
 package cn.lbcmmszdntnt.common.util.media;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.lbcmmszdntnt.config.ResourceStaticConfig;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.config.ResourceStaticConfig;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import com.freewayso.image.combiner.ImageCombiner;
 import com.freewayso.image.combiner.enums.OutputFormat;
 import com.freewayso.image.combiner.enums.ZoomMode;

@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.common.util.media;
 
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;

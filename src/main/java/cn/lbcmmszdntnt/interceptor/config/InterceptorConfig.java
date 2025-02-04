@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.interceptor.config;
 
 import cn.lbcmmszdntnt.common.enums.GlobalServiceStatusCode;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.interceptor.GlobalInterceptor;
 import cn.lbcmmszdntnt.interceptor.service.UserInfoLoadService;
 import lombok.RequiredArgsConstructor;

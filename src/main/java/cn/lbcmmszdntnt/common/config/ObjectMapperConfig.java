@@ -1,4 +1,4 @@
-package cn.lbcmmszdntnt.config;
+package cn.lbcmmszdntnt.common.config;
 
 import cn.lbcmmszdntnt.common.util.convert.JsonUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;

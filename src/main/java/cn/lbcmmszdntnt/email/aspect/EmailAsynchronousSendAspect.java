@@ -1,7 +1,7 @@
 package cn.lbcmmszdntnt.email.aspect;
 
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.ThreadPoolUtil;
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

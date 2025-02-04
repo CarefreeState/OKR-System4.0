@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.common.util.juc.threadpool;
 
-import cn.lbcmmszdntnt.exception.GlobalServiceException;
+import cn.lbcmmszdntnt.common.exception.GlobalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
