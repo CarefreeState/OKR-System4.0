@@ -44,7 +44,7 @@
 			<id>test</id>
 			<properties>
 				<profiles.active>test</profiles.active>
-				<logging.level>warn</logging.level>
+				<logging.level>info</logging.level>
 			</properties>
 			<activation>
 <!--				<activeByDefault>true</activeByDefault>-->
@@ -55,10 +55,10 @@
 			<id>prod</id>
 			<properties>
 				<profiles.active>prod</profiles.active>
-				<logging.level>warn</logging.level>
+				<logging.level>info</logging.level>
 			</properties>
 			<activation>
-<!--                <activeByDefault>true</activeByDefault>-->
+                <activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
 

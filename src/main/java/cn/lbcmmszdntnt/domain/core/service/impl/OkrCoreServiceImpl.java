@@ -40,7 +40,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.Future;
 /**
 * @author 马拉圈
 * @description 针对表【okr_core(OKR 内核表)】的数据库操作Service实现
@@ -132,19 +132,10 @@ public class OkrCoreServiceImpl extends ServiceImpl<OkrCoreMapper, OkrCore>
         OkrCore okrCore = getOkrCore(id);
         OkrCoreVO okrCoreVO = OkrCoreConverter.INSTANCE.okrCoreToOkrCoreVO(okrCore);
         // 查询四象限
-        FutureTask<FirstQuadrantVO> task1 = new FutureTask<>(() ->
-            firstQuadrantService.searchFirstQuadrant(id)
-        );
-        FutureTask<SecondQuadrantVO> task2 = new FutureTask<>(() ->
-            secondQuadrantService.searchSecondQuadrant(id)
-        );
-        FutureTask<ThirdQuadrantVO> task3 = new FutureTask<>(() ->
-            thirdQuadrantService.searchThirdQuadrant(id)
-        );
-        FutureTask<FourthQuadrantVO> task4 = new FutureTask<>(() ->
-            fourthQuadrantService.searchFourthQuadrant(id)
-        );
-        IOThreadPool.submit(task1, task2, task3, task4);
+        Future<FirstQuadrantVO> task1 = IOThreadPool.submit(() -> firstQuadrantService.searchFirstQuadrant(id));
+        Future<SecondQuadrantVO> task2 = IOThreadPool.submit(() -> secondQuadrantService.searchSecondQuadrant(id));
+        Future<ThirdQuadrantVO> task3 = IOThreadPool.submit(() -> thirdQuadrantService.searchThirdQuadrant(id));
+        Future<FourthQuadrantVO> task4 = IOThreadPool.submit(() -> fourthQuadrantService.searchFourthQuadrant(id));
         try {
             okrCoreVO.setFirstQuadrantVO(task1.get());
             okrCoreVO.setSecondQuadrantVO(task2.get());

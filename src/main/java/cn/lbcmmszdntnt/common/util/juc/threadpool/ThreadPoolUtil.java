@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -40,7 +41,7 @@ public class ThreadPoolUtil {
      */
     private static final int QUEUE_SIZE = 10_000;
 
-    public static class ShutdownHookThread extends Thread {
+    private static class ShutdownHookThread extends Thread {
         private volatile boolean hasShutdown = false;
         private final Callable<?> callback;
 
@@ -49,7 +50,7 @@ public class ThreadPoolUtil {
          * @param name
          * @param callback 回调钩子方法
          */
-        public ShutdownHookThread(String name, Callable<?> callback) {
+        private ShutdownHookThread(String name, Callable<?> callback) {
             super("JVM关闭, 触发钩子函数处理(" + name + ")");
             this.callback = callback;
         }
@@ -82,32 +83,47 @@ public class ThreadPoolUtil {
      */
     private static class IoIntenseTargetThreadPoolHolder {
 
-        private String threadName;
+        private final AtomicInteger NUM;
+
+        private final ThreadPoolExecutor EXECUTOR;
 
         private IoIntenseTargetThreadPoolHolder(String threadName) {
-            this.threadName = threadName;
-        }
-
-        private final AtomicInteger NUM = new AtomicInteger(0);
-
-        private final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
-                IO_CORE,
-                IO_MAX,
-                KEEP_ALIVE_SECOND,
-                TimeUnit.SECONDS,
-                // 任务队列存储超过核心线程数的任务
-                new LinkedBlockingDeque<>(QUEUE_SIZE),
-                r -> {
-                    Thread thread = new Thread(r);
-                    thread.setDaemon(true);
-                    thread.setName("[" + threadName + "] message-process-thread-" + NUM.getAndIncrement());
-                    return thread;
+            NUM = new AtomicInteger(0);
+            EXECUTOR = new ThreadPoolExecutor(
+                    IO_CORE,
+                    IO_MAX,
+                    KEEP_ALIVE_SECOND,
+                    TimeUnit.SECONDS,
+                    // 任务队列存储超过核心线程数的任务
+                    new LinkedBlockingDeque<>(QUEUE_SIZE),
+                    r -> {
+                        Thread thread = new Thread(r);
+                        thread.setDaemon(Boolean.TRUE);
+                        thread.setName(String.format("[%s] message-process-thread-%d", threadName, NUM.getAndIncrement()));
+                        return thread;
+                    }
+            ) {
+                @Override
+                protected void afterExecute(Runnable r, Throwable t) {
+                    // 若 t 不为 null，正常处理
+                    if (Objects.nonNull(t)) {
+                        log.error(t.getMessage());
+                    }
+                    // 特别注意的是 futureTask 在 run 的时候不会立即抛异常，而是吞掉，在调用 get 的时候才能抛出
+                    // 如果是 submit 提交，原本的任务被封装成 futureTask，异常不会在 t 里，而是在 futureTask 里（但原本的任务是 futureTask 的话，则应该是原本的任务 get 的时候才会抛异常）
+                    // 如果是 execute，则 r 还是原来的任务，但不排除 r 本来就是 futureTask，那么其错误信息本来就应该通过 get 获取，在这里处理一下也无妨，不影响原本的处理结果即可
+                    // 原任务为 futureTask 的时候，get 时一定要处理异常
+                    if (r instanceof Future<?> futureTask) {
+                        try {
+                            futureTask.get();
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                        }
+                    }
                 }
-        );
-
-        {
+            };
             log.info("线程池已经初始化");
-            EXECUTOR.allowCoreThreadTimeOut(true);
+            EXECUTOR.allowCoreThreadTimeOut(Boolean.TRUE);
             // JVM 关闭时的钩子函数
             Runtime.getRuntime().addShutdownHook(
                     new ShutdownHookThread("IO 密集型任务线程池", (Callable<Void>) () -> {
@@ -116,7 +132,6 @@ public class ThreadPoolUtil {
                     })
             );
         }
-
     }
 
     public static ThreadPoolExecutor getIoTargetThreadPool(String threadPool) {
@@ -125,14 +140,13 @@ public class ThreadPoolUtil {
 
     private static void shutdownThreadPoolGracefully(ThreadPoolExecutor threadPool) {
         // 如果已经关闭则返回
-        if (!(threadPool instanceof ExecutorService) || threadPool.isTerminated()) {
+        if (Objects.isNull(threadPool) || threadPool.isTerminated()) {
             return;
         }
         try {
             // 拒绝接收新任务，线程池状态变成 SHUTDOWN
             threadPool.shutdown();
         } catch (SecurityException | NullPointerException e) {
-
             return;
         }
         try {
@@ -164,8 +178,7 @@ public class ThreadPoolUtil {
         }
     }
 
-    public static <T> void operateBatch(List<T> dataList, Consumer<List<T>> subListConsumer,
-                                        int defaultTaskNumber, ThreadPoolExecutor threadPool) {
+    public static <T> void operateBatch(List<T> dataList, Consumer<List<T>> subListConsumer, int defaultTaskNumber, ThreadPoolExecutor threadPool) {
         if(CollectionUtils.isEmpty(dataList)) {
             log.info("共需处理 0 个数据");
             return;

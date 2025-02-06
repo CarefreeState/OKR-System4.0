@@ -1,6 +1,6 @@
 package cn.lbcmmszdntnt.sse.filter;
 
-import cn.lbcmmszdntnt.sse.annotation.SseRequest;
+import cn.lbcmmszdntnt.sse.annotation.SseRequestHelper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -36,11 +35,8 @@ public class SseFilter implements Filter {
         try {
             Optional.ofNullable(requestMappingHandlerMapping.getHandler((HttpServletRequest) request))
                     .map(HandlerExecutionChain::getHandler)
-                    .filter(HandlerMethod.class::isInstance)
-                    .map(HandlerMethod.class::cast)
-                    .map(HandlerMethod::getMethod)
-                    .filter(method -> method.isAnnotationPresent(SseRequest.class))
-                    .ifPresent(method -> {
+                    .filter(SseRequestHelper::isSseRequest)
+                    .ifPresent(handler -> {
                         HttpServletResponse httpResponse = (HttpServletResponse) response;
                         httpResponse.setHeader(HttpHeaders.CONTENT_TYPE, "text/event-stream");
                         httpResponse.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache");

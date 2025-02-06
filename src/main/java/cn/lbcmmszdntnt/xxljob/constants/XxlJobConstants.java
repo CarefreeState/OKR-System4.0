@@ -9,7 +9,7 @@ package cn.lbcmmszdntnt.xxljob.constants;
  */
 public interface XxlJobConstants {
 
-    String AUTHOR = "macaku";
+    String AUTHOR = "mamingsheng";
 
     String XXL_JOB_GROUP_LOCK = "xxlJobGroupLock:%s:%s";
 

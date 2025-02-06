@@ -44,6 +44,7 @@ public class XxlJobInfo implements Serializable {
 								String author, String value,
 								String executorRouteStrategy, Integer triggerStatus,
 								String executorParam) {
+		// 这些是默认配置，特殊情况建议在 xxljob 的可视化界面修改
 		return builder()
 				.glueType("BEAN")
 				.misfireStrategy("DO_NOTHING")
