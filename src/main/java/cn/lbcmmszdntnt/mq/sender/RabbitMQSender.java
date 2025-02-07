@@ -48,6 +48,14 @@ public class RabbitMQSender {
         return new CorrelationData(UUIDUtil.uuid32());
     }
 
+    /**
+     * @param exchange 交换机
+     * @param routingKey routing key
+     * @param msg 消息
+     * @param delay 延迟时间（如果是延迟交换机，delay 才有效）
+     * @param maxRetries 最大重试机会
+     * @param <T> 消息的对象类型
+     */
     private <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
         log.info("准备发送消息，exchange: {}, routingKey: {}, msg: {}, delay: {}s, maxRetries: {}",
                 exchange, routingKey, msg, TimeUnit.MILLISECONDS.toSeconds(delay), maxRetries);
