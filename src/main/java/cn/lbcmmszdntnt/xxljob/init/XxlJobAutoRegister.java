@@ -16,8 +16,10 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 这个类搭配 XxlRegister 使用，是初始化型的 注解
@@ -38,32 +40,34 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationStarte
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         //注册执行器
-        jobGroupService.addJobGroup();
+        jobGroupService.saveOrUpdateJobGroup();
         //注册任务
-        XxlJobGroup xxlJobGroup = jobGroupService.getJobGroupOne(0);
-        String[] beanDefinitionNames = applicationContext.getBeanNamesForType(Object.class, Boolean.FALSE, Boolean.TRUE);
-        for (String beanDefinitionName : beanDefinitionNames) {
-            Object bean = applicationContext.getBean(beanDefinitionName);
-            Map<Method, XxlJob> annotatedMethods = MethodIntrospector.selectMethods(bean.getClass(),
-                    (MethodIntrospector.MetadataLookup<XxlJob>) method -> AnnotatedElementUtils.findMergedAnnotation(method, XxlJob.class));
-            annotatedMethods.forEach((executeMethod, xxljob) -> {
-                //自动注册
-                if (executeMethod.isAnnotationPresent(XxlRegister.class)) {
-                    XxlRegister xxlRegister = executeMethod.getAnnotation(XxlRegister.class);
-                    List<XxlJobInfo> jobInfo = jobInfoService.getJobInfo(xxlJobGroup.getId(), xxljob.value());
-                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxljob, xxlRegister);
-                    if (!jobInfo.isEmpty()) {
-                        //因为是模糊查询，需要再判断一次
-                        boolean isPresent = jobInfo.stream()
-                                .anyMatch(info -> info.getExecutorHandler().equals(xxljob.value()));
-                        // 无需新增
-                        if (isPresent) return;
-                    }
-                    jobInfoService.addJob(xxlJobInfo);
-                }
-            });
-        }
+        XxlJobGroup xxlJobGroup = jobGroupService.getJobGroup(0);
+        Arrays.stream(applicationContext.getBeanNamesForType(Object.class, Boolean.FALSE, Boolean.TRUE))
+                .map(applicationContext::getBean)
+                .map(Object::getClass)
+                .map(clazz -> MethodIntrospector.selectMethods(
+                        clazz,
+                        (MethodIntrospector.MetadataLookup<XxlJob>) method -> AnnotatedElementUtils.findMergedAnnotation(method, XxlJob.class)
+                )).map(Map::entrySet)
+                .flatMap(Set::stream)
+                .filter(entry -> entry.getKey().isAnnotationPresent(XxlRegister.class))
+                .forEach(entry -> {
+                    XxlJob xxljob = entry.getValue();
+                    XxlJobInfo xxlJobInfo = createXxlJobInfo(xxlJobGroup, xxljob, entry.getKey().getAnnotation(XxlRegister.class));
+                    String executorHandler = xxljob.value();
+                    jobInfoService.getJobInfo(xxlJobGroup.getId(), executorHandler)
+                            .stream()
+                            .filter(info -> info.getExecutorHandler().equals(executorHandler)) // 因为是模糊查询，需要再判断一次
+                            .findFirst()
+                            .ifPresentOrElse(info -> {
+                                log.info("存在任务 {}", info);
+                            }, () -> {
+                                jobInfoService.addJob(xxlJobInfo);
+                            });
+                });
     }
+
 
     private XxlJobInfo createXxlJobInfo(XxlJobGroup xxlJobGroup, XxlJob xxlJob, XxlRegister xxlRegister) {
         return XxlJobInfo.builder()

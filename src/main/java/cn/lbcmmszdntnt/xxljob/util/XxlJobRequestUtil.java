@@ -8,7 +8,7 @@ import cn.lbcmmszdntnt.xxljob.config.Admin;
 import cn.lbcmmszdntnt.xxljob.cookie.XxlJobCookie;
 import cn.lbcmmszdntnt.xxljob.enums.XxlJobRequest;
 import cn.lbcmmszdntnt.xxljob.model.dto.GroupPageListDTO;
-import cn.lbcmmszdntnt.xxljob.model.dto.GroupSaveDTO;
+import cn.lbcmmszdntnt.xxljob.model.dto.JobGroupDTO;
 import cn.lbcmmszdntnt.xxljob.model.dto.InfoPageListDTO;
 import cn.lbcmmszdntnt.xxljob.model.dto.LoginDTO;
 import cn.lbcmmszdntnt.xxljob.model.entity.XxlJobGroup;
@@ -69,12 +69,22 @@ public class XxlJobRequestUtil {
         return infoPageListVO.getData();
     }
 
-    public static void groupSave(GroupSaveDTO groupSaveDTO) {
+    public static void groupSave(JobGroupDTO jobGroupDTO) {
         XxlJobRequest xxlJobRequest = XxlJobRequest.GROUP_SAVE;
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
-        try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), groupSaveDTO, null, cookie)) {
-            log.info("保存 group {}", groupSaveDTO);
+        try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), jobGroupDTO, null, cookie)) {
+            log.info("保存成功 group {}", jobGroupDTO);
+            return;
+        }
+    }
+
+    public static void groupUpdate(JobGroupDTO jobGroupDTO) {
+        XxlJobRequest xxlJobRequest = XxlJobRequest.GROUP_UPDATE;
+        String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
+        String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
+        try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), jobGroupDTO, null, cookie)) {
+            log.info("更新成功 group {}", jobGroupDTO);
             return;
         }
     }
@@ -84,7 +94,7 @@ public class XxlJobRequestUtil {
         String url = HttpRequestUtil.getBaseUrl(ADMIN.getAddresses(), xxlJobRequest.getUri());
         String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
         try(HttpResponse response = HttpRequestUtil.formRequest(url, xxlJobRequest.getMethod(), xxlJobInfo, null, cookie)) {
-            log.info("新增 info {}", xxlJobInfo);
+            log.info("新增成功 info {}", xxlJobInfo);
             return;
         }
     }

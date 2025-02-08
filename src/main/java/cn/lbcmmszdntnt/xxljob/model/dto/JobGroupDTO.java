@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupSaveDTO {
+public class JobGroupDTO {
+
+    private Integer id;
 
     private String appname;
 

@@ -18,6 +18,7 @@ public enum XxlJobRequest {
     GROUP_PAGE_LIST("/jobgroup/pageList", "POST"),
     INFO_PAGE_LIST("/jobinfo/pageList", "POST"),
     GROUP_SAVE("/jobgroup/save", "POST"),
+    GROUP_UPDATE("/jobgroup/update", "POST"),
     INFO_ADD("/jobinfo/add", "POST"),
     ;
 

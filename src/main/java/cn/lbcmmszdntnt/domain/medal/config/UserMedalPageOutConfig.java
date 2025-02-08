@@ -52,9 +52,11 @@ public class UserMedalPageOutConfig {
                         .flatMap(Collection::stream)
                         .map(Map.Entry::getValue)
                         .forEach(userMedal -> {
-                            Optional.ofNullable(userMedal.getId()).ifPresentOrElse(userId -> {
+                            Optional.ofNullable(userMedal.getId()).ifPresentOrElse(id -> {
+                                log.info("{} update medal", redisKey);
                                 userMedalUpdateList.add(userMedal);
                             }, () -> {
+                                log.info("{} save medal", redisKey);
                                 userMedalSaveList.add(userMedal);
                             });
                         });
