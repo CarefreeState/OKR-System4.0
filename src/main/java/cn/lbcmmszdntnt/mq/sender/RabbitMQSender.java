@@ -2,8 +2,11 @@ package cn.lbcmmszdntnt.mq.sender;
 
 import cn.lbcmmszdntnt.common.util.convert.UUIDUtil;
 import cn.lbcmmszdntnt.common.util.juc.threadpool.ThreadPoolUtil;
+import cn.lbcmmszdntnt.mq.config.PublisherReturnsCallBack;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,11 +28,23 @@ import java.util.function.Function;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+//@DependsOn("publisherReturnsCallBack")
 public class RabbitMQSender {
 
     private final static ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ-Thread");
 
     private final RabbitTemplate rabbitTemplate;
+
+    private final PublisherReturnsCallBack publisherReturnsCallBack;
+
+    @PostConstruct
+    public void init() {
+        rabbitTemplate.setTaskExecutor(EXECUTOR);
+        // 设置统一的 publisher-returns（confirm 也可以设置统一的，但最好还是在发送时设置在 future 里）
+        // rabbitTemplate 的 publisher-returns 同一时间只能存在一个
+        // 因为 publisher confirm 后，其实 exchange 有没有转发成功，publisher 没必要每次发送都关注这个 exchange 的内部职责，更多的是“系统与 MQ 去约定”
+        rabbitTemplate.setReturnsCallback(publisherReturnsCallBack);
+    }
 
     private final static Function<Throwable, ? extends CorrelationData.Confirm> ON_FAILURE = ex -> {
         log.error("处理 ack 回执失败, {}", ex.getMessage());
@@ -63,7 +78,7 @@ public class RabbitMQSender {
         MessagePostProcessor delayMessagePostProcessor = delayMessagePostProcessor(delay);
         correlationData.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(new Consumer<>() {
 
-            private int retryCount = 0; // 从始至终都用的是一个 Consumer 对象，所以作用的都是同一个计数器
+            private int retryCount = 0; // 一次 send 从始至终都用的是一个 Consumer 对象，所以作用的都是同一个计数器
 
             @Override
             public void accept(CorrelationData.Confirm confirm) {

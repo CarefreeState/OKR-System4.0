@@ -13,10 +13,7 @@ import cn.lbcmmszdntnt.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,7 +43,7 @@ public class OkrDayRecordMessageListener {
 
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_FANOUT, type = ExchangeTypes.FANOUT),
-            value = @Queue(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_DAY_RECORD_QUEUE)
+            value = @Queue(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_DAY_RECORD_QUEUE, arguments = @Argument(name = "x-queue-mode", value = "lazy"))
     ))
     public void keyResultUpdateDayRecordEventListener(KeyResultUpdate keyResultUpdate) {
         Long coreId = keyResultUpdate.getCoreId();
@@ -64,7 +61,7 @@ public class OkrDayRecordMessageListener {
 
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(name = FanoutExchangeConstants.TASK_UPDATE_FANOUT, type = ExchangeTypes.FANOUT),
-            value = @Queue(name = FanoutExchangeConstants.TASK_UPDATE_DAY_RECORD_QUEUE)
+            value = @Queue(name = FanoutExchangeConstants.TASK_UPDATE_DAY_RECORD_QUEUE, arguments = @Argument(name = "x-queue-mode", value = "lazy"))
     ))
     public void taskUpdateDayRecordEventListener(TaskUpdate taskUpdate) {
         Long coreId = taskUpdate.getCoreId();
@@ -82,7 +79,7 @@ public class OkrDayRecordMessageListener {
 
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(name = FanoutExchangeConstants.STATUS_FLAG_UPDATE_FANOUT, type = ExchangeTypes.FANOUT),
-            value = @Queue(name = FanoutExchangeConstants.STATUS_FLAG_UPDATE_DAY_RECORD_QUEUE)
+            value = @Queue(name = FanoutExchangeConstants.STATUS_FLAG_UPDATE_DAY_RECORD_QUEUE, arguments = @Argument(name = "x-queue-mode", value = "lazy"))
     ))
     public void statusFlagUpdateDayRecordEventListener(StatusFlagUpdate statusFlagUpdate) {
         Long coreId = statusFlagUpdate.getCoreId();

@@ -17,10 +17,7 @@ import cn.lbcmmszdntnt.domain.medal.service.UserMedalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -49,7 +46,7 @@ public class OkrMedalMessageListener {
     // 胜券在握（信心指数）
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_FANOUT, type = ExchangeTypes.FANOUT),
-            value = @Queue(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_MEDAL_QUEUE)
+            value = @Queue(name = FanoutExchangeConstants.KEY_RESULT_UPDATE_MEDAL_QUEUE, arguments = @Argument(name = "x-queue-mode", value = "lazy"))
     ))
     public void victoryWithinGraspMedalMessageListener(KeyResultUpdate keyResultUpdate) {
 
@@ -71,7 +68,7 @@ public class OkrMedalMessageListener {
     // 短期达标、长久有成（任务完成）
     @RabbitListener(bindings = @QueueBinding(
             exchange = @Exchange(name = FanoutExchangeConstants.TASK_UPDATE_FANOUT, type = ExchangeTypes.FANOUT),
-            value = @Queue(name = FanoutExchangeConstants.TASK_UPDATE_MEDAL_QUEUE)
+            value = @Queue(name = FanoutExchangeConstants.TASK_UPDATE_MEDAL_QUEUE, arguments = @Argument(name = "x-queue-mode", value = "lazy"))
     ))
     public void termAchievementMedalMessageListener(TaskUpdate taskUpdate) {
         Long userId = taskUpdate.getUserId();

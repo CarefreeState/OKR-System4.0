@@ -48,7 +48,8 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationStarte
                 .map(Object::getClass)
                 .map(clazz -> MethodIntrospector.selectMethods(
                         clazz,
-                        (MethodIntrospector.MetadataLookup<XxlJob>) method -> AnnotatedElementUtils.findMergedAnnotation(method, XxlJob.class)
+                        (MethodIntrospector.MetadataLookup<XxlJob>) method ->
+                                method.isAnnotationPresent(XxlJob.class) ? method.getAnnotation(XxlJob.class) : null
                 )).map(Map::entrySet)
                 .flatMap(Set::stream)
                 .filter(entry -> entry.getKey().isAnnotationPresent(XxlRegister.class))
