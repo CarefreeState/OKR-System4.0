@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.okr.model.mapper.TeamOkrMapper">
+<mapper namespace="cn.bitterfree.domain.okr.model.mapper.TeamOkrMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.okr.model.entity.TeamOkr">
+    <resultMap id="BaseResultMap" type="cn.bitterfree.domain.okr.model.entity.TeamOkr">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="coreId" column="core_id" jdbcType="BIGINT"/>
             <result property="parentTeamId" column="parent_team_id" jdbcType="BIGINT"/>

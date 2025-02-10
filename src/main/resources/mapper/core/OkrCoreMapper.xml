@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.OkrCoreMapper">
+<mapper namespace="cn.bitterfree.domain.core.model.mapper.OkrCoreMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.core.model.entity.OkrCore">
+    <resultMap id="BaseResultMap" type="cn.bitterfree.domain.core.model.entity.OkrCore">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="celebrateDay" column="celebrate_day" jdbcType="TINYINT"/>
             <result property="secondQuadrantCycle" column="second_quadrant_cycle" jdbcType="TIMESTAMP"/>

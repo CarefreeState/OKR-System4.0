@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.okr.model.mapper.TeamPersonalOkrMapper">
+<mapper namespace="cn.bitterfree.domain.okr.model.mapper.TeamPersonalOkrMapper">
 
-    <resultMap id="TeamListMap" type="cn.lbcmmszdntnt.domain.okr.model.vo.TeamPersonalOkrVO">
+    <resultMap id="TeamListMap" type="cn.bitterfree.domain.okr.model.vo.TeamPersonalOkrVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="coreId" column="core_id" jdbcType="BIGINT"/>
         <result property="teamId" column="team_id" jdbcType="BIGINT"/>
@@ -12,7 +12,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="isOver" column="is_over" jdbcType="BIT"/>
-        <association property="manager" resultMap="cn.lbcmmszdntnt.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="m_"/>
+        <association property="manager" resultMap="cn.bitterfree.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="m_"/>
     </resultMap>
 
     <select id="getTeamPersonalOkrList" parameterType="java.lang.Long" resultMap="TeamListMap">
@@ -30,7 +30,7 @@
         order by o.is_over, o.create_time desc
     </select>
 
-    <select id="getTeamMembers" parameterType="java.lang.Long" resultType="cn.lbcmmszdntnt.domain.okr.model.vo.TeamMemberVO">
+    <select id="getTeamMembers" parameterType="java.lang.Long" resultType="cn.bitterfree.domain.okr.model.vo.TeamMemberVO">
         select
             tp.id, tp.user_id, tp.create_time, u.nickname, u.email, u.phone, u.photo
         from
@@ -44,7 +44,7 @@
         order by tp.create_time desc
     </select>
 
-    <select id="getStatusFlagsByUserId" resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
+    <select id="getStatusFlagsByUserId" resultMap="cn.bitterfree.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
         select
             u.id user_id, s.id s_id, s.color s_color, s.label s_label
         from

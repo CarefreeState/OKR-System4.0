@@ -8,7 +8,7 @@
 		<version>3.0.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>cn.lbcmmszdn</groupId>
+	<groupId>cn.bitterfree</groupId>
 	<artifactId>OKR-System</artifactId>
 	<version>4.0</version>
 	<name>OKR-System</name>
@@ -21,9 +21,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.application.name>${name}</spring.application.name>
 		<spring.application.version>${version}</spring.application.version>
-		<trace.id.name>traceId</trace.id.name>
-		<trace.uri.name>uri</trace.uri.name>
-		<trace.uri.method>method</trace.uri.method>
 	</properties>
 
 	<profiles>

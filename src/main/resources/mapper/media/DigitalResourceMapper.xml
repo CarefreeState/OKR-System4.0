@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.media.model.mapper.DigitalResourceMapper">
+<mapper namespace="cn.bitterfree.domain.media.model.mapper.DigitalResourceMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lbcmmszdntnt.domain.media.model.entity.DigitalResource">
+    <resultMap id="BaseResultMap" type="cn.bitterfree.domain.media.model.entity.DigitalResource">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="code" column="code" jdbcType="CHAR"/>
             <result property="originalName" column="original_name" jdbcType="VARCHAR"/>

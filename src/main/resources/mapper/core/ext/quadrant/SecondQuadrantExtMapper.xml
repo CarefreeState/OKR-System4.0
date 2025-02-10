@@ -2,13 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.quadrant.SecondQuadrantMapper">
+<mapper namespace="cn.bitterfree.domain.core.model.mapper.quadrant.SecondQuadrantMapper">
 
-    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.lbcmmszdntnt.domain.core.model.vo.quadrant.SecondQuadrantVO">
-        <collection property="priorityNumberOnes" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.PriorityNumberOne"
-                    resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.PriorityNumberOneMapper.BaseResultMap" columnPrefix="p1_"/>
-        <collection property="priorityNumberTwos" ofType="cn.lbcmmszdntnt.domain.core.model.entity.inner.PriorityNumberTwo"
-                    resultMap="cn.lbcmmszdntnt.domain.core.model.mapper.inner.PriorityNumberTwoMapper.BaseResultMap" columnPrefix="p2_"/>
+    <resultMap extends="BaseResultMap" id="AllInfoResultMap" type="cn.bitterfree.domain.core.model.vo.quadrant.SecondQuadrantVO">
+        <collection property="priorityNumberOnes" ofType="cn.bitterfree.domain.core.model.entity.inner.PriorityNumberOne"
+                    resultMap="cn.bitterfree.domain.core.model.mapper.inner.PriorityNumberOneMapper.BaseResultMap" columnPrefix="p1_"/>
+        <collection property="priorityNumberTwos" ofType="cn.bitterfree.domain.core.model.entity.inner.PriorityNumberTwo"
+                    resultMap="cn.bitterfree.domain.core.model.mapper.inner.PriorityNumberTwoMapper.BaseResultMap" columnPrefix="p2_"/>
     </resultMap>
 
     <select id="searchSecondQuadrant" resultMap="AllInfoResultMap">

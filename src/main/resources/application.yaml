@@ -4,14 +4,14 @@ spring:
     version: @spring.application.version@
   profiles:
     active: @profiles.active@
-  trace-id: @trace.id.name@
-  trace-uri: @trace.uri.name@
-  trace-method: @trace.uri.method@
+  trace-id: traceId
+  trace-uri: uri
+  trace-method: method
 
 # 日志配置
 logging:
   level:
-    cn.lbcmmszdntnt: @logging.level@
+    cn.bitterfree: @logging.level@
     org.springframework: warn
     tech.powerjob.worker.background: warn
   config: classpath:logback-spring.xml

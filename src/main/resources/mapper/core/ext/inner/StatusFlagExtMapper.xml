@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.lbcmmszdntnt.domain.core.model.mapper.inner.StatusFlagMapper">
+<mapper namespace="cn.bitterfree.domain.core.model.mapper.inner.StatusFlagMapper">
 
-    <resultMap id="UserStatusFlags" type="cn.lbcmmszdntnt.domain.core.model.vo.inner.UserStatusFlagsVO">
+    <resultMap id="UserStatusFlags" type="cn.bitterfree.domain.core.model.vo.inner.UserStatusFlagsVO">
         <result property="userId" column="user_id" jdbcType="BIGINT"/>
         <collection property="statusFlags" columnPrefix="s_" resultMap="BaseResultMap"/>
     </resultMap>
