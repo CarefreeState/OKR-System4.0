@@ -71,6 +71,7 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
         String medalName = medalMap.get(medalId).getName();
         Integer level = MedalUtil.getLevel(newCredit, coefficient);
         // 1. 获取用户的徽章
+        Date now = new Date();
         Optional.ofNullable(dbUserMedal).ifPresentOrElse(userMedal -> {
             // 更新积分，判断是否更新等级，如果更新等级则标记为未读（新的一次颁布）
             userMedal.setCredit(newCredit);
@@ -78,7 +79,8 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
             if(userMedal.getLevel().compareTo(level) < 0) {
                 userMedal.setLevel(level);
                 userMedal.setIsRead(Boolean.FALSE);
-                userMedal.setIssueTime(new Date());
+                userMedal.setUpdateTime(now);
+                userMedal.setIssueTime(now);
                 log.info("颁布勋章 {} {} 等级 {} -> 用户 {} ", medalId, medalName, level, newCredit);
             }
             redisMapCache.put(redisKey, medalId, userMedal);
@@ -91,7 +93,8 @@ public class UserMedalServiceImpl extends ServiceImpl<UserMedalMapper, UserMedal
             medal.setLevel(level);
             medal.setIsRead(Boolean.FALSE);
             if(level.compareTo(0) > 0) {
-                medal.setIssueTime(new Date());
+                medal.setCreateTime(now);
+                medal.setIssueTime(now);
                 log.info("颁布勋章 {} {} 等级 {} -> 用户 {} ", medalId, medalName, level, userId);
             }
             redisMapCache.put(redisKey, medalId, medal);

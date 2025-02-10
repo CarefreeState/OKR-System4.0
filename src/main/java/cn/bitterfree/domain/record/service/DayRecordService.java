@@ -4,6 +4,7 @@ package cn.bitterfree.domain.record.service;
 import cn.bitterfree.domain.record.model.entity.DayRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,6 +14,9 @@ import java.util.List;
 */
 public interface DayRecordService extends IService<DayRecord> {
 
+    String dateRedisKeyPrefix(Date date);
+    String yesterdayRedisKeyPrefix();
+    String todayRedisKeyPrefix();
     String todayRedisKey(Long coreId);
 
     DayRecord tryInitDayRecord(Long coreId);

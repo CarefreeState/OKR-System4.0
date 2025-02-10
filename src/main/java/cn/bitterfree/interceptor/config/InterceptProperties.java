@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@ToString
 public class InterceptProperties {
 
     private List<UserType> permit;

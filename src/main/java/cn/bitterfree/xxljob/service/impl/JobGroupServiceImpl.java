@@ -40,10 +40,10 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     public void saveOrUpdateJobGroup() {
-        String lock = String.format(XxlJobConstants.XXL_JOB_GROUP_LOCK, executor.getAppname(), executor.getTitle());
+        String appname = executor.getAppname();
+        String title = executor.getTitle();
+        String lock = String.format(XxlJobConstants.XXL_JOB_GROUP_LOCK, appname, title);
         redisLock.tryLockDoSomething(lock, () -> {
-            String appname = executor.getAppname();
-            String title = executor.getTitle();
             JobGroupDTO jobGroupDTO = JobGroupDTO.builder()
                     .appname(appname)
                     .title(title)

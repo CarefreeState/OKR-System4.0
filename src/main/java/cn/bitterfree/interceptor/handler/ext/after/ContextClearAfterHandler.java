@@ -23,6 +23,7 @@ public class ContextClearAfterHandler extends InterceptorHandler {
 
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        log.info("删除本地线程变量以及日志变量");
         ThreadLocalMapUtil.removeAll();
         MDC.clear();
     }

@@ -53,6 +53,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_AUTHORIZED);
         }
         // 上述操作若无抛出异常则认为认证授权通过
+        log.info("允许本次请求访问此接口");
         return Boolean.TRUE;
     }
 

@@ -36,6 +36,6 @@ public class InitPreHandlerChain extends InterceptorHandler implements Initializ
     public void afterPropertiesSet() throws Exception {
         InterceptorHandler.addHandlerAfter(logInitPreHandler, this);
         InterceptorHandler.addHandlerAfter(customInitPreHandler, logInitPreHandler);
-        InterceptorHandler.addHandlerAfter(handlerMethodInitPreHandler, customInitPreHandler);
+        InterceptorHandler.addHandlerAfter(handlerMethodInitPreHandler, customInitPreHandler); // 局部优先
     }
 }

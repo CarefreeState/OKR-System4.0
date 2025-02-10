@@ -31,25 +31,25 @@ public class ThreadLocalMapUtil {
     }
 
     public static void removeAll() {
-        log.info("{} 移除本地线程资源", Thread.currentThread().getName());
+        log.debug("{} 移除本地线程资源", Thread.currentThread().getName());
         THREAD_LOCAL.remove();
     }
 
     public static void remove(String key) {
-        log.info("{} 移除本地线程资源 {}", Thread.currentThread().getName(), key);
+        log.debug("{} 移除本地线程资源 {}", Thread.currentThread().getName(), key);
         getMap().remove(key);
     }
 
     public static <T> void set(String key, T value) {
         Map<String, Object> map = getMap();
         map.put(key, value);
-        log.info("{} 设置本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
+        log.debug("{} 设置本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
     }
 
     public static Object get(String key) {
         Map<String, Object> map = getMap();
         Object value = map.get(key);
-        log.info("{} 获取本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
+        log.debug("{} 获取本地线程资源 [{}.{}]", Thread.currentThread().getName(), key, value);
         return value;
     }
 

@@ -33,6 +33,7 @@ public class HandlerMethodInitPreHandler extends InterceptorHandler {
         if(handler instanceof HandlerMethod handlerMethod) {
             // 值得注意的是，websocket 和 资源访问（/api/xxx.png 之类的） 的请求，handler 的实现并不是 HandlerMethod
             Optional.ofNullable(InterceptHelper.getIntercept(handlerMethod.getMethod())).ifPresent(intercept -> {
+                log.info("目标方法注解认证鉴权：{}", intercept);
                 InterceptProperties interceptProperties = InterceptProperties.builder()
                         .permit(List.of(intercept.permit()))
                         .authenticate(intercept.authenticate())

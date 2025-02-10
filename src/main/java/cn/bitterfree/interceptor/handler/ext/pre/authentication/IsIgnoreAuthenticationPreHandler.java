@@ -24,6 +24,7 @@ public class IsIgnoreAuthenticationPreHandler extends InterceptorHandler {
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 判断是不是可以直接忽略的请求
         if(Boolean.FALSE.equals(InterceptorContext.getInterceptProperties().getAuthenticate())) {
+            log.warn("忽略认证");
             InterceptorContext.setIsAuthenticated(Boolean.TRUE);
         }
     }

@@ -38,10 +38,14 @@ public class JwtAuthenticationPreHandler extends InterceptorHandler {
         try {
             Optional.ofNullable(InterceptorContext.getJwt())
                     .filter(StringUtils::hasText)
-                    .map(token -> JwtUtil.parseJwtData(token, new TokenVO(), response))
+                    .map(token -> {
+                        log.info("当前请求访问令牌 {}", token);
+                        return JwtUtil.parseJwtData(token, new TokenVO(), response);
+                    })
                     .map(TokenVO::getUserId)
                     .map(userInfoLoadService::loadUser)
                     .ifPresent(user -> {
+                        log.info("当前用户认证成功 {}", user);
                         InterceptorContext.setUser(user);
                         InterceptorContext.setIsAuthenticated(Boolean.TRUE);
                     });

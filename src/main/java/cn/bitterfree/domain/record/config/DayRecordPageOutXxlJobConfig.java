@@ -1,8 +1,6 @@
 package cn.bitterfree.domain.record.config;
 
-import cn.bitterfree.common.util.convert.DateTimeUtil;
 import cn.bitterfree.common.util.juc.threadpool.IOThreadPool;
-import cn.bitterfree.domain.record.constants.DayRecordConstants;
 import cn.bitterfree.domain.record.model.entity.DayRecord;
 import cn.bitterfree.domain.record.service.DayRecordService;
 import cn.bitterfree.redis.cache.RedisCache;
@@ -13,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created With Intellij IDEA
@@ -42,10 +38,10 @@ public class DayRecordPageOutXxlJobConfig {
     @XxlJob(value = "pageOutDayRecord")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
     public void pageOutDayRecord() {
-        String yesterday = DateTimeUtil.getDateFormat(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1)));
         List<DayRecord> dayRecordList = new ArrayList<>();
         // 数据量很大，需要分批处理
-        Set<String> keys = redisCache.getKeysByPrefix(DayRecordConstants.DAY_RECORD_DATE_CACHE_PREFIX);
+        String yesterday = dayRecordService.yesterdayRedisKeyPrefix();
+        Set<String> keys = redisCache.getKeysByPrefix(yesterday);
         IOThreadPool.operateBatch(keys.stream().toList(), redisKeyList -> {
             redisKeyList.forEach(redisKey -> {
                 redisCache.getObject(redisKey, DayRecord.class).ifPresent(dayRecordList::add);

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -43,26 +44,45 @@ public class DayRecordServiceImpl extends ServiceImpl<DayRecordMapper, DayRecord
     private final StatusFlagConfig statusFlagConfig;
 
     @Override
+    public String dateRedisKeyPrefix(Date date) {
+        return String.format(DayRecordConstants.DAY_RECORD_DATE_CACHE_PREFIX, DateTimeUtil.getOnlyDateFormat(date));
+    }
+
+    @Override
+    public String yesterdayRedisKeyPrefix() {
+        return dateRedisKeyPrefix((new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1))));
+    }
+
+    @Override
+    public String todayRedisKeyPrefix() {
+        return dateRedisKeyPrefix((new Date()));
+    }
+
+    @Override
     public String todayRedisKey(Long coreId) {
-        return String.format(DayRecordConstants.DAY_RECORD_DATE_CACHE, DateTimeUtil.getOnlyDateFormat(new Date()), coreId);
+        return todayRedisKeyPrefix() + coreId;
     }
 
     @Override
     @Transactional
     public DayRecord tryInitDayRecord(Long coreId) {
         String redisKey = todayRedisKey(coreId);
-        return redisCache.getObject(redisKey, DayRecord.class).orElseGet(() -> {
-            DayRecord defaultDayRecord = new DayRecord(){{
+        Date now = new Date();
+        DayRecord dayRecord = redisCache.getObject(redisKey, DayRecord.class).orElseGet(() -> {
+            DayRecord defaultDayRecord = new DayRecord() {{
                 this.setCoreId(coreId);
                 this.setRecordDate(DateTimeUtil.beginOfDay(new Date()));
                 this.setCredit1(recordFirstQuadrant(coreId));
                 this.setCredit2(0);
                 this.setCredit3(0);
                 this.setCredit4(recordFourthQuadrant(coreId));
+                this.setCreateTime(now);
             }};
             redisCache.setObject(redisKey, defaultDayRecord, DayRecordConstants.DAY_RECORD_DATE_CACHE_TIMEOUT, DayRecordConstants.DAY_RECORD_DATE_CACHE_TIMEUNIT);
             return defaultDayRecord;
         });
+        dayRecord.setUpdateTime(now);
+        return dayRecord;
     }
 
     @Override
@@ -70,7 +90,7 @@ public class DayRecordServiceImpl extends ServiceImpl<DayRecordMapper, DayRecord
     public List<DayRecord> getDayRecords(Long coreId) {
         List<DayRecord> recordList = this.lambdaQuery().eq(DayRecord::getCoreId, coreId).list();
         recordList.add(tryInitDayRecord(coreId));
-        return recordList.stream().sorted(Comparator.comparing(DayRecord::getId)).collect(Collectors.toList());
+        return recordList.stream().sorted(Comparator.comparing(DayRecord::getRecordDate)).collect(Collectors.toList());
     }
 
     @Override

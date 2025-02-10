@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 public interface DayRecordConstants {
 
     String DAY_RECORD_DATE_CACHE_PREFIX = "dayRecordDateCache:%s:"; // date:
-    String DAY_RECORD_DATE_CACHE = DAY_RECORD_DATE_CACHE_PREFIX + "%d"; // date:coreId
     Long DAY_RECORD_DATE_CACHE_TIMEOUT = 2L;
     TimeUnit DAY_RECORD_DATE_CACHE_TIMEUNIT = TimeUnit.DAYS;
 

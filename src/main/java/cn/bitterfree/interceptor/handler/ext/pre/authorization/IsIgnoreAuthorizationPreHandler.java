@@ -24,6 +24,7 @@ public class IsIgnoreAuthorizationPreHandler extends InterceptorHandler {
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 判断是不是可以直接忽略的请求
         if(Boolean.FALSE.equals(InterceptorContext.getInterceptProperties().getAuthorize())) {
+            log.warn("忽略授权");
             InterceptorContext.setIsAuthorized(Boolean.TRUE);
         }
     }

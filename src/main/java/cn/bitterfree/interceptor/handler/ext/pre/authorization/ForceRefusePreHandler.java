@@ -33,7 +33,7 @@ public class ForceRefusePreHandler extends InterceptorHandler {
 
     @Override
     public void action(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        log.error("强制拦截 {}", request.getRequestURI());
+        log.warn("强制拦截");
         throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_AUTHORIZED);
     }
 }
