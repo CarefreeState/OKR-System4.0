@@ -24,15 +24,16 @@
         亲爱的用户 <strong th:text="${nickname}"></strong>，您的目标“<strong th:text="${objective}"></strong>”的上一轮长期计划周期结束了，以下是您的完成情况，祝你早日达成目标！
     </p>
 
-
-    <p th:if="${not #lists.isEmpty(actionList)}" th:each="action, iterStat : ${actionList}"><span class="theme"><strong> Action </strong></span>
-        <strong style="background-color: #ffc832" th:text="(${iterStat.index} + 1) + '. ' + ${action.content} + '：'"></strong>
+    <p><span class="theme"><strong> Action </strong></span></p>
+    <p th:if="${not #lists.isEmpty(actionList)}" th:each="action, iterStat : ${actionList}">
+        <strong th:text="(${iterStat.index} + 1) + '. ' + ${action.content} + '：'"></strong>
         <span th:if="${action.isCompleted} == true" style="color: darkgreen">完成 ✅</span>
         <span th:if="${action.isCompleted} == false" style="color: darkred">未完成 ❌</span>
     </p>
 
-    <p th:if="${not #lists.isEmpty(statusList)}" th:each="status, iterStat : ${statusList}"><span class="theme"><strong> Status </strong></span>
-        <strong th:text="(${iterStat.index} + 1) + '. ' + ${status.label} + '：'"></strong>
+    <p><span class="theme"><strong> Status </strong></span></p>
+    <p th:if="${not #lists.isEmpty(statusList)}" th:each="status, iterStat : ${statusList}">
+        <strong th:text="(${iterStat.index} + 1) + '. ' + ${status.label} + '：'">：</strong>
         <span th:if="${#strings.equals(status.color, '#000000')}" style="color: darkgreen">出色达标</span>
         <span th:if="${#strings.equals(status.color, '#000001')}" style="color: darkgoldenrod">基本合格</span>
         <span th:if="${#strings.equals(status.color, '#000002')}" style="color: darkred">严重滞后</span>

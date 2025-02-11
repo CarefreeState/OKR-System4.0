@@ -66,7 +66,7 @@ public class RedisMapCache {
     public <HK, HV> Optional<HV> get(final String key, final HK hashKey, final Class<HV> hvClazz) {
         String jsonHashKey = redisCacheSerializer.toJson(hashKey);
         String hashValue = (String) redisTemplate.opsForHash().get(key, jsonHashKey);
-        log.info("获取 Redis 中的 Map 的键值\t[{}.{}]-[{}]", key, key, hashValue);
+        log.info("获取 Redis 中的 Map 的键值\t[{}.{}]-[{}]", key, jsonHashKey, hashValue);
         return Optional.ofNullable(redisCacheSerializer.parse(hashValue, hvClazz));
     }
 

@@ -39,6 +39,7 @@ public class UserBindingController {
 
     @PostMapping("/user/binding/email")
     @Operation(summary = "绑定用户邮箱")
+    @Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
     public SystemJsonResponse<?> emailBinding(@Valid @RequestBody EmailBindingDTO emailBindingDTO) {
         // 获取当前登录的用户
         User user = InterceptorContext.getUser();

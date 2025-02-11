@@ -40,13 +40,13 @@ public class EmailBindingServiceImpl implements BindingService {
     public void binding(User user, BindingDTO bindingDTO) {
         EmailBindingDTO emailBindingDTO = Optional.ofNullable(bindingDTO.getEmailBindingDTO()).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
-        // 判断当前用户是否绑定了邮箱
+        // 判断当前用户是否绑定了邮箱（如果支持重新绑定，一定要注意用户名是否需要进一步的调整）
         if(StringUtils.hasText(user.getEmail())) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_BOUND_EMAIL);
         }
         // 验证码验证
         String email = emailBindingDTO.getEmail();
-        emailIdentifyService.validateEmailCode(EmailIdentifyType.LOGIN, email, emailBindingDTO.getCode());
+        emailIdentifyService.validateEmailCode(EmailIdentifyType.BINDING, email, emailBindingDTO.getCode());
         // 若没人使用这个邮箱就绑定
         redisLock.tryLockDoSomething(UserConstants.EXISTS_USER_EMAIL_LOCK + email, () -> {
             userService.getUserByEmail(email).ifPresentOrElse(emailUser -> {

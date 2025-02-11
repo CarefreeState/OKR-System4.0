@@ -24,20 +24,23 @@
         亲爱的用户 <strong th:text="${nickname}"></strong>，您的目标“<strong th:text="${objective}"></strong>”的上一轮短期计划周期结束了，以下是您的完成情况，祝你早日达成目标！
     </p>
 
-    <p th:if="${not #lists.isEmpty(priorityOneList)}" th:each="priorityOne, iterStat : ${priorityOneList}"><span class="theme"><strong> Priority 1 </strong></span>
+    <p><span class="theme"><strong> Priority 1 </strong></span></p>
+    <p th:if="${not #lists.isEmpty(priorityOneList)}" th:each="priorityOne, iterStat : ${priorityOneList}">
         <strong th:text="(${iterStat.index} + 1) + '. ' + ${priorityOne.content} + '：'"></strong>
         <span th:if="${priorityOne.isCompleted} == true" style="color: darkgreen">完成 ✅</span>
         <span th:if="${priorityOne.isCompleted} == false" style="color: darkred">未完成 ❌</span>
     </p>
 
-    <p th:if="${not #lists.isEmpty(priorityTwoList)}" th:each="priorityTwo, iterStat : ${priorityTwoList}"><span class="theme"><strong> Priority 2 </strong></span>
+    <p><span class="theme"><strong> Priority 2 </strong></span></p>
+    <p th:if="${not #lists.isEmpty(priorityTwoList)}" th:each="priorityTwo, iterStat : ${priorityTwoList}">
         <strong th:text="(${iterStat.index} + 1) + '. ' + ${priorityTwo.content} + '：'"></strong>
         <span th:if="${priorityTwo.isCompleted} == true" style="color: darkgreen">完成 ✅</span>
         <span th:if="${priorityTwo.isCompleted} == false" style="color: darkred">未完成 ❌</span>
     </p>
 
-    <p th:if="${not #lists.isEmpty(statusList)}" th:each="status, iterStat : ${statusList}"><span class="theme"><strong> Status </strong></span>
-        <strong th:text="(${iterStat.index} + 1) + '. ' + ${status.label} + '：'"></strong>
+    <p><span class="theme"><strong> Status </strong></span></p>
+    <p th:if="${not #lists.isEmpty(statusList)}" th:each="status, iterStat : ${statusList}">
+        <strong th:text="(${iterStat.index} + 1) + '. ' + ${status.label} + '：'">：</strong>
         <span th:if="${#strings.equals(status.color, '#000000')}" style="color: darkgreen">出色达标</span>
         <span th:if="${#strings.equals(status.color, '#000001')}" style="color: darkgoldenrod">基本合格</span>
         <span th:if="${#strings.equals(status.color, '#000002')}" style="color: darkred">严重滞后</span>
