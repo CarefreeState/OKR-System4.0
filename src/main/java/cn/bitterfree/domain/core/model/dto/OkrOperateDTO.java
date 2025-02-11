@@ -2,7 +2,6 @@ package cn.bitterfree.domain.core.model.dto;
 
 
 import cn.bitterfree.domain.core.enums.OkrType;
-import cn.bitterfree.domain.qrcode.enums.QRCodeType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -27,9 +26,6 @@ public class OkrOperateDTO {
 
     @Schema(description = "邀请密钥", nullable = true)
     private String secret;
-
-    @Schema(description = "邀请码类型", nullable = true)
-    private QRCodeType type;
 
     @Schema(description = "团队名", nullable = true)
     private String teamName;
