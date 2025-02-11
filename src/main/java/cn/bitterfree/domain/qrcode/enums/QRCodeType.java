@@ -33,16 +33,4 @@ public enum QRCodeType {
     private final String type;
     private final String description;
 
-    public static QRCodeType get(String name) {
-        if(!StringUtils.hasText(name)) {
-            return  QRCodeType.WX;
-        }
-        for(QRCodeType type : values()) {
-            if(type.type.equals(name)) {
-                return type;
-            }
-        }
-        throw new GlobalServiceException(GlobalServiceStatusCode.REQUEST_NOT_VALID);
-    }
-
 }
