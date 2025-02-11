@@ -1,18 +1,15 @@
 package cn.bitterfree.monio.engine;
 
 
-import cn.bitterfree.common.util.convert.ObjectUtil;
 import cn.bitterfree.common.util.media.MediaUtil;
 import cn.bitterfree.common.util.web.HttpRequestUtil;
 import cn.bitterfree.monio.config.MinioConfig;
 import io.minio.*;
 import io.minio.http.Method;
-import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -119,17 +116,6 @@ public class MinioEngine {
                 .object(fileName)
                 .build();
         minioClient.removeObject(removeObjectArgs);
-    }
-
-    /**
-     * 删除
-     */
-    public void remove(List<String> fileNameList) throws Exception {
-        RemoveObjectsArgs removeObjectArgs = RemoveObjectsArgs.builder()
-                .bucket(minioConfig.getBucketName())
-                .objects(ObjectUtil.distinctNonNullStream(fileNameList).filter(StringUtils::hasText).map(DeleteObject::new).toList())
-                .build();
-        minioClient.removeObjects(removeObjectArgs);
     }
 
 }

@@ -57,6 +57,14 @@ okr:
     max-age: 3600
     allow-headers: Content-Type, Accept, ${okr.jwt.token-name}
     allow-credentials: true
+  sse:
+    content-type: text/event-stream
+    cache-control: no-cache, no-store, must-revalidate
+    connection: keep-alive
+    pragma: no-cache
+    expires: 0
+    other-headers:
+      X-Accel-Buffering: "no" # 设置响应头，禁用代理缓冲，值得注意的是 yaml 文件的 no 会被转成 false
   redis:
     # 地址
     host:

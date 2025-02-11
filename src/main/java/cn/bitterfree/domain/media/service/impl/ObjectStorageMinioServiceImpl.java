@@ -9,7 +9,6 @@ import cn.bitterfree.monio.engine.MinioEngine;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -81,15 +80,7 @@ public class ObjectStorageMinioServiceImpl implements ObjectStorageService {
 
     @Override
     public void remove(List<String> fileNameList) {
-        try {
-            log.info("删除资源 {}", fileNameList);
-            if(CollectionUtils.isEmpty(fileNameList)) {
-                return;
-            }
-            minioEngine.remove(fileNameList);
-        } catch (Exception e) {
-            throw new GlobalServiceException(e.getMessage(), GlobalServiceStatusCode.FILE_RESOURCE_REMOVE_FAILED);
-        }
+        fileNameList.forEach(this::remove);
     }
 
 }

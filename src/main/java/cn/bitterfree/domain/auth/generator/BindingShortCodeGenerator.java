@@ -31,7 +31,7 @@ public class BindingShortCodeGenerator extends ShortCodeGenerator {
 
     @Override
     public void add(String code, String key) {
-        redisCache.setObject(AuthConstants.LOGIN_QR_CODE_MAP + code, "null",
+        redisCache.setObject(AuthConstants.WX_BINDING_QR_CODE_MAP + code, "null",
                 QRCodeConstants.WX_BINDING_QR_CODE_TTL, QRCodeConstants.WX_BINDING_QR_CODE_UNIT);
     }
 

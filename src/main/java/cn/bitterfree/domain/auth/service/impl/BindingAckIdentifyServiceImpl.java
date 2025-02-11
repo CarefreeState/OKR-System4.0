@@ -69,7 +69,7 @@ public class BindingAckIdentifyServiceImpl implements BindingAckIdentifyService 
 
     @Override
     public JsCode2SessionVO validateSecret(String secret) {
-        String redisKey = AuthConstants.LOGIN_QR_CODE_MAP + secret;
+        String redisKey = AuthConstants.WX_BINDING_QR_CODE_MAP + secret;
         String code = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
         validateService.validate(VALIDATE_BINDING_ACK_KEY + secret, () -> !"null".equals(code), GlobalServiceStatusCode.USER_BINDING_NOT_CHECK);
