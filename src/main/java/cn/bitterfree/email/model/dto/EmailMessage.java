@@ -1,4 +1,4 @@
-package cn.bitterfree.email.model.po;
+package cn.bitterfree.email.model.dto;
 
 import lombok.Data;
 

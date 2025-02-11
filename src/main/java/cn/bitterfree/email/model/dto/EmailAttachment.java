@@ -1,4 +1,4 @@
-package cn.bitterfree.email.model.po;
+package cn.bitterfree.email.model.dto;
 
 import cn.bitterfree.common.util.media.MediaUtil;
 import jakarta.activation.DataSource;

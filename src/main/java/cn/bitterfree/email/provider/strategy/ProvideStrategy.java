@@ -16,7 +16,5 @@ import java.util.List;
 @Validated
 public interface ProvideStrategy {
 
-    String BASE_NAME = "ProvideStrategy";
-
     JavaMailSenderImpl getSender(@NotEmpty List<JavaMailSenderImpl> senderList);
 }

@@ -6,7 +6,7 @@ import cn.bitterfree.domain.auth.enums.EmailIdentifyType;
 import cn.bitterfree.domain.auth.model.vo.EmailIdentifyTemplateVO;
 import cn.bitterfree.domain.auth.service.EmailIdentifyService;
 import cn.bitterfree.domain.auth.service.ValidateService;
-import cn.bitterfree.email.model.po.EmailMessage;
+import cn.bitterfree.email.model.dto.EmailMessage;
 import cn.bitterfree.email.sender.EmailSender;
 import cn.bitterfree.redis.cache.RedisCache;
 import cn.bitterfree.redis.cache.RedisMapCache;

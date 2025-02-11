@@ -12,8 +12,6 @@ okr:
     username:
     password:
   mail:
-#    strategy: random # 随机
-    strategy: roundRobin # 轮询
     senders:
       - host: smtp.yeah.net
         port: 465

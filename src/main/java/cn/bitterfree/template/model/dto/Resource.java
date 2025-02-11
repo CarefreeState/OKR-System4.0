@@ -1,4 +1,4 @@
-package cn.bitterfree.template.model.po;
+package cn.bitterfree.template.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
  * Description:
  * User: 马拉圈
  * Date: 2024-09-09
- * Time: 11:25
+ * Time: 11:26
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReplaceResource {
+public class Resource {
 
-    private String target;
+    private String template;
 
-    private String replacement;
+    private Object context;
 
 }

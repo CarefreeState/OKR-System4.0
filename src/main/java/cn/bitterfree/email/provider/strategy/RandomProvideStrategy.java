@@ -2,7 +2,6 @@ package cn.bitterfree.email.provider.strategy;
 
 import cn.hutool.core.util.RandomUtil;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -13,7 +12,6 @@ import java.util.List;
  * Date: 2024-10-13
  * Time: 22:21
  */
-@Component
 public class RandomProvideStrategy implements ProvideStrategy {
 
     @Override

@@ -26,7 +26,7 @@ import cn.bitterfree.domain.core.service.quadrant.FourthQuadrantService;
 import cn.bitterfree.domain.core.service.quadrant.SecondQuadrantService;
 import cn.bitterfree.domain.core.service.quadrant.ThirdQuadrantService;
 import cn.bitterfree.domain.user.model.entity.User;
-import cn.bitterfree.email.model.po.EmailMessage;
+import cn.bitterfree.email.model.dto.EmailMessage;
 import cn.bitterfree.email.sender.EmailSender;
 import cn.bitterfree.redis.cache.RedisCache;
 import cn.bitterfree.template.engine.HtmlEngine;

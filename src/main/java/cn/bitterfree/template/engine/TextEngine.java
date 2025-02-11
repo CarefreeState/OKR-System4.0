@@ -1,7 +1,7 @@
 package cn.bitterfree.template.engine;
 
-import cn.bitterfree.template.model.po.ReplaceResource;
-import cn.bitterfree.template.model.po.Resource;
+import cn.bitterfree.template.model.dto.ReplaceResource;
+import cn.bitterfree.template.model.dto.Resource;
 import cn.bitterfree.template.util.TemplateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

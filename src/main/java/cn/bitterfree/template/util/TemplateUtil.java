@@ -1,7 +1,7 @@
 package cn.bitterfree.template.util;
 
 import cn.bitterfree.common.util.convert.UUIDUtil;
-import cn.bitterfree.template.model.po.ReplaceResource;
+import cn.bitterfree.template.model.dto.ReplaceResource;
 import cn.hutool.core.bean.BeanUtil;
 import org.thymeleaf.context.Context;
 
