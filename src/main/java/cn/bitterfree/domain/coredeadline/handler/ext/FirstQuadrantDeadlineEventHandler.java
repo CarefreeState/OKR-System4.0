@@ -33,13 +33,12 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         Long id = firstQuadrantEvent.getCoreId();
         Date firstQuadrantDeadline = firstQuadrantEvent.getDeadline();
         // 判断是否截止
-        if(Objects.nonNull(firstQuadrantDeadline) &&
-                firstQuadrantDeadline.getTime() <= nowTimestamp) {
+        if(Objects.nonNull(firstQuadrantDeadline) && firstQuadrantDeadline.getTime() <= nowTimestamp) {
             log.info("处理事件：内核 ID {}，第一象限截止时间 {}", id, firstQuadrantDeadline);
             okrCoreService.complete(id);
             return; // 责任链终止
         }
-        if(Boolean.TRUE.equals(needSend)) {
+        if(Objects.nonNull(firstQuadrantDeadline) && needSend) {
             QuadrantDeadlineMessageUtil.scheduledComplete(firstQuadrantEvent);
         }
         super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器

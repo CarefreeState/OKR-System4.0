@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +82,7 @@ public class QuadrantDeadlineMessageListener {
         long nowTimestamp = System.currentTimeMillis();
         log.info("处理事件：内核 ID {}，第一象限截止时间 {}", coreId, firstQuadrantDeadline);
         // 1. 判断是否截止
-        if(firstQuadrantDeadline.getTime() <= nowTimestamp) {
+        if(Objects.nonNull(firstQuadrantDeadline) && firstQuadrantDeadline.getTime() <= nowTimestamp) {
             redisLock.tryLockDoSomething(CoreDeadlineConstants.FIRST_QUADRANT_DEADLINE_LOCK + coreId, () -> {
                 okrCoreService.complete(coreId);
                 // 到这里未报错说明成功了（重复消费的话，其中一个到不了这里）

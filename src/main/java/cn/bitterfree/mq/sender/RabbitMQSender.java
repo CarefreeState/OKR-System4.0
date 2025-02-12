@@ -1,7 +1,6 @@
 package cn.bitterfree.mq.sender;
 
 import cn.bitterfree.common.util.convert.UUIDUtil;
-import cn.bitterfree.common.util.juc.threadpool.ThreadPoolUtil;
 import cn.bitterfree.mq.config.PublisherReturnsCallBack;
 import cn.bitterfree.mq.model.entity.RabbitMQMessage;
 import jakarta.annotation.PostConstruct;
@@ -13,7 +12,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -30,8 +28,6 @@ import java.util.function.Function;
 @Slf4j
 public class RabbitMQSender {
 
-    private final static ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ-Thread");
-
     private final RabbitTemplate rabbitTemplate;
 
     private final PublisherReturnsCallBack publisherReturnsCallBack;
@@ -40,7 +36,6 @@ public class RabbitMQSender {
 
     @PostConstruct
     public void init() {
-        rabbitTemplate.setTaskExecutor(EXECUTOR);
         // 设置统一的 publisher-returns（confirm 也可以设置统一的，但最好还是在发送时设置在 future 里）
         // rabbitTemplate 的 publisher-returns 同一时间只能存在一个
         // 因为 publisher confirm 后，其实 exchange 有没有转发成功，publisher 没必要每次发送都关注这个 exchange 的内部职责，更多的是“系统与 MQ 去约定”
@@ -77,7 +72,7 @@ public class RabbitMQSender {
 
         CorrelationData correlationData = newCorrelationData();
         MessagePostProcessor delayMessagePostProcessor = delayMessagePostProcessor(delay);
-        correlationData.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(new Consumer<>() {
+        correlationData.getFuture().exceptionallyAsync(ON_FAILURE).thenAcceptAsync(new Consumer<>() {
 
             private int retryCount = 0; // 一次 send 从始至终都用的是一个 Consumer 对象，所以作用的都是同一个计数器
 
@@ -95,12 +90,12 @@ public class RabbitMQSender {
                         retryCount++;
                         log.warn("开始第 {} 次重试", retryCount);
                         CorrelationData cd = newCorrelationData();
-                        cd.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(this, EXECUTOR);
+                        cd.getFuture().exceptionallyAsync(ON_FAILURE).thenAcceptAsync(this);
                         rabbitTemplate.convertAndSend(exchange, routingKey, msg, delayMessagePostProcessor, cd);
                     }
                 });
             }
-        }, EXECUTOR);
+        });
         rabbitTemplate.convertAndSend(exchange, routingKey, msg, delayMessagePostProcessor, correlationData);
     }
 

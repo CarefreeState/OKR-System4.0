@@ -1,7 +1,7 @@
 package cn.bitterfree.mq.config;
 
-import cn.bitterfree.mq.constants.DelayMessageConstants;
 import cn.bitterfree.mq.sender.RabbitMessageConverter;
+import cn.bitterfree.mq.util.DelayMessageUtil;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +41,7 @@ public class DelayMessageConfig {
     @Bean
     public RabbitMessageConverter rabbitMessageConverter() {
 //        return RabbitMQMessage::new;
-        return DelayMessageConstants::getDelayMessage;
+        return DelayMessageUtil::getDelayMessage;
     }
 
 }

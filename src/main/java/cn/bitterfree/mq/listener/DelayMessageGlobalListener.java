@@ -27,14 +27,11 @@ public class DelayMessageGlobalListener {
 
     @RabbitListener(queuesToDeclare = @Queue(name = DelayMessageConstants.GLOBAL_DELAY_QUEUE))
     public void delayMessageRepublish(RabbitMQMessage<?> rabbitMQMessage) {
-        Long delay = rabbitMQMessage.getDelay();
-        String exchange = rabbitMQMessage.getExchange();
-        log.info("新延时时间为 {} 的消息，重新尝试发送给延时交换机 {}", delay, exchange);
         rabbitMQSender.send(
-                exchange,
+                rabbitMQMessage.getExchange(),
                 rabbitMQMessage.getRoutingKey(),
                 rabbitMQMessage.getMsg(),
-                delay,
+                rabbitMQMessage.getDelay(),
                 rabbitMQMessage.getMaxRetries()
         );
     }
