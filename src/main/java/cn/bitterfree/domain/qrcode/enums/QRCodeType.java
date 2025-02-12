@@ -1,12 +1,9 @@
 package cn.bitterfree.domain.qrcode.enums;
 
-import cn.bitterfree.common.enums.GlobalServiceStatusCode;
-import cn.bitterfree.common.exception.GlobalServiceException;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.util.StringUtils;
 
 /**
  * Created With Intellij IDEA

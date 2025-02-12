@@ -18,6 +18,9 @@ public class WxQRCode {
     @JsonProperty("scene")
     private String scene;
 
+    @JsonProperty("page")
+    private String page;
+
     @JsonProperty("check_path")
     private Boolean checkPath;
 

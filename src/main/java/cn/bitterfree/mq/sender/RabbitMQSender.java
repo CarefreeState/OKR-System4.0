@@ -3,6 +3,7 @@ package cn.bitterfree.mq.sender;
 import cn.bitterfree.common.util.convert.UUIDUtil;
 import cn.bitterfree.common.util.juc.threadpool.ThreadPoolUtil;
 import cn.bitterfree.mq.config.PublisherReturnsCallBack;
+import cn.bitterfree.mq.model.entity.RabbitMQMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,6 @@ import java.util.function.Function;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-//@DependsOn("publisherReturnsCallBack")
 public class RabbitMQSender {
 
     private final static ThreadPoolExecutor EXECUTOR = ThreadPoolUtil.getIoTargetThreadPool("Rabbit-MQ-Thread");
@@ -35,6 +35,8 @@ public class RabbitMQSender {
     private final RabbitTemplate rabbitTemplate;
 
     private final PublisherReturnsCallBack publisherReturnsCallBack;
+
+    private final RabbitMessageConverter rabbitMessageConverter;
 
     @PostConstruct
     public void init() {
@@ -51,6 +53,7 @@ public class RabbitMQSender {
     };
 
     private MessagePostProcessor delayMessagePostProcessor(long delay) {
+        // 值得注意的是，delay 如果超过 int 的范围，会导致 delay 小于 0 等非目标效果的情况！（delay 最大只能是大概 49 天）
         return message -> {
             // 小于 0 也是立即执行
             // setDelay 才是给 RabbitMQ 看的，setReceivedDelay 是给 publish-returns 看的
@@ -63,17 +66,15 @@ public class RabbitMQSender {
         return new CorrelationData(UUIDUtil.uuid32());
     }
 
-    /**
-     * @param exchange 交换机
-     * @param routingKey routing key
-     * @param msg 消息
-     * @param delay 延迟时间（如果是延迟交换机，delay 才有效）
-     * @param maxRetries 最大重试机会
-     * @param <T> 消息的对象类型
-     */
-    private <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
+    private <T> void send(RabbitMQMessage<T> rabbitMQMessage) {
+        String exchange = rabbitMQMessage.getExchange();
+        String routingKey = rabbitMQMessage.getRoutingKey();
+        T msg = rabbitMQMessage.getMsg();
+        long delay = rabbitMQMessage.getDelay();
+        int maxRetries = rabbitMQMessage.getMaxRetries();
         log.info("准备发送消息，exchange: {}, routingKey: {}, msg: {}, delay: {}s, maxRetries: {}",
                 exchange, routingKey, msg, TimeUnit.MILLISECONDS.toSeconds(delay), maxRetries);
+
         CorrelationData correlationData = newCorrelationData();
         MessagePostProcessor delayMessagePostProcessor = delayMessagePostProcessor(delay);
         correlationData.getFuture().exceptionallyAsync(ON_FAILURE, EXECUTOR).thenAcceptAsync(new Consumer<>() {
@@ -101,6 +102,18 @@ public class RabbitMQSender {
             }
         }, EXECUTOR);
         rabbitTemplate.convertAndSend(exchange, routingKey, msg, delayMessagePostProcessor, correlationData);
+    }
+
+    /**
+     * @param exchange 交换机
+     * @param routingKey routing key
+     * @param msg 消息
+     * @param delay 延迟时间（如果是延迟交换机，delay 才有效）
+     * @param maxRetries 最大重试机会
+     * @param <T> 消息的对象类型
+     */
+    public <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
+        send(rabbitMessageConverter.getRabbitMQMessage(exchange, routingKey, msg, delay, maxRetries));
     }
 
     public void sendMessage(String exchange, String routingKey, Object msg) {

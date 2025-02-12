@@ -9,6 +9,7 @@ package cn.bitterfree.domain.coredeadline.constants;
  */
 public interface CoreDeadlineConstants {
 
+    String FIRST_QUADRANT_DEADLINE_LOCK = "firstQuadrantDeadlineLock:";
     String SECOND_QUADRANT_DEADLINE_LOCK = "secondQuadrantDeadlineLock:";
     String THIRD_QUADRANT_DEADLINE_LOCK = "thirdQuadrantDeadlineLock:";
 
