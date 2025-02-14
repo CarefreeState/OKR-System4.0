@@ -20,7 +20,6 @@ import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Objects;
 
 import static cn.bitterfree.domain.medal.constants.MedalConstants.*;
@@ -143,17 +142,16 @@ public class OkrMedalMessageListener {
         Long userId = okrInitialize.getUserId();
         UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
         if(Objects.isNull(dbUserMedal)) {
-            Long coreId = okrInitialize.getCoreId();
-            OkrCoreVO okrCoreVO = okrCoreService.searchOkrCore(coreId);
+            OkrCoreVO okrCoreVO = okrCoreService.searchOkrCore(okrInitialize.getCoreId());
             FirstQuadrantVO firstQuadrantVO = okrCoreVO.getFirstQuadrantVO();
-            String objective = firstQuadrantVO.getObjective();
-            Date firstQuadrantDeadline = firstQuadrantVO.getDeadline();
-            Integer secondQuadrantCycle = okrCoreVO.getSecondQuadrantCycle();
-            Date secondQuadrantDeadline = okrCoreVO.getSecondQuadrantVO().getDeadline();
-            Integer thirdQuadrantCycle = okrCoreVO.getThirdQuadrantCycle();
-            Date thirdQuadrantDeadline = okrCoreVO.getThirdQuadrantVO().getDeadline();
-            boolean flag = ObjectUtil.noneIsNull(objective, firstQuadrantDeadline, secondQuadrantCycle,
-                    secondQuadrantDeadline, thirdQuadrantCycle, thirdQuadrantDeadline);
+            boolean flag = ObjectUtil.noneIsNull(
+                    firstQuadrantVO.getObjective(),
+                    firstQuadrantVO.getDeadline(),
+                    okrCoreVO.getSecondQuadrantCycle(),
+                    okrCoreVO.getSecondQuadrantVO().getDeadline(),
+                    okrCoreVO.getThirdQuadrantCycle(),
+                    okrCoreVO.getThirdQuadrantVO().getDeadline()
+            );
             if(Boolean.TRUE.equals(flag)) {
                 userMedalService.saveUserMedal(userId, medalId, null, 1L, medalType.getCoefficient());
             }
