@@ -76,7 +76,7 @@ public class BindingAckController {
     }
 
     @PostMapping("/ack/{secret}/{code}")
-    @Operation(summary = "用户授权")
+    @Operation(summary = "用户授权绑定")
     @Intercept(authenticate = false, authorize = false)
     public SystemJsonResponse<?> bindingAck(@PathVariable("secret") @Parameter(description = "secret") String secret,
                                             @PathVariable("code") @Parameter(description = "code") String code) {

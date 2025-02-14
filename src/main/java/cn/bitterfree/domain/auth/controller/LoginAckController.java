@@ -80,7 +80,7 @@ public class LoginAckController {
     }
 
     @PostMapping("/ack/{secret}")
-    @Operation(summary = "用户授权")
+    @Operation(summary = "用户授权登录")
     @Intercept(authenticate = true, authorize = false)
     public SystemJsonResponse<?> loginAck(@PathVariable("secret") @Parameter(description = "secret") String secret) {
         User user = InterceptorContext.getUser();
