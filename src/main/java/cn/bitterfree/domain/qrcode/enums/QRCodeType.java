@@ -1,5 +1,7 @@
 package cn.bitterfree.domain.qrcode.enums;
 
+import cn.bitterfree.common.enums.GlobalServiceStatusCode;
+import cn.bitterfree.common.exception.GlobalServiceException;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,5 +31,14 @@ public enum QRCodeType {
     @JsonValue
     private final String type;
     private final String description;
+
+    public static QRCodeType get(String type) {
+        for(QRCodeType qrCodeType : values()) {
+            if(qrCodeType.type.equals(type)) {
+                return qrCodeType;
+            }
+        }
+        throw new GlobalServiceException(GlobalServiceStatusCode.REQUEST_NOT_VALID);
+    }
 
 }

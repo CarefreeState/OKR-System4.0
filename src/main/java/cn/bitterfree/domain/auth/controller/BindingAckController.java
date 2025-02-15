@@ -17,10 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -61,7 +58,7 @@ public class BindingAckController {
             在绑定接口，选择微信绑定策略，用获取二维码时返回的 secret 去绑定；
             """)
     @SseRequest
-    @PostMapping(value = "/qrcode")
+    @GetMapping(value = "/qrcode")
     @Intercept(authenticate = false, authorize = false)
     @ApiResponse(content = @Content(schema = @Schema(implementation = BindingQRCodeVO.class)))
     public SseEmitter getBindingQRCode() {

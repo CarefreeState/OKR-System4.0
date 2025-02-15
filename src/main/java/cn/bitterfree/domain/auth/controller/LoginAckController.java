@@ -2,9 +2,9 @@ package cn.bitterfree.domain.auth.controller;
 
 import cn.bitterfree.common.SystemJsonResponse;
 import cn.bitterfree.domain.auth.constants.AuthConstants;
-import cn.bitterfree.domain.auth.model.dto.LoginQRCodeDTO;
 import cn.bitterfree.domain.auth.service.LoginAckIdentifyService;
 import cn.bitterfree.domain.qrcode.constants.QRCodeConstants;
+import cn.bitterfree.domain.qrcode.enums.QRCodeType;
 import cn.bitterfree.domain.qrcode.model.vo.LoginQRCodeVO;
 import cn.bitterfree.domain.user.model.entity.User;
 import cn.bitterfree.interceptor.annotation.Intercept;
@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -63,19 +62,25 @@ public class LoginAckController {
             在登录接口，选择授权登录策略，用获取二维码时返回的 secret 去登录；
             """)
     @SseRequest
-    @PostMapping(value = "/qrcode")
+    @GetMapping(value = "/qrcode")
     @Intercept(authenticate = false, authorize = false)
     @ApiResponse(content = @Content(
             schema = @Schema(implementation = LoginQRCodeVO.class)
     ))
-    public SseEmitter getLoginQRCode(@Valid @RequestBody LoginQRCodeDTO loginQRCodeDTO) {
-        // 获得邀请码
+    public SseEmitter getLoginQRCode(@RequestParam("type") @Parameter(example = "wx", schema = @Schema(
+                    type = "string",
+                    description = "二维码类型 wx 微信小程序二维码、web 网页二维码",
+                    allowableValues = {"wx", "web"}
+            )) String type) {
+        // 获取登录码类型
+        QRCodeType qrCodeType = QRCodeType.get(type);
+        // 获得登录码
         String secret = loginAckIdentifyService.getSecret();
         // 连接并发送一条信息
         return SseSessionUtil.createConnect(
                 QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT,
                 AuthConstants.LOGIN_ACK_SSE_SERVER + secret,
-                () -> loginAckIdentifyService.getLoginQRCode(secret, loginQRCodeDTO.getType())
+                () -> loginAckIdentifyService.getLoginQRCode(secret, qrCodeType)
         );
     }
 
