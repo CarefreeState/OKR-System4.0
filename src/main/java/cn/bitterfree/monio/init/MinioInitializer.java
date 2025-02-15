@@ -35,6 +35,7 @@ public class MinioInitializer implements ApplicationListener<ApplicationStartedE
         String bucketName = minioConfig.getBucketName();
         try {
             // 如果不存在，则初始化桶
+            log.info("尝试初始化桶 {}", bucketName);
             minioBucketEngine.tryMakeBucket(bucketName);
             // 设置规则：所有人都能读（否则就只能获取）
             DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
@@ -43,6 +44,7 @@ public class MinioInitializer implements ApplicationListener<ApplicationStartedE
             String policy = textEngine.builder()
                     .append(MinioPolicyTemplate.ALLOW_ALL_GET.getTemplate(), policyTemplate)
                     .build();
+            log.info("设置桶策略 {}", policy);
             minioBucketEngine.setBucketPolicy(bucketName, policy);
         } catch (Exception e) {
             throw new GlobalServiceException(String.format("minio 桶 %s 创建失败", bucketName));

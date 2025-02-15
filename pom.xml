@@ -267,7 +267,7 @@
 				<version>1.2.2</version>
 				<configuration>
 					<!--远程Docker的地址-->
-					<dockerHost>http://47.92.173.60:22375</dockerHost>
+					<dockerHost>${env.DOCKER_HOST}</dockerHost>
 					<!--镜像名称,前缀/项目名-->
 					<imageName>${docker.image.prefix}:${version}</imageName>
 					<dockerDirectory>src/main/docker</dockerDirectory>
