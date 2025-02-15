@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class LoginController {
                     type = "string",
                     description = "登录类型 Rl0p0r 邮箱登录、r6Vsr0 微信登录、1eXBrJ 授权登录、jOKQE5 密码登录",
                     allowableValues = {"Rl0p0r", "r6Vsr0", "1eXBrJ", "jOKQE5"}
-            )) String type,
+            )) @NotBlank(message = "登录类型不能为空") String type,
             @Valid @RequestBody LoginDTO loginDTO
     ) {
         // 选取服务

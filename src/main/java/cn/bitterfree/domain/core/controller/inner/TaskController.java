@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -52,7 +53,7 @@ public class TaskController {
                     format = "int32",
                     description = "任务类型 0 第三象限任务、1 第二象限优先级1、2 第二象限优先级2",
                     allowableValues = {"0", "1", "2"}
-            )) Integer option,
+            )) @NotNull(message = "option 不能为空") Integer option,
             @Valid @RequestBody OkrTaskDTO okrTaskDTO
     ) {
         // 检查
@@ -82,7 +83,7 @@ public class TaskController {
                     format = "int32",
                     description = "任务类型 0 第三象限任务、1 第二象限优先级1、2 第二象限优先级2",
                     allowableValues = {"0", "1", "2"}
-            )) Integer option,
+            )) @NotNull(message = "option 不能为空") Integer option,
             @Valid @RequestBody OkrTaskRemoveDTO okrTaskRemoveDTO
     ) {
         // 检查
@@ -111,7 +112,7 @@ public class TaskController {
                     format = "int32",
                     description = "任务类型 0 第三象限任务、1 第二象限优先级1、2 第二象限优先级2",
                     allowableValues = {"0", "1", "2"}
-            )) Integer option,
+            )) @NotNull(message = "option 不能为空") Integer option,
             @Valid @RequestBody OkrTaskUpdateDTO okrTaskUpdateDTO
     ) {
         // 检查

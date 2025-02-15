@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -81,7 +82,7 @@ public class TeamOkrController {
 
     @PostMapping("/tree/{id}")
     @Operation(summary = "获取一个团队所在的树")
-    public SystemJsonResponse<List<TeamOkrStatisticVO>> getCompleteTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") Long id) {
+    public SystemJsonResponse<List<TeamOkrStatisticVO>> getCompleteTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") @NotNull(message = "团队 OKR ID 不能为空") Long id) {
         // 获取当前团队的祖先 ID
         Long rootId = TeamOkrUtil.getTeamRootId(id);
         User user = InterceptorContext.getUser();
@@ -101,7 +102,7 @@ public class TeamOkrController {
 
     @PostMapping("/tree/child/{id}")
     @Operation(summary = "获取一个团队的子树")
-    public SystemJsonResponse<List<TeamOkrStatisticVO>> getChildTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") Long id) {
+    public SystemJsonResponse<List<TeamOkrStatisticVO>> getChildTree(@PathVariable("id") @Parameter(description = "团队 OKR ID") @NotNull(message = "团队 OKR ID 不能为空") Long id) {
         // 获取当前团队的祖先 ID
         User user = InterceptorContext.getUser();
         Long userId = user.getId();
@@ -134,7 +135,7 @@ public class TeamOkrController {
     @GetMapping("/describe/{teamId}")
     @Operation(summary = "了解团队")
     @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<String> getTeamName(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId) throws IOException {
+    public SystemJsonResponse<String> getTeamName(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") @NotNull(message = "团队 OKR ID 不能为空") Long teamId) throws IOException {
         String teamName = TeamOkrUtil.getTeamName(teamId);
         return SystemJsonResponse.SYSTEM_SUCCESS(teamName);
     }

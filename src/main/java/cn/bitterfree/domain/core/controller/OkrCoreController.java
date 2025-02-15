@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -70,7 +71,7 @@ public class OkrCoreController {
     @PostMapping("/celebrate/{day}")
     @Operation(summary = "确定庆祝日")
     public SystemJsonResponse<?> confirmCelebrateDay(@Valid @RequestBody OkrCoreDTO okrCoreDTO,
-                                                  @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(example = "1", description = "庆祝日（星期）") Integer celebrateDay) {
+                                                     @NotNull(message = "庆祝日（星期）不能为空") @IntRange (min = 1, max = 7) @PathVariable("day") @Parameter(example = "1", description = "庆祝日（星期）") Integer celebrateDay) {
         User user = InterceptorContext.getUser();
         Long coreId = okrCoreDTO.getCoreId();
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrCoreDTO.getScene());

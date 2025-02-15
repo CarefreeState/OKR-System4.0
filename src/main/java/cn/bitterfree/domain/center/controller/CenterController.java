@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +49,7 @@ public class CenterController {
     @GetMapping("/jwt/{userId}")
     @Operation(summary = "测试阶段获取用户的 token")
     @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @Parameter(description = "userId") Long userId) {
+    public SystemJsonResponse<LoginVO> getJWTByOpenid(@PathVariable("userId") @NotNull(message = "userId 不能为空") @Parameter(description = "userId") Long userId) {
         // 构造 token
         TokenVO tokenVO = TokenVO.builder().userId(userId).build();
         String token = JwtUtil.createJwt("登录认证（测试阶段伪造）", tokenVO);

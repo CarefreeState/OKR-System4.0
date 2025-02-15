@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -43,7 +44,7 @@ public class TeamInviteController {
 
     @PostMapping("/team/qrcode/{teamId}")
     @Operation(summary = "获取邀请码")
-    public SystemJsonResponse<String> getQRCode(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") Long teamId,
+    public SystemJsonResponse<String> getQRCode(@PathVariable("teamId") @Parameter(description = "团队 OKR ID") @NotNull(message = "团队 OKR ID 不能为空") Long teamId,
                                                 @Valid @RequestBody(required = false) TeamInviteDTO teamInviteDTO) {
         // 检测
         User user = InterceptorContext.getUser();

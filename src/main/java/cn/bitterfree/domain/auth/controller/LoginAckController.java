@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -71,7 +72,7 @@ public class LoginAckController {
                     type = "string",
                     description = "二维码类型 wx 微信小程序二维码、web 网页二维码",
                     allowableValues = {"wx", "web"}
-            )) String type) {
+            )) @NotBlank(message = "二维码类型不能为空") String type) {
         // 获取登录码类型
         QRCodeType qrCodeType = QRCodeType.get(type);
         // 获得登录码

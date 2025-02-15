@@ -8,6 +8,7 @@ import cn.bitterfree.interceptor.context.InterceptorContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -52,7 +53,7 @@ public class UserMedalController {
 
     @PostMapping("/read/{medalId}")
     @Operation(summary = "用户知晓获得了新勋章")
-    public SystemJsonResponse<?> readUserMedal(@PathVariable("medalId") @Parameter(description = "勋章 ID") Long medalId) {
+    public SystemJsonResponse<?> readUserMedal(@PathVariable("medalId") @Parameter(description = "勋章 ID") @NotNull(message = "勋章 ID 不能为空") Long medalId) {
         Long userId = InterceptorContext.getUser().getId();
         log.info("用户 {} 查看勋章 {}", userId, medalId);
         userMedalService.readUserMedal(userId, medalId);

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -74,8 +75,8 @@ public class BindingAckController {
     @PostMapping("/ack/{secret}/{code}")
     @Operation(summary = "用户授权绑定")
     @Intercept(authenticate = false, authorize = false)
-    public SystemJsonResponse<?> bindingAck(@PathVariable("secret") @Parameter(description = "secret") String secret,
-                                            @PathVariable("code") @Parameter(description = "code") String code) {
+    public SystemJsonResponse<?> bindingAck(@PathVariable("secret") @NotBlank(message = "secret 不能为空") @Parameter(description = "secret") String secret,
+                                            @PathVariable("code") @NotBlank(message = "code 不能为空") @Parameter(description = "code") String code) {
         bindingAckIdentifyService.ackSecret(secret, code);
         // 发送已确认的通知
         SystemJsonResponse<?> systemJsonResponse = SystemJsonResponse.SYSTEM_SUCCESS();
