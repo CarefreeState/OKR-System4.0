@@ -50,6 +50,7 @@ public enum GlobalServiceStatusCode {
     USER_LOGIN_NOT_CHECK(2012, "用户登录码未验证"),
     USER_BINDING_CODE_VALID(2012, "用户绑定码失效"),
     USER_BINDING_NOT_CHECK(2012, "用户绑定码未验证"),
+    USER_BINDING_CHECKED(2013, "用户绑定码已验证"),
 
     USER_IDENTIFY_CODE_ERROR(2101, "验证码错误"),
     USER_USERNAME_PASSWORD_ERROR(2102, "用户名或密码错误"),

@@ -58,9 +58,11 @@ public class BindingAckIdentifyServiceImpl implements BindingAckIdentifyService 
     public void ackSecret(String secret, String code) {
         String redisKey = AuthConstants.WX_BINDING_QR_CODE_MAP + secret;
         redisCache.getObject(redisKey, String.class).ifPresentOrElse(c -> {
-            if (!"null".equals(c)) {
+            if ("null".equals(c)) {
                 redisCache.setObject(redisKey, code,
                         QRCodeConstants.WX_BINDING_QR_CODE_TTL, QRCodeConstants.WX_BINDING_QR_CODE_UNIT);
+            } else {
+                throw new GlobalServiceException(GlobalServiceStatusCode.USER_BINDING_CHECKED);
             }
         }, () -> {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_BINDING_CODE_VALID);
