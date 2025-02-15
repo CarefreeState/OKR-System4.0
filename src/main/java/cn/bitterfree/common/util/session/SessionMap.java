@@ -2,7 +2,6 @@ package cn.bitterfree.common.util.session;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -41,19 +40,8 @@ public class SessionMap <T> extends ConcurrentHashMap<String, T> {
                 .collect(Collectors.toSet());
     }
 
-    public void consumeKey(String key, Consumer<T> consumer) {
-        consumer.accept(this.get(key));
-    }
-
-    public void consumePrefix(String prefix, Consumer<T> consumer) {
-        getKeys(prefix).stream().parallel().forEach(sessionKey -> {
-            consumeKey(sessionKey, consumer);
-        });
-    }
-
     public void removeAll(String prefix) {
         getKeys(prefix).stream().parallel().forEach(this::remove);
     }
-
 
 }

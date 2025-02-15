@@ -64,12 +64,11 @@ public class BindingAckController {
     public SseEmitter getBindingQRCode() {
         // 获得绑定码
         String secret = bindingAckIdentifyService.getSecret();
+        String sessionKey = AuthConstants.BINDING_ACK_SSE_SERVER + bindingAckIdentifyService.getSecret();
         // 连接并发送一条信息
-        return SseSessionUtil.createConnect(
-                QRCodeConstants.BINDING_CODE_ACTIVE_LIMIT,
-                AuthConstants.BINDING_ACK_SSE_SERVER + secret,
-                () -> bindingAckIdentifyService.getBindingQRCode(secret)
-        );
+        SseEmitter sseEmitter = SseSessionUtil.createConnect(QRCodeConstants.BINDING_CODE_ACTIVE_LIMIT, sessionKey);
+        SseMessageSender.sendMessage(sessionKey, () -> bindingAckIdentifyService.getBindingQRCode(secret));
+        return sseEmitter;
     }
 
     @PostMapping("/ack/{secret}/{code}")

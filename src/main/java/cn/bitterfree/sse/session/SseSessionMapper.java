@@ -4,7 +4,6 @@ import cn.bitterfree.common.util.session.SessionMap;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * Created With Intellij IDEA
@@ -39,14 +38,6 @@ public class SseSessionMapper {
 
     public static Set<String> getKeys(String prefix) {
         return SESSION_MAP.getKeys(prefix);
-    }
-
-    public static void consumeKey(String sessionKey, Consumer<SseEmitter> consumer) {
-        SESSION_MAP.consumeKey(sessionKey, consumer);
-    }
-
-    public static void consumePrefix(String prefix, Consumer<SseEmitter> consumer) {
-        SESSION_MAP.consumePrefix(prefix, consumer);
     }
 
     public static void removeAll(String prefix) {

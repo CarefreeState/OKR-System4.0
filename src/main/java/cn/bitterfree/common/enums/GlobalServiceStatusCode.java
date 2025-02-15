@@ -132,6 +132,7 @@ public enum GlobalServiceStatusCode {
     /*SSE想关*/
     SSE_CONNECTION_NOT_EXIST(11000, "连接不存在或者超时"),
     SSE_CONNECTION_IS_EXIST(11001, "连接已被占用"),
+    SSE_CONNECTION_CREATE_FAILED(11002, "连接创建失败"),
 
     /*文件资源想关*/
     FILE_RESOURCE_NOT_VALID(12000, "资源非法"),

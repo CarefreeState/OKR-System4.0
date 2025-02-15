@@ -76,12 +76,11 @@ public class LoginAckController {
         QRCodeType qrCodeType = QRCodeType.get(type);
         // 获得登录码
         String secret = loginAckIdentifyService.getSecret();
+        String sessionKey = AuthConstants.LOGIN_ACK_SSE_SERVER + secret;
         // 连接并发送一条信息
-        return SseSessionUtil.createConnect(
-                QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT,
-                AuthConstants.LOGIN_ACK_SSE_SERVER + secret,
-                () -> loginAckIdentifyService.getLoginQRCode(secret, qrCodeType)
-        );
+        SseEmitter sseEmitter = SseSessionUtil.createConnect(QRCodeConstants.LOGIN_CODE_ACTIVE_LIMIT, sessionKey);
+        SseMessageSender.sendMessage(sessionKey, () -> loginAckIdentifyService.getLoginQRCode(secret, qrCodeType));
+        return sseEmitter;
     }
 
     @PostMapping("/ack/{secret}")
