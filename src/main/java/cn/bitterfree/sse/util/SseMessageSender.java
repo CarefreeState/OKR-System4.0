@@ -1,7 +1,6 @@
 package cn.bitterfree.sse.util;
 
 import cn.bitterfree.common.enums.GlobalServiceStatusCode;
-import cn.bitterfree.common.util.convert.JsonUtil;
 import cn.bitterfree.common.util.juc.threadpool.ThreadPoolUtil;
 import cn.bitterfree.sse.session.SseSessionMapper;
 import io.jsonwebtoken.lang.Collections;
@@ -36,7 +35,7 @@ public class SseMessageSender {
             }
             SseEmitter sseEmitter = SseSessionMapper.get(sessionKey);
             try {
-                sseEmitter.send(JsonUtil.toJson(message), MediaType.APPLICATION_JSON);
+                sseEmitter.send(message, MediaType.APPLICATION_JSON);
             } catch (Exception e) {
                 log.error("{} 发送消息异常 {}", sessionKey, e.getMessage());
                 SseSessionMapper.remove(sessionKey);

@@ -14,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -83,13 +84,16 @@ public class GlobalExceptionHandler {
         return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(PARAM_FAILED_VALIDATE, message);
     }
 
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        log.error("请求已超时");
+    }
+
     @ExceptionHandler(Exception.class)
-    public SystemJsonResponse<?> handleException(Exception e, HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String message = e.getMessage();
-        log.error("请求地址'{}' {}", requestURI, message);
-        e.printStackTrace();
-        return SystemJsonResponse.CUSTOMIZE_MSG_ERROR(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL, message);
+    public SystemJsonResponse<?> handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
+        logError(request, response, e);
+        return SystemJsonResponse.CUSTOMIZE_ERROR(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
     }
 
 }
