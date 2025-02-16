@@ -99,7 +99,7 @@ public class ThreadPoolUtil {
                     r -> {
                         Thread thread = new Thread(r);
                         thread.setDaemon(Boolean.TRUE);
-                        thread.setName(String.format("[%s] message-process-thread-%d", threadName, NUM.getAndIncrement()));
+                        thread.setName(String.format("%s, message-process-thread-%d", threadName, NUM.getAndIncrement()));
                         return thread;
                     }
             ) {

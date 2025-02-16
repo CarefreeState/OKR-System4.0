@@ -74,6 +74,7 @@ public class LoginAckIdentifyServiceImpl implements LoginAckIdentifyService {
         Long userId = redisCache.getObject(redisKey, Long.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
         validateService.validate(VALIDATE_LOGIN_ACK_KEY + secret, () -> userId.compareTo(0L) > 0, GlobalServiceStatusCode.USER_LOGIN_NOT_CHECK);
+        redisCache.deleteObject(redisKey);
         return userService.getUserById(userId)
                 .orElseThrow(() -> new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
     }

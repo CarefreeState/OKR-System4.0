@@ -75,6 +75,8 @@ public class BindingAckIdentifyServiceImpl implements BindingAckIdentifyService 
         String code = redisCache.getObject(redisKey, String.class).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.USER_LOGIN_CODE_VALID));
         validateService.validate(VALIDATE_BINDING_ACK_KEY + secret, () -> !"null".equals(code), GlobalServiceStatusCode.USER_BINDING_NOT_CHECK);
-        return wxIdentifyService.validateCode(code);
+        JsCode2SessionVO jsCode2SessionVO = wxIdentifyService.validateCode(code);
+        redisCache.deleteObject(redisKey);
+        return jsCode2SessionVO;
     }
 }

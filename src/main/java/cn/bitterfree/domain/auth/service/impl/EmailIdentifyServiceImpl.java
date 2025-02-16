@@ -82,7 +82,6 @@ public class EmailIdentifyServiceImpl implements EmailIdentifyService {
             String message = String.format("申请太频繁, 请在 %d 分钟后再重新申请", EMAIL_IDENTIFY_RATE_LIMIT);
             throw new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_SEND_FAIL);
         }
-
         // 获取缓存
         String code = RandomUtil.randomNumbers(EMAIL_IDENTIFY_CODE_LENGTH);
         redisMapCache.getMap(redisKey, String.class, Object.class).ifPresentOrElse(cache -> {
@@ -109,12 +108,13 @@ public class EmailIdentifyServiceImpl implements EmailIdentifyService {
     @Override
     public void validateEmailCode(EmailIdentifyType emailIdentifyType, String email, String code) {
         String identifyType = emailIdentifyType.getName();
+        String redisKey = String.format(EMAIL_IDENTIFY_CODE_MAP, identifyType, email);
         validateService.validate(String.format(VALIDATE_EMAIL_CODE_KEY, identifyType, email), () -> {
-            String redisKey = String.format(EMAIL_IDENTIFY_CODE_MAP, identifyType, email);
             return redisMapCache.get(redisKey, EMAIL_IDENTIFY_CODE_KEY, String.class).orElseThrow(() -> {
                 String message = String.format("不存在邮箱 %s 的 %s 的相关记录", email, emailIdentifyType.getDescription());
                 return new GlobalServiceException(message, GlobalServiceStatusCode.EMAIL_NOT_EXIST_RECORD);
             }).equals(code);
         }, emailIdentifyType.getErrorCode());
+        redisCache.deleteObject(redisKey);
     }
 }

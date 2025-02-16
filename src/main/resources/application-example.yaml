@@ -176,10 +176,13 @@ short-code-generator:
     key:
     length: 6
   login:
+    key:
     length: 4
   binding:
+    key:
     length: 4
   digital-resource:
+    key:
     length: 8
 
 resource:
