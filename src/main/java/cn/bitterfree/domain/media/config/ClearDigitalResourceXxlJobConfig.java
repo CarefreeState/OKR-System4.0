@@ -34,7 +34,7 @@ public class ClearDigitalResourceXxlJobConfig {
 
     @XxlJob(value = "clearDigitalResource")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = RIGGER_STATUS, jobDesc = "【固定任务】每小时一次的清除不活跃资源")
-    private void clearDigitalResource() {
+    public void clearDigitalResource() {
         long now = System.currentTimeMillis();
         List<DigitalResource> list = digitalResourceService.lambdaQuery()
                 .ge(DigitalResource::getActiveLimit, 0L)

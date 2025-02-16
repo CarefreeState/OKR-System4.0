@@ -93,6 +93,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public SystemJsonResponse<?> handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         logError(request, response, e);
+        e.printStackTrace();
         return SystemJsonResponse.CUSTOMIZE_ERROR(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL);
     }
 

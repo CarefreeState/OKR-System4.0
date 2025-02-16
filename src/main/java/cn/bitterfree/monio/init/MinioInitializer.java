@@ -1,6 +1,7 @@
 package cn.bitterfree.monio.init;
 
 import cn.bitterfree.common.exception.GlobalServiceException;
+import cn.bitterfree.common.util.convert.JsonUtil;
 import cn.bitterfree.monio.config.MinioConfig;
 import cn.bitterfree.monio.engine.MinioBucketEngine;
 import cn.bitterfree.monio.enums.MinioPolicyTemplate;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Created With Intellij IDEA
@@ -35,7 +38,6 @@ public class MinioInitializer implements ApplicationListener<ApplicationStartedE
         String bucketName = minioConfig.getBucketName();
         try {
             // 如果不存在，则初始化桶
-            log.info("尝试初始化桶 {}", bucketName);
             minioBucketEngine.tryMakeBucket(bucketName);
             // 设置规则：所有人都能读（否则就只能获取）
             DefaultPolicyTemplate policyTemplate = DefaultPolicyTemplate.builder()
@@ -44,7 +46,7 @@ public class MinioInitializer implements ApplicationListener<ApplicationStartedE
             String policy = textEngine.builder()
                     .append(MinioPolicyTemplate.ALLOW_ALL_GET.getTemplate(), policyTemplate)
                     .build();
-            log.info("设置桶策略 {}", policy);
+            log.info("尝试初始化 minio 桶 {}，设置策略 {}", bucketName, JsonUtil.parse(policy, Map.class));
             minioBucketEngine.setBucketPolicy(bucketName, policy);
         } catch (Exception e) {
             throw new GlobalServiceException(String.format("minio 桶 %s 创建失败", bucketName));

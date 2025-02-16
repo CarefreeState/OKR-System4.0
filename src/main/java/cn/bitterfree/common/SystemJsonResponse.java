@@ -17,6 +17,13 @@ public class SystemJsonResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private static final SystemJsonResponse<?> SUCCESS = new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SUCCESS.getCode(),
+            GlobalServiceStatusCode.SYSTEM_SUCCESS.getMessage());
+    private static final SystemJsonResponse<?> FAIL = new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getCode(),
+            GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getMessage());
+    private static final SystemJsonResponse<?> ERROR = new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getCode(),
+            GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getMessage());
+
     @JsonInclude
     @Schema(description = "状态码")
     private Integer code;
@@ -46,8 +53,7 @@ public class SystemJsonResponse<T> implements Serializable {
      * @return 成功状态码
      */
     public static SystemJsonResponse<?> SYSTEM_SUCCESS() {
-        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SUCCESS.getCode(),
-                GlobalServiceStatusCode.SYSTEM_SUCCESS.getMessage());
+        return SUCCESS;
     }
 
     /**
@@ -69,8 +75,7 @@ public class SystemJsonResponse<T> implements Serializable {
      * @return SystemJsonResponse
      */
     public static SystemJsonResponse<?> SYSTEM_FAIL() {
-        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getCode(),
-                GlobalServiceStatusCode.SYSTEM_SERVICE_FAIL.getMessage());
+        return FAIL;
     }
 
     /**
@@ -80,8 +85,7 @@ public class SystemJsonResponse<T> implements Serializable {
      * @return SystemJsonResponse
      */
     public static SystemJsonResponse<?> SERVICE_ERROR() {
-        return new SystemJsonResponse<>(GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getCode(),
-                GlobalServiceStatusCode.SYSTEM_SERVICE_ERROR.getMessage());
+        return ERROR;
     }
 
     /**
