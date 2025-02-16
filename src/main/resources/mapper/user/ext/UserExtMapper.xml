@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bitterfree.domain.user.model.mapper.UserMapper">
+
+    <resultMap id="QueryUserMap" type="cn.bitterfree.domain.user.model.vo.UserQueryVO">
+        <result property="total" column="total"/>
+        <collection property="list" columnPrefix="u_" resultMap="VOResultMap"/>
+    </resultMap>
+
+    <select id="queryUser" resultMap="QueryUserMap">
+        select tc.total, u.id u_id, u.openid u_openid, u.unionid u_unionid, u.username u_username,
+               u.nickname u_nickname, u.photo u_photo, u.email u_email, u.phone u_phone, u.user_type u_user_type
+        from (select count(*) total from user tu
+        <where>
+            tu.is_deleted = 0
+            <if test="username != null and username.isBlank() == false">
+                and tu.username like concat('%', #{username,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="nickname != null and nickname.isBlank() == false">
+                and tu.nickname like concat('%', #{nickname,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="userType != null">
+                and tu.user_type = #{userType,jdbcType=INTEGER}
+            </if>
+        </where>) tc left join (select id from user tu
+        <where>
+            tu.is_deleted = 0
+            <if test="username != null and username.isBlank() == false">
+                and tu.username like concat('%', #{username,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="nickname != null and nickname.isBlank() == false">
+                and tu.nickname like concat('%', #{nickname,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="userType != null">
+                and tu.user_type = #{userType,jdbcType=INTEGER}
+            </if>
+        </where> order by tu.id asc limit #{limit,jdbcType=BIGINT} offset #{offset,jdbcType=BIGINT}) page on true
+        left join user u on page.id = u.id
+    </select>
+
+
+</mapper>

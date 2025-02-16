@@ -25,11 +25,12 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="openid" column="openid" jdbcType="VARCHAR"/>
         <result property="unionid" column="unionid" jdbcType="VARCHAR"/>
-        <result property="username" column="nickname" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="photo" column="photo" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="phone" column="phone" jdbcType="CHAR"/>
+        <result property="userType" column="user_type" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">

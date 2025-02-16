@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,7 +114,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
     @Override
     public List<UserStatusFlagsVO> getStatusFlagsByUserId(List<Long> ids) {
         if(CollectionUtils.isEmpty(ids)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return teamPersonalOkrMapper.getStatusFlagsByUserId(ids);
     }

@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -261,7 +261,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     @Override
     public List<UserStatusFlagsVO> getStatusFlagsByUserId(List<Long> ids) {
         if(CollectionUtils.isEmpty(ids)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return teamOkrMapper.getStatusFlagsByUserId(ids);
     }

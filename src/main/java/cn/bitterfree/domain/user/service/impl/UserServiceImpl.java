@@ -1,7 +1,6 @@
 package cn.bitterfree.domain.user.service.impl;
 
 import cn.bitterfree.common.base.BasePageQuery;
-import cn.bitterfree.common.base.BasePageResult;
 import cn.bitterfree.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.common.exception.GlobalServiceException;
 import cn.bitterfree.domain.user.enums.UserType;
@@ -40,6 +39,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private final RedisLock redisLock;
 
     private final RedisCache redisCache;
+
+    private final UserMapper userMapper;
 
     @Override
     public Optional<User> getUserById(Long id) {
@@ -126,6 +127,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         clearUserAllCache(userId);
     }
 
+//    @Override
+//    public UserQueryVO queryUser(UserQueryDTO userQueryDTO) {
+//        // 解析分页参数获取 page
+//        IPage<User> page = null;
+//        String username = null;
+//        String nickname = null;
+//        UserType userType = null;
+//        // 获取条件分页查询参数
+//        if(Objects.nonNull(userQueryDTO)) {
+//            page = userQueryDTO.toMpPage();
+//            username = userQueryDTO.getUsername();
+//            nickname = userQueryDTO.getNickname();
+//            userType = userQueryDTO.getUserType();
+//        } else {
+//            page = new BasePageQuery().toMpPage();
+//        }
+//        // 分页
+//        IPage<User> userIPage = this.lambdaQuery()
+//                .like(StringUtils.hasText(username), User::getUsername, username)
+//                .like(StringUtils.hasText(nickname), User::getNickname, nickname)
+//                .eq(Objects.nonNull(userType), User::getUserType, userType)
+//                .page(page);
+//        // 封装
+//        BasePageResult<User> userBasePageResult = BasePageResult.of(userIPage);
+//        // 转化并返回
+//        return UserConverter.INSTANCE.userBasePageResultToUserQueryVO(userBasePageResult);
+//    }
+
+    // 覆盖索引 + 子查询实现分页查询
     @Override
     public UserQueryVO queryUser(UserQueryDTO userQueryDTO) {
         // 解析分页参数获取 page
@@ -134,7 +164,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String nickname = null;
         UserType userType = null;
         // 获取条件分页查询参数
-        if(Objects.nonNull(userQueryDTO)) {
+        if (Objects.nonNull(userQueryDTO)) {
             page = userQueryDTO.toMpPage();
             username = userQueryDTO.getUsername();
             nickname = userQueryDTO.getNickname();
@@ -143,15 +173,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             page = new BasePageQuery().toMpPage();
         }
         // 分页
-        IPage<User> userIPage = this.lambdaQuery()
-                .like(StringUtils.hasText(username), User::getUsername, username)
-                .like(StringUtils.hasText(nickname), User::getNickname, nickname)
-                .eq(Objects.nonNull(userType), User::getUserType, userType)
-                .page(page);
+        long size = page.getSize();
+        long current = page.getCurrent();
+        UserQueryVO userQueryVO = userMapper.queryUser(username, nickname, userType, size, size * (current - 1));
         // 封装
-        BasePageResult<User> userBasePageResult = BasePageResult.of(userIPage);
+        userQueryVO.setPageSize(size);
+        userQueryVO.setCurrent(current);
+        userQueryVO.setPages(size == 0L ? 0L : Math.ceilDiv(userQueryVO.getTotal(), size)); // ceilDiv 向上取整的除法
         // 转化并返回
-        return UserConverter.INSTANCE.userBasePageResultToUserQueryVO(userBasePageResult);
+        return userQueryVO;
     }
 
     @Override

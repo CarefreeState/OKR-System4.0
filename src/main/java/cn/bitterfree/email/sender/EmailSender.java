@@ -78,7 +78,7 @@ public class EmailSender {
     }
 
     public void send(EmailMessage emailMessage, boolean isHtml) {
-        send(emailMessage, isHtml, new ArrayList<>());
+        send(emailMessage, isHtml, Collections.emptyList());
     }
 
     public void send(EmailMessage emailMessage) {
