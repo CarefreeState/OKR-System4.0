@@ -10,7 +10,6 @@ package cn.bitterfree.common.constants;
 public interface MyBatisPageConstants {
 
     Long DEFAULT_CURRENT = 1L;
-
     Long DEFAULT_PAGE_SIZE = 10L;
 
 }

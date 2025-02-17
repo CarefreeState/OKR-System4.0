@@ -3,6 +3,7 @@ package cn.bitterfree.common.base;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +36,19 @@ public class BasePageQuery {
     @Schema(description = "页内大小")
     private Long pageSize;
 
+    @Schema(description = "限制条数")
+    @JsonIgnore
+    private Long limit;
+
+    @Schema(description = "偏移量")
+    @JsonIgnore
+    private Long offset;
+
     public void init() {
         current = Optional.ofNullable(current).orElse(DEFAULT_CURRENT);
         pageSize = Optional.ofNullable(pageSize).orElse(DEFAULT_PAGE_SIZE);
+        limit = pageSize;
+        offset = pageSize * (current - 1);
     }
 
     public <T> IPage<T> toMpPage(OrderItem... orders){

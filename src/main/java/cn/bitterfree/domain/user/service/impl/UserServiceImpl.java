@@ -1,6 +1,5 @@
 package cn.bitterfree.domain.user.service.impl;
 
-import cn.bitterfree.common.base.BasePageQuery;
 import cn.bitterfree.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.common.exception.GlobalServiceException;
 import cn.bitterfree.domain.user.enums.UserType;
@@ -13,14 +12,12 @@ import cn.bitterfree.domain.user.model.vo.UserQueryVO;
 import cn.bitterfree.domain.user.service.UserService;
 import cn.bitterfree.redis.cache.RedisCache;
 import cn.bitterfree.redis.lock.RedisLock;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static cn.bitterfree.domain.user.constants.UserConstants.*;
@@ -159,27 +156,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public UserQueryVO queryUser(UserQueryDTO userQueryDTO) {
         // 解析分页参数获取 page
-        IPage<User> page = null;
-        String username = null;
-        String nickname = null;
-        UserType userType = null;
-        // 获取条件分页查询参数
-        if (Objects.nonNull(userQueryDTO)) {
-            page = userQueryDTO.toMpPage();
-            username = userQueryDTO.getUsername();
-            nickname = userQueryDTO.getNickname();
-            userType = userQueryDTO.getUserType();
-        } else {
-            page = new BasePageQuery().toMpPage();
-        }
+        userQueryDTO = Optional.ofNullable(userQueryDTO).orElseGet(UserQueryDTO::new);
+        userQueryDTO.init();
         // 分页
-        long size = page.getSize();
-        long current = page.getCurrent();
-        UserQueryVO userQueryVO = userMapper.queryUser(username, nickname, userType, size, size * (current - 1));
+        UserQueryVO userQueryVO = userMapper.queryUser(userQueryDTO);
         // 封装
-        userQueryVO.setPageSize(size);
-        userQueryVO.setCurrent(current);
-        userQueryVO.setPages(size == 0L ? 0L : Math.ceilDiv(userQueryVO.getTotal(), size)); // ceilDiv 向上取整的除法
+        Long pageSize = userQueryVO.getPageSize();
+        userQueryVO.setPages(pageSize.equals(0L) ? 0L : Math.ceilDiv(userQueryVO.getTotal(), pageSize)); // ceilDiv 向上取整的除法
         // 转化并返回
         return userQueryVO;
     }
