@@ -11,7 +11,7 @@ spring:
 # 日志配置
 logging:
   level:
-    cn.bitterfree: @logging.level@
+    cn.bitterfree.api: @logging.level@
     org.springframework: warn
     tech.powerjob.worker.background: warn
   config: classpath:logback-spring.xml

@@ -1,0 +1,23 @@
+package cn.bitterfree.api.domain.media.service;
+
+import cn.bitterfree.api.domain.media.model.entity.DigitalResource;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
+
+/**
+* @author 马拉圈
+* @description 针对表【digital_resource(资源表)】的数据库操作Service
+* @createDate 2024-12-29 23:27:24
+*/
+public interface DigitalResourceService extends IService<DigitalResource> {
+
+    DigitalResource createResource(String originalName, String fileName, Long activeLimit);
+
+    DigitalResource getResourceByCode(String code);
+
+    String getFileName(String code);
+    void removeResource(List<String> codeList);
+    void clearCache(List<String> codeList);
+
+}

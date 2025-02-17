@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.bitterfree.domain.okr.model.mapper.PersonalOkrMapper">
+<mapper namespace="cn.bitterfree.api.domain.okr.model.mapper.PersonalOkrMapper">
 
     <select id="getNotCompletedCount" resultType="java.lang.Long" parameterType="java.lang.Long">
         select
@@ -16,7 +16,7 @@
           and o.is_over = 0
     </select>
 
-    <select id="getPersonalOkrList" resultType="cn.bitterfree.domain.okr.model.vo.PersonalOkrVO" parameterType="java.lang.Long">
+    <select id="getPersonalOkrList" resultType="cn.bitterfree.api.domain.okr.model.vo.PersonalOkrVO" parameterType="java.lang.Long">
         select
             p.id, p.core_id, f.objective, o.is_over, p.create_time, p.update_time, p.core_id
         from user u, personal_okr p, okr_core o, first_quadrant f
@@ -29,7 +29,7 @@
         order by o.is_over, p.create_time desc
     </select>
 
-    <select id="getStatusFlagsByUserId" resultMap="cn.bitterfree.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
+    <select id="getStatusFlagsByUserId" resultMap="cn.bitterfree.api.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
         select
             u.id user_id, s.id s_id, s.color s_color, s.label s_label
         from

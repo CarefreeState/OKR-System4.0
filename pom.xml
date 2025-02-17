@@ -8,7 +8,7 @@
 		<version>3.0.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>cn.bitterfree</groupId>
+	<groupId>cn.bitterfree.api</groupId>
 	<artifactId>OKR-System</artifactId>
 	<version>4.0</version>
 	<name>OKR-System</name>

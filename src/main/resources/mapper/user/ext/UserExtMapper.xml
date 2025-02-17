@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.bitterfree.domain.user.model.mapper.UserMapper">
+<mapper namespace="cn.bitterfree.api.domain.user.model.mapper.UserMapper">
 
-    <resultMap id="QueryUserMap" type="cn.bitterfree.domain.user.model.vo.UserQueryVO">
+    <resultMap id="QueryUserMap" type="cn.bitterfree.api.domain.user.model.vo.UserQueryVO">
         <result property="total" column="total" jdbcType="BIGINT"/>
         <result property="current" column="current" jdbcType="BIGINT"/>
         <result property="pageSize" column="page_size" jdbcType="BIGINT"/>

@@ -2,16 +2,16 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.bitterfree.domain.okr.model.mapper.TeamOkrMapper">
+<mapper namespace="cn.bitterfree.api.domain.okr.model.mapper.TeamOkrMapper">
 
-    <resultMap extends="BaseResultMap" id="KeyResultsMap" type="cn.bitterfree.domain.okr.model.vo.TeamOkrStatisticVO">
+    <resultMap extends="BaseResultMap" id="KeyResultsMap" type="cn.bitterfree.api.domain.okr.model.vo.TeamOkrStatisticVO">
         <result property="isOver" column="is_over" jdbcType="BIT"/>
         <result property="degree" column="degree" jdbcType="INTEGER"/>
-        <collection property="keyResults" ofType="cn.bitterfree.domain.core.model.entity.inner.KeyResult"
-                    resultMap="cn.bitterfree.domain.core.model.mapper.inner.KeyResultMapper.BaseResultMap" columnPrefix="k_" />
+        <collection property="keyResults" ofType="cn.bitterfree.api.domain.core.model.entity.inner.KeyResult"
+                    resultMap="cn.bitterfree.api.domain.core.model.mapper.inner.KeyResultMapper.BaseResultMap" columnPrefix="k_" />
     </resultMap>
 
-    <resultMap id="TeamListMap" type="cn.bitterfree.domain.okr.model.vo.TeamOkrVO">
+    <resultMap id="TeamListMap" type="cn.bitterfree.api.domain.okr.model.vo.TeamOkrVO">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="coreId" column="core_id" jdbcType="BIGINT"/>
         <result property="parentTeamId" column="parent_team_id" jdbcType="BIGINT"/>
@@ -19,7 +19,7 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="isOver" column="is_over" jdbcType="BIT"/>
-        <association property="manager" resultMap="cn.bitterfree.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="u_"/>
+        <association property="manager" resultMap="cn.bitterfree.api.domain.user.model.mapper.UserMapper.VOResultMap" columnPrefix="u_"/>
     </resultMap>
 
     <update id="createFindTeamRootProcedure">
@@ -145,7 +145,7 @@
         order by t.id
     </select>
 
-    <select id="getStatusFlagsByUserId" resultMap="cn.bitterfree.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
+    <select id="getStatusFlagsByUserId" resultMap="cn.bitterfree.api.domain.core.model.mapper.inner.StatusFlagMapper.UserStatusFlags">
         select
             u.id user_id, s.id s_id, s.color s_color, s.label s_label
         from

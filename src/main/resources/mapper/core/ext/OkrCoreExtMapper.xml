@@ -2,26 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.bitterfree.domain.core.model.mapper.OkrCoreMapper">
+<mapper namespace="cn.bitterfree.api.domain.core.model.mapper.OkrCoreMapper">
 
-    <resultMap id="FirstQuadrantEventResultMap" type="cn.bitterfree.domain.core.model.message.deadline.FirstQuadrantEvent">
+    <resultMap id="FirstQuadrantEventResultMap" type="cn.bitterfree.api.domain.core.model.message.deadline.FirstQuadrantEvent">
         <result property="coreId" column="core_id" jdbcType="BIGINT"/>
         <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
     </resultMap>
-    <resultMap id="SecondQuadrantEventResultMap" type="cn.bitterfree.domain.core.model.message.deadline.SecondQuadrantEvent">
+    <resultMap id="SecondQuadrantEventResultMap" type="cn.bitterfree.api.domain.core.model.message.deadline.SecondQuadrantEvent">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="coreId" column="core_id" jdbcType="BIGINT"/>
         <result property="cycle" column="cycle" jdbcType="TIMESTAMP"/>
         <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
     </resultMap>
-    <resultMap id="ThirdQuadrantEventResultMap" type="cn.bitterfree.domain.core.model.message.deadline.ThirdQuadrantEvent">
+    <resultMap id="ThirdQuadrantEventResultMap" type="cn.bitterfree.api.domain.core.model.message.deadline.ThirdQuadrantEvent">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="coreId" column="core_id" jdbcType="BIGINT"/>
         <result property="cycle" column="cycle" jdbcType="TIMESTAMP"/>
         <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <resultMap id="DeadlineEventMap" type="cn.bitterfree.domain.coredeadline.handler.event.DeadlineEvent">
+    <resultMap id="DeadlineEventMap" type="cn.bitterfree.api.domain.coredeadline.handler.event.DeadlineEvent">
         <association property="firstQuadrantEvent" resultMap="FirstQuadrantEventResultMap" columnPrefix="f_"/>
         <association property="secondQuadrantEvent" resultMap="SecondQuadrantEventResultMap" columnPrefix="s_"/>
         <association property="thirdQuadrantEvent" resultMap="ThirdQuadrantEventResultMap" columnPrefix="t_"/>
