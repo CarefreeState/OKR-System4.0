@@ -30,9 +30,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HttpRequestUtil {
 
-    public final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
-
-    public final static PathMatcher PATH_MATCHER = new AntPathMatcher();
+    private final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
+    private final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
     public static boolean matchPath(String pattern, String path) {
         return PATH_MATCHER.match(pattern, path);

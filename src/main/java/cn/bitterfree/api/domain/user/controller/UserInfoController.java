@@ -35,7 +35,7 @@ import java.util.List;
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @Tag(name = "用户/信息")
-@Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
+@Intercept
 @Validated
 public class UserInfoController {
 

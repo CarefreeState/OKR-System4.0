@@ -32,7 +32,8 @@ public class DelayMessageGlobalListener {
                 rabbitMQMessage.getRoutingKey(),
                 rabbitMQMessage.getMsg(),
                 rabbitMQMessage.getDelay(),
-                rabbitMQMessage.getMaxRetries()
+                rabbitMQMessage.getMaxRetries(),
+                rabbitMQMessage.isAvailableDelay()
         );
     }
 

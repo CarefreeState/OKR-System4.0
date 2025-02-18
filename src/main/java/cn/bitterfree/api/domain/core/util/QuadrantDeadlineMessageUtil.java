@@ -31,7 +31,8 @@ public class QuadrantDeadlineMessageUtil {
                 FIRST_DDL,
                 firstQuadrantEvent,
                 firstQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES
+                MAX_RETRIES,
+                Boolean.TRUE
         );
     }
 
@@ -41,7 +42,8 @@ public class QuadrantDeadlineMessageUtil {
                 SECOND_DDL,
                 secondQuadrantEvent,
                 secondQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES
+                MAX_RETRIES,
+                Boolean.TRUE
         );
     }
 
@@ -51,7 +53,8 @@ public class QuadrantDeadlineMessageUtil {
                 THIRD_DDL,
                 thirdQuadrantEvent,
                 thirdQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES
+                MAX_RETRIES,
+                Boolean.TRUE
         );
     }
 

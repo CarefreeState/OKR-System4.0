@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Intercept {
 
-    UserType[] permit() default {UserType.NORMAL_USER};
+    UserType[] permit() default {UserType.NORMAL_USER, UserType.MANAGER};
 
     boolean authenticate() default true; // 默认需要认证
 

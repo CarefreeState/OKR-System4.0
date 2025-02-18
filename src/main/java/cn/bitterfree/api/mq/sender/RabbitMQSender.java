@@ -1,8 +1,15 @@
 package cn.bitterfree.api.mq.sender;
 
 import cn.bitterfree.api.common.util.convert.UUIDUtil;
+import cn.bitterfree.api.common.util.juc.threadpool.SchedulerThreadPool;
 import cn.bitterfree.api.mq.config.PublisherReturnsCallBack;
+import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
+import cn.bitterfree.api.mq.util.DelayMessageUtil;
+import cn.bitterfree.api.mq.util.RabbitMQRequestUtil;
+import cn.bitterfree.api.redis.cache.RedisCache;
+import cn.bitterfree.api.redis.cache.RedisSortedSetCache;
+import com.rabbitmq.client.Channel;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +35,10 @@ import java.util.function.Function;
 @Slf4j
 public class RabbitMQSender {
 
+    private final RedisCache redisCache;
+
+    private final RedisSortedSetCache redisSortedSetCache;
+
     private final RabbitTemplate rabbitTemplate;
 
     private final PublisherReturnsCallBack publisherReturnsCallBack;
@@ -52,7 +63,9 @@ public class RabbitMQSender {
         return message -> {
             // 小于 0 也是立即执行
             // setDelay 才是给 RabbitMQ 看的，setReceivedDelay 是给 publish-returns 看的
-            message.getMessageProperties().setDelay((int) Math.max(delay, 0));
+            if(delay > 0) {
+                message.getMessageProperties().setDelay((int) delay);
+            }
             return message;
         };
     };
@@ -61,15 +74,45 @@ public class RabbitMQSender {
         return new CorrelationData(UUIDUtil.uuid32());
     }
 
-    private <T> void send(RabbitMQMessage<T> rabbitMQMessage) {
+    private <T> void localDelaySend(RabbitMQMessage<T> rabbitMQMessage) {
+        long delay = rabbitMQMessage.getDeadline() - System.currentTimeMillis();
+        log.info("delay 为 {} 的消息由本服务实现延时", delay);
+        SchedulerThreadPool.schedule(() -> {
+            rabbitMQMessage.setDelay(0); // delay 为 0 交换机会直接转发
+            rabbitMQMessage.setAvailableDelay(Boolean.FALSE);
+            send(rabbitMQMessage);
+        }, delay, TimeUnit.NANOSECONDS);
+    }
+
+    private <T>  boolean trySend(RabbitMQMessage<T> rabbitMQMessage) {
+        long delay = rabbitMQMessage.getDelay();
         String exchange = rabbitMQMessage.getExchange();
+        if (delay > 0 && rabbitMQMessage.isAvailableDelay() &&
+                RabbitMQRequestUtil.getMessagesDelayed(exchange) >= DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY) {
+            log.info("延时交换机 {} 已达到安全值范围 {} ，后续的延时消息将先进行缓存", exchange, DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY);
+            if (delay < DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LISTEN_GAP) {
+                localDelaySend(rabbitMQMessage);
+            } else {
+                String messageCacheList = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
+                redisSortedSetCache.add(messageCacheList, rabbitMQMessage, rabbitMQMessage.getDeadline(),
+                        DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST_TTL, DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST_UNIT);
+            }
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    private <T> void send(RabbitMQMessage<T> rabbitMQMessage) {
+        if(Boolean.FALSE.equals(trySend(rabbitMQMessage))) {
+            return;
+        }
+        String exchange = rabbitMQMessage.getExchange();
+        long delay = rabbitMQMessage.getDelay();
         String routingKey = rabbitMQMessage.getRoutingKey();
         T msg = rabbitMQMessage.getMsg();
-        long delay = rabbitMQMessage.getDelay();
         int maxRetries = rabbitMQMessage.getMaxRetries();
         log.info("准备发送消息，exchange: {}, routingKey: {}, msg: {}, delay: {}s, maxRetries: {}",
                 exchange, routingKey, msg, TimeUnit.MILLISECONDS.toSeconds(delay), maxRetries);
-
         CorrelationData correlationData = newCorrelationData();
         MessagePostProcessor delayMessagePostProcessor = delayMessagePostProcessor(delay);
         correlationData.getFuture().exceptionallyAsync(ON_FAILURE).thenAcceptAsync(new Consumer<>() {
@@ -107,24 +150,55 @@ public class RabbitMQSender {
      * @param maxRetries 最大重试机会
      * @param <T> 消息的对象类型
      */
-    public <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
-        send(rabbitMessageConverter.getRabbitMQMessage(exchange, routingKey, msg, delay, maxRetries));
+    public <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries, boolean isAvailableDelay){
+        send(rabbitMessageConverter.getRabbitMQMessage(exchange, routingKey, msg, delay, maxRetries, isAvailableDelay));
     }
 
     public void sendMessage(String exchange, String routingKey, Object msg) {
-        send(exchange, routingKey, msg, 0, 0);
-    }
-
-    public void sendDelayMessage(String exchange, String routingKey, Object msg, long delay){
-        send(exchange, routingKey, msg, delay, 0);
+        send(exchange, routingKey, msg, 0, 0, Boolean.FALSE);
     }
 
     public void sendWithConfirm(String exchange, String routingKey, Object msg, int maxReties) {
-        send(exchange, routingKey, msg, 0, maxReties);
+        send(exchange, routingKey, msg, 0, maxReties, Boolean.FALSE);
+    }
+
+    public void sendDelayMessage(String exchange, String routingKey, Object msg, long delay){
+        sendDelayMessage(exchange, routingKey, msg, delay, Boolean.FALSE);
+    }
+
+    public void sendDelayMessage(String exchange, String routingKey, Object msg, long delay,  boolean isAvailableDelay){
+        send(exchange, routingKey, msg, delay, 0, isAvailableDelay);
     }
 
     public void sendDelayMessageWithConfirm(String exchange, String routingKey, Object msg, long delay, int maxReties) {
-        send(exchange, routingKey, msg, delay, maxReties);
+        sendDelayMessageWithConfirm(exchange, routingKey, msg, delay, maxReties, Boolean.FALSE);
+    }
+
+    public void sendDelayMessageWithConfirm(String exchange, String routingKey, Object msg, long delay, int maxReties, boolean isAvailableDelay) {
+        send(exchange, routingKey, msg, delay, maxReties, isAvailableDelay);
+    }
+
+    public void popAndLocalDelaySend(String exchange) {
+        String messageCacheListKey = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
+        // ddl 在未来五分钟内的延时任务直接用用任务调度线程池做延时功能
+        long now = System.currentTimeMillis();
+        long min = 0;
+        long max = now + DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LISTEN_GAP;
+        redisSortedSetCache.rangeByScore(messageCacheListKey, RabbitMQMessage.class, min, max).forEach(this::localDelaySend);
+        redisSortedSetCache.removeRangeByScore(messageCacheListKey, min, max);
+    }
+
+    public void popAndSendDelayMessage(String exchange) {
+        String messageCacheListKey = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
+        int num = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - RabbitMQRequestUtil.getMessagesDelayed(exchange);
+        if (num > 0) {
+            redisSortedSetCache.popMin(messageCacheListKey, RabbitMQMessage.class, num).forEach(message -> {
+                long delay = message.getDeadline() - System.currentTimeMillis(); // 计算新的 delay
+                message.setDelay(delay);
+                send(message);
+            });  // 这里的消息都是要直接加入延时交换机的
+        }
+        popAndLocalDelaySend(exchange);
     }
 
 }

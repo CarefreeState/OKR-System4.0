@@ -17,8 +17,8 @@ import java.util.Objects;
 @Slf4j
 public class DelayMessageUtil {
 
-    public static <T> RabbitMQMessage<?> getDelayMessage(String exchange, String routingKey, T msg, long delay, int maxRetries) {
-        RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries);
+    public static <T> RabbitMQMessage<?> getDelayMessage(String exchange, String routingKey, T msg, long delay, int maxRetries, boolean isAvailableDelay) {
+        RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries, isAvailableDelay, delay + System.currentTimeMillis());
         // ttl 大的排在前面（找到适合的区间，对应的 ttl 队列）
         Map.Entry<Long, String> ttlQueue = DelayMessageConstants.GLOBAL_DELAY_TTL_MAP.entrySet().stream()
                 .filter(tq -> tq.getKey().compareTo(delay) < 0)
@@ -36,7 +36,9 @@ public class DelayMessageUtil {
                     .routingKey(queue)
                     .msg(rabbitMQMessage)
                     .delay(0L)
+                    .deadline(0L)
                     .maxRetries(maxRetries)
+                    .isAvailableDelay(Boolean.FALSE)
                     .build();
         } else {
             return rabbitMQMessage;

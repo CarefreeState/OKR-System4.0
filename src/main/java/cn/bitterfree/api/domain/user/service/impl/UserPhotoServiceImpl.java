@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -65,7 +66,9 @@ public class UserPhotoServiceImpl implements UserPhotoService {
             String code = getCode.get();
             // 删除原头像
             IOThreadPool.submit(() -> {
-                if(!code.equals(originPhoto) && !defaultPhotoService.getDefaultPhotoList().contains(originPhoto)) {
+                if(StringUtils.hasText(originPhoto) && !originPhoto.equals(code) &&
+                        !UserConstants.DEFAULT_PHOTO.equals(originPhoto) &&
+                        !defaultPhotoService.getDefaultPhotoList().contains(originPhoto)) {
                     fileMediaService.remove(originPhoto);
                 }
             });

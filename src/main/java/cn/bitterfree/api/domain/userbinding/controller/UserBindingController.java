@@ -1,7 +1,6 @@
 package cn.bitterfree.api.domain.userbinding.controller;
 
 import cn.bitterfree.api.common.SystemJsonResponse;
-import cn.bitterfree.api.domain.user.enums.UserType;
 import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.domain.user.service.UserService;
 import cn.bitterfree.api.domain.userbinding.enums.BindingType;
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "绑定")
 @Validated
+@Intercept
 public class UserBindingController {
 
     private final UserService userService;
@@ -39,7 +39,6 @@ public class UserBindingController {
 
     @PostMapping("/user/binding/email")
     @Operation(summary = "绑定用户邮箱")
-    @Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
     public SystemJsonResponse<?> emailBinding(@Valid @RequestBody EmailBindingDTO emailBindingDTO) {
         // 获取当前登录的用户
         User user = InterceptorContext.getUser();
@@ -54,7 +53,6 @@ public class UserBindingController {
 
     @PostMapping("/user/binding")
     @Operation(summary = "用户绑定")
-    @Intercept(permit = {UserType.NORMAL_USER, UserType.MANAGER})
     public SystemJsonResponse<?> binding(@Valid @RequestBody BindingDTO bindingDTO) {
         User user = InterceptorContext.getUser();
         BindingService bindingService = bindingServiceFactory.getService(bindingDTO.getType());

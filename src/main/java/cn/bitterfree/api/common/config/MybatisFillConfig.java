@@ -36,7 +36,7 @@ public class MybatisFillConfig implements MetaObjectHandler {
         this.strictUpdateFill(metaObject, "updateTime", Date.class, current);
     }
 
-    //乐观锁
+    // MyBatis-Plus 的扩展
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
