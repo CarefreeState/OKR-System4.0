@@ -26,11 +26,13 @@ public interface DelayMessageConstants {
 //    String DELAY_EXCHANGE_MESSAGE_COUNTER = "delayExchangeMessageCounter:";
 //    Long DELAY_EXCHANGE_MESSAGE_COUNTER_TTL = 12L; // 长达十二天未变化，其内部的消息早没了
 //    TimeUnit DELAY_EXCHANGE_MESSAGE_COUNTER_UNIT = TimeUnit.DAYS;
-    int MAX_DELAY_EXCHANGE_CAPACITY = 10; // 10w 条的时候比较安全
+    int MAX_DELAY_EXCHANGE_CAPACITY = 10_0000; // 10w 条内比较安全
 
     String DELAY_EXCHANGE_MESSAGE_CACHE_LIST = "delayExchangeMessageCacheList:";
     Long DELAY_EXCHANGE_MESSAGE_CACHE_LIST_TTL = 12L; // 同理若长达十二天未变化，其内部的消息早没了
     TimeUnit DELAY_EXCHANGE_MESSAGE_CACHE_LIST_UNIT = TimeUnit.DAYS;
     Long DELAY_EXCHANGE_MESSAGE_CACHE_LISTEN_GAP = TimeUnit.MINUTES.toMillis(5);
+
+    String LOCAL_DELAY_QUEUE = "local.delay.queue";
 
 }

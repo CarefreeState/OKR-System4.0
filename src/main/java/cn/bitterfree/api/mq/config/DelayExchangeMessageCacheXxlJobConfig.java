@@ -1,7 +1,5 @@
 package cn.bitterfree.api.mq.config;
 
-import cn.bitterfree.api.common.util.juc.threadpool.IOThreadPool;
-import cn.bitterfree.api.domain.core.constants.DelayExchangeConstants;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.sender.RabbitMQSender;
 import cn.bitterfree.api.redis.cache.RedisCache;
@@ -10,8 +8,6 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Set;
 
 /**
  * Created With Intellij IDEA

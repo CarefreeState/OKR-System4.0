@@ -5,10 +5,8 @@ import cn.bitterfree.api.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.api.common.exception.GlobalServiceException;
 import cn.bitterfree.api.domain.core.model.entity.quadrant.FirstQuadrant;
 import cn.bitterfree.api.domain.core.model.mapper.quadrant.FirstQuadrantMapper;
-import cn.bitterfree.api.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.vo.quadrant.FirstQuadrantVO;
 import cn.bitterfree.api.domain.core.service.quadrant.FirstQuadrantService;
-import cn.bitterfree.api.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.bitterfree.api.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 /**
@@ -45,7 +42,6 @@ public class FirstQuadrantServiceImpl extends ServiceImpl<FirstQuadrantMapper, F
     @Transactional
     public void initFirstQuadrant(FirstQuadrant firstQuadrant) {
         Long id = firstQuadrant.getId();
-        Date deadline = firstQuadrant.getDeadline();
         // 查询是否是第一次修改
         FirstQuadrant quadrant = this.lambdaQuery()
                 .eq(FirstQuadrant::getId, id)
@@ -61,13 +57,6 @@ public class FirstQuadrantServiceImpl extends ServiceImpl<FirstQuadrantMapper, F
         updateQuadrant.setObjective(firstQuadrant.getObjective());
         // 更新
         this.updateById(updateQuadrant);
-        Long coreId = this.lambdaQuery()
-                .eq(FirstQuadrant::getId, id)
-                .one().getCoreId();
-        // 发起一个定时任务
-        FirstQuadrantEvent event = FirstQuadrantEvent.builder()
-                .coreId(coreId).deadline(deadline).build();
-        QuadrantDeadlineMessageUtil.scheduledComplete(event);
     }
 
     @Override

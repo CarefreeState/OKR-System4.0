@@ -1,7 +1,5 @@
 package cn.bitterfree.api.mq.config;
 
-import cn.bitterfree.api.mq.sender.RabbitMessageConverter;
-import cn.bitterfree.api.mq.util.DelayMessageUtil;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +20,7 @@ public class DelayMessageConfig {
     private Queue getTtlQueue(String queue, long ttl) {
         return QueueBuilder.durable(queue)
                 .ttl((int) ttl)
-                .lazy()
+                .lazy() // 注解声明的方式需要待参数：@Argument(name = "x-queue-mode", value = "lazy")
                 .deadLetterExchange(GLOBAL_DELAY_DIRECT)
                 .deadLetterRoutingKey(GLOBAL_DELAY_QUEUE)
                 .build();
@@ -36,12 +34,6 @@ public class DelayMessageConfig {
     @Bean
     public Queue _24DaysTtlQueue() {
         return getTtlQueue(GLOBAL_24_DAYS_TTL_QUEUE, GLOBAL_24_DAYS_TTL);
-    }
-
-    @Bean
-    public RabbitMessageConverter rabbitMessageConverter() {
-//        return RabbitMQMessage::new;
-        return DelayMessageUtil::getDelayMessage;
     }
 
 }

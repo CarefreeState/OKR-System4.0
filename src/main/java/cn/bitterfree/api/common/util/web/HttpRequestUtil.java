@@ -59,9 +59,9 @@ public class HttpRequestUtil {
         queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
         return UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
+                .encode() // 开启译码模式
                 .queryParams(new LinkedMultiValueMap<>(queryParams))
                 .buildAndExpand(uriVariableValues)
-                .encode()
                 .toUriString();
     }
 
@@ -70,9 +70,9 @@ public class HttpRequestUtil {
         pathParams = Optional.ofNullable(pathParams).orElseGet(Map::of);
         return UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
+                .encode() // 开启译码模式
                 .queryParams(new LinkedMultiValueMap<>(queryParams))
                 .buildAndExpand(pathParams)
-                .encode()
                 .toUriString();
     }
 

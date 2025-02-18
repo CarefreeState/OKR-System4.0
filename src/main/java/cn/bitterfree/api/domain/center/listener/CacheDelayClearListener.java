@@ -3,7 +3,6 @@ package cn.bitterfree.api.domain.center.listener;
 import cn.bitterfree.api.domain.center.constants.CacheDelayClearConstants;
 import cn.bitterfree.api.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;

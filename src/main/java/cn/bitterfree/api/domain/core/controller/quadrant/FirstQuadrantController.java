@@ -8,10 +8,12 @@ import cn.bitterfree.api.domain.core.model.converter.FirstQuadrantConverter;
 import cn.bitterfree.api.domain.core.model.dto.quadrant.FirstQuadrantDTO;
 import cn.bitterfree.api.domain.core.model.dto.quadrant.OkrFirstQuadrantDTO;
 import cn.bitterfree.api.domain.core.model.entity.quadrant.FirstQuadrant;
+import cn.bitterfree.api.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.message.operate.OkrInitialize;
 import cn.bitterfree.api.domain.core.service.OkrOperateService;
 import cn.bitterfree.api.domain.core.service.quadrant.FirstQuadrantService;
 import cn.bitterfree.api.domain.core.util.OkrCoreUpdateMessageUtil;
+import cn.bitterfree.api.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.interceptor.annotation.Intercept;
 import cn.bitterfree.api.interceptor.context.InterceptorContext;
@@ -62,6 +64,10 @@ public class FirstQuadrantController {
             firstQuadrantService.initFirstQuadrant(firstQuadrant);
             log.info("第一象限初始化成功：{}", firstQuadrantDTO);
             OkrCoreUpdateMessageUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
+            // 发起一个定时任务
+            FirstQuadrantEvent event = FirstQuadrantEvent.builder()
+                    .coreId(coreId).deadline(firstQuadrantDTO.getDeadline()).build();
+            QuadrantDeadlineMessageUtil.scheduledComplete(event);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

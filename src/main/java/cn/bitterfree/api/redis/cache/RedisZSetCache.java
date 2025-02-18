@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class RedisSortedSetCache {
+public class RedisZSetCache {
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -41,35 +41,35 @@ public class RedisSortedSetCache {
         redisCache.expire(key, timeout, timeUnit);
     }
 
-    public <E> Set<E> popMax(final String key, final Class<E> eClazz, final long count) {
-        Set<E> popSet = ObjectUtil.nonNullstream(redisTemplate.opsForZSet().popMax(key, count)) // 弹出的数量 <= count
-                .map(ZSetOperations.TypedTuple::getValue)
-                .map(value -> redisCacheSerializer.parse(value, eClazz))
+    public <E> Set<ZSetOperations.TypedTuple<E>> popMax(final String key, final Class<E> eClazz, final long count) {
+        Set<ZSetOperations.TypedTuple<E>> popSet = ObjectUtil.nonNullstream(redisTemplate.opsForZSet().popMin(key, count)) // 弹出的数量 <= count
+                .map(tuple -> ZSetOperations.TypedTuple.of(redisCacheSerializer.parse(tuple.getValue(), eClazz), tuple.getScore()))
                 .collect(Collectors.toSet());
-        log.info("Redis 中的 SortedSet {} pop {}", key, popSet);
+        log.info("Redis 中的 SortedSet {} popMax {}", key, popSet);
         return popSet;
     }
 
-    public <E> Set<E> popMin(final String key, final Class<E> eClazz, final long count) {
-        Set<E> popSet = ObjectUtil.nonNullstream(redisTemplate.opsForZSet().popMin(key, count)) // 弹出的数量 <= count
-                .map(ZSetOperations.TypedTuple::getValue)
-                .map(value -> redisCacheSerializer.parse(value, eClazz))
+    public <E> Set<ZSetOperations.TypedTuple<E>> popMin(final String key, final Class<E> eClazz, final long count) {
+        Set<ZSetOperations.TypedTuple<E>> popSet = ObjectUtil.nonNullstream(redisTemplate.opsForZSet().popMin(key, count)) // 弹出的数量 <= count
+                .map(tuple -> ZSetOperations.TypedTuple.of(redisCacheSerializer.parse(tuple.getValue(), eClazz), tuple.getScore()))
                 .collect(Collectors.toSet());
-        log.info("Redis 中的 SortedSet {} pop {}", key, popSet);
+        log.info("Redis 中的 SortedSet {} popMin {}", key, popSet);
         return popSet;
     }
 
-    public <E> Set<E> rangeByScore(final String key, final Class<E> eClazz, final long min, final long max) {
-        Set<E> rangeSet = ObjectUtil.nonNullstream(redisTemplate.opsForZSet().rangeByScore(key, min, max))
-                .map(value -> redisCacheSerializer.parse(value, eClazz))
-                .collect(Collectors.toSet());
-        log.info("Redis 中的 SortedSet {} range [{}, {}] {}", key, min, max, rangeSet);
-        return rangeSet;
-    }
-
-    public <E> void removeRangeByScore(final String key, final long min, final long max) {
+    public void removeRangeByScore(final String key, final long min, final long max) {
         redisTemplate.opsForZSet().removeRangeByScore(key, min, max);
         log.info("Redis 中的 SortedSet {} remove [{}, {}]", key, min, max);
+    }
+
+    public <E> Set<ZSetOperations.TypedTuple<E>> popRangeByScore(final String key, final Class<E> eClazz, final long min, final long max) {
+        Set<ZSetOperations.TypedTuple<String>> rangeSet = redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max);
+        removeRangeByScore(key, min, max);
+        Set<ZSetOperations.TypedTuple<E>> popRangeSet = ObjectUtil.nonNullstream(rangeSet)
+                .map(tuple -> ZSetOperations.TypedTuple.of(redisCacheSerializer.parse(tuple.getValue(), eClazz), tuple.getScore()))
+                .collect(Collectors.toSet());
+        log.info("Redis 中的 SortedSet {} popRange [{}, {}] {}", key, min, max, popRangeSet);
+        return popRangeSet;
     }
 
     public Long size(String key) {

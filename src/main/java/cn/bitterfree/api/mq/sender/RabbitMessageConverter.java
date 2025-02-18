@@ -11,6 +11,6 @@ import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
  */
 public interface RabbitMessageConverter {
 
-    <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries, boolean isAvailableDelay);
+    <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries);
 
 }

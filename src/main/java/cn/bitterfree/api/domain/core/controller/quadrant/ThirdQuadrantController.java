@@ -6,11 +6,13 @@ import cn.bitterfree.api.common.exception.GlobalServiceException;
 import cn.bitterfree.api.domain.core.factory.OkrOperateServiceFactory;
 import cn.bitterfree.api.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.bitterfree.api.domain.core.model.dto.quadrant.OkrInitQuadrantDTO;
+import cn.bitterfree.api.domain.core.model.message.deadline.ThirdQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.message.operate.OkrInitialize;
 import cn.bitterfree.api.domain.core.service.OkrCoreService;
 import cn.bitterfree.api.domain.core.service.OkrOperateService;
 import cn.bitterfree.api.domain.core.service.quadrant.ThirdQuadrantService;
 import cn.bitterfree.api.domain.core.util.OkrCoreUpdateMessageUtil;
+import cn.bitterfree.api.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.interceptor.annotation.Intercept;
 import cn.bitterfree.api.interceptor.context.InterceptorContext;
@@ -55,8 +57,8 @@ public class ThirdQuadrantController {
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();
         Long quadrantId = initQuadrantDTO.getId();
         Long coreId = thirdQuadrantService.getThirdQuadrantCoreId(quadrantId);
+        okrCoreService.checkOverThrows(coreId);
         User user = InterceptorContext.getUser();
-
         OkrOperateService okrOperateService = okrOperateServiceFactory.getService(okrInitQuadrantDTO.getScene());
         // 检测身份
         Long userId = okrOperateService.getCoreUser(coreId);
@@ -64,8 +66,14 @@ public class ThirdQuadrantController {
             // 判断时长是否合理
             okrCoreService.checkThirdCycle(coreId, quadrantCycle);
             thirdQuadrantService.initThirdQuadrant(initQuadrantDTO);
+            okrCoreService.removeOkrCoreCache(coreId);
             log.info("第三象限初始化成功：{}", initQuadrantDTO);
             OkrCoreUpdateMessageUtil.sendOkrInitialize(OkrInitialize.builder().userId(userId).coreId(coreId).build());
+            // 发起一个定时任务
+            ThirdQuadrantEvent event = ThirdQuadrantEvent.builder()
+                    .coreId(coreId).id(quadrantId).cycle(quadrantCycle).deadline(initQuadrantDTO.getDeadline())
+                    .build();
+            QuadrantDeadlineMessageUtil.scheduledUpdateThirdQuadrant(event);
         }else {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NOT_CORE_MANAGER);
         }

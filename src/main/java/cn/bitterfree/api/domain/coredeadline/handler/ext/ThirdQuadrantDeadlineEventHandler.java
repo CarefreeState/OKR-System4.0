@@ -30,7 +30,8 @@ public class ThirdQuadrantDeadlineEventHandler extends DeadlineEventHandler {
     private final ThirdQuadrantService thirdQuadrantService;
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
+    public void handle(DeadlineEvent deadlineEvent, Boolean needSend) {
+        long nowTimestamp = System.currentTimeMillis();
         ThirdQuadrantEvent thirdQuadrantEvent = deadlineEvent.getThirdQuadrantEvent();
         Long id = thirdQuadrantEvent.getCoreId();
         Long thirdQuadrantId = thirdQuadrantEvent.getId();
@@ -55,6 +56,6 @@ public class ThirdQuadrantDeadlineEventHandler extends DeadlineEventHandler {
                 QuadrantDeadlineMessageUtil.scheduledUpdateThirdQuadrant(thirdQuadrantEvent);
             }
         }
-        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器
+        super.doNextHandler(deadlineEvent, needSend);//执行下一个责任处理器
     }
 }

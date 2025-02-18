@@ -36,7 +36,13 @@ public class RabbitMQRequestUtil {
                 null,
                 RABBIT_MQ_CONFIG.getVirtualHost(), exchange
         );
-        DelayExchangeVO delayExchangeVO = HttpRequestUtil.jsonRequest(httpUrl, RabbitMQRequest.EXCHANGE_DETAILS.getMethod(), null, DelayExchangeVO.class, AUTHORIZATION_HEADER);
+        DelayExchangeVO delayExchangeVO = HttpRequestUtil.jsonRequest(
+                httpUrl,
+                RabbitMQRequest.EXCHANGE_DETAILS.getMethod(),
+                null,
+                DelayExchangeVO.class,
+                AUTHORIZATION_HEADER
+        );
         int count = Optional.ofNullable(delayExchangeVO).map(DelayExchangeVO::getMessagesDelayed).orElse(0);
         log.info("查询延时交换机 {} 消息数 {}", exchange, count);
         return count;

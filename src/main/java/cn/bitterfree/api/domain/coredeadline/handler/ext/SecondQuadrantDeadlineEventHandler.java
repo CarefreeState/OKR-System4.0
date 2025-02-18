@@ -30,7 +30,8 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
     private final SecondQuadrantService secondQuadrantService;
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
+    public void handle(DeadlineEvent deadlineEvent, Boolean needSend) {
+        long nowTimestamp = System.currentTimeMillis();
         SecondQuadrantEvent secondQuadrantEvent = deadlineEvent.getSecondQuadrantEvent();
         Long id = secondQuadrantEvent.getCoreId();
         Long secondQuadrantId = secondQuadrantEvent.getId();
@@ -55,6 +56,6 @@ public class SecondQuadrantDeadlineEventHandler extends DeadlineEventHandler {
                 QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(secondQuadrantEvent);
             }
         }
-        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器
+        super.doNextHandler(deadlineEvent, needSend);//执行下一个责任处理器
     }
 }

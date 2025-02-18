@@ -1,8 +1,9 @@
-package cn.bitterfree.api.mq.util;
+package cn.bitterfree.api.mq.sender;
 
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Objects;
@@ -11,14 +12,17 @@ import java.util.Objects;
  * Created With Intellij IDEA
  * Description:
  * User: 马拉圈
- * Date: 2025-02-13
- * Time: 1:28
+ * Date: 2025-02-18
+ * Time: 16:44
  */
+@Component
 @Slf4j
-public class DelayMessageUtil {
+public class RabbitMQDelayMessageConverter implements RabbitMessageConverter {
 
-    public static <T> RabbitMQMessage<?> getDelayMessage(String exchange, String routingKey, T msg, long delay, int maxRetries, boolean isAvailableDelay) {
-        RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries, isAvailableDelay, delay + System.currentTimeMillis());
+    @Override
+    public <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries) {
+        long now = System.currentTimeMillis();
+        RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries);
         // ttl 大的排在前面（找到适合的区间，对应的 ttl 队列）
         Map.Entry<Long, String> ttlQueue = DelayMessageConstants.GLOBAL_DELAY_TTL_MAP.entrySet().stream()
                 .filter(tq -> tq.getKey().compareTo(delay) < 0)
@@ -27,22 +31,19 @@ public class DelayMessageUtil {
         // queue 非空则代表进入 ttl 队列
         if(Objects.nonNull(ttlQueue)) {
             Long ttl = ttlQueue.getKey();
-            long newDelay = delay - ttl;
             String queue = ttlQueue.getValue();
+            long newDelay = delay - ttl;
             log.info("由于原 delay 过长，需重新计算新的 delay {} -> {}，先进入 ttl 队列 {} {}", delay, newDelay, ttl, queue);
-            rabbitMQMessage.setDelay(newDelay);
+            rabbitMQMessage.setDelay(newDelay); // 这个 rabbitMQMessage 是未来要执行的（因为准确知道未来几时执行，所以可以预先计算新的 delay）
             return RabbitMQMessage.<RabbitMQMessage<T>>builder()
                     .exchange("")
                     .routingKey(queue)
                     .msg(rabbitMQMessage)
                     .delay(0L)
-                    .deadline(0L)
-                    .maxRetries(maxRetries)
-                    .isAvailableDelay(Boolean.FALSE)
+                    .maxRetries(0)
                     .build();
         } else {
             return rabbitMQMessage;
         }
     }
-
 }

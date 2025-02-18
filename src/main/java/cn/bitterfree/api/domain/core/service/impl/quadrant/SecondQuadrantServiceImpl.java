@@ -3,15 +3,12 @@ package cn.bitterfree.api.domain.core.service.impl.quadrant;
 
 import cn.bitterfree.api.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.api.common.exception.GlobalServiceException;
-import cn.bitterfree.api.domain.core.constants.OkrCoreConstants;
 import cn.bitterfree.api.domain.core.model.dto.quadrant.InitQuadrantDTO;
 import cn.bitterfree.api.domain.core.model.entity.OkrCore;
 import cn.bitterfree.api.domain.core.model.entity.quadrant.SecondQuadrant;
 import cn.bitterfree.api.domain.core.model.mapper.quadrant.SecondQuadrantMapper;
-import cn.bitterfree.api.domain.core.model.message.deadline.SecondQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.vo.quadrant.SecondQuadrantVO;
 import cn.bitterfree.api.domain.core.service.quadrant.SecondQuadrantService;
-import cn.bitterfree.api.domain.core.util.QuadrantDeadlineMessageUtil;
 import cn.bitterfree.api.redis.cache.RedisCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -60,17 +57,7 @@ public class SecondQuadrantServiceImpl extends ServiceImpl<SecondQuadrantMapper,
         Integer quadrantCycle = initQuadrantDTO.getQuadrantCycle();
         deadline = initQuadrantDTO.getDeadline();
         // 查询内核 ID
-        Long coreId = this.lambdaQuery()
-                .eq(SecondQuadrant::getId, id)
-                .one()
-                .getCoreId();
-        Boolean isOver = Db.lambdaQuery(OkrCore.class)
-                .eq(OkrCore::getId, coreId)
-                .one()
-                .getIsOver();
-        if(Boolean.TRUE.equals(isOver)) {
-            throw new GlobalServiceException(GlobalServiceStatusCode.OKR_IS_OVER);
-        }
+        Long coreId = getSecondQuadrantCoreId(id);
         // 为 core 设置周期
         OkrCore updateOkrCore = new OkrCore();
         updateOkrCore.setId(coreId);
@@ -81,12 +68,6 @@ public class SecondQuadrantServiceImpl extends ServiceImpl<SecondQuadrantMapper,
         updateQuadrant.setId(id);
         updateQuadrant.setDeadline(deadline);
         this.lambdaUpdate().eq(SecondQuadrant::getId, id).update(updateQuadrant);
-        // 发起一个定时任务
-        SecondQuadrantEvent event = SecondQuadrantEvent.builder()
-                .coreId(coreId).id(id).cycle(quadrantCycle).deadline(deadline).build();
-        QuadrantDeadlineMessageUtil.scheduledUpdateSecondQuadrant(event);
-        // 清楚缓存
-        redisCache.deleteObject(OkrCoreConstants.OKR_CORE_ID_MAP + coreId);
     }
 
     @Override

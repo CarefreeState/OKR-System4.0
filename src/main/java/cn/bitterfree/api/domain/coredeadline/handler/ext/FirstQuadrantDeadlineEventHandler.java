@@ -28,7 +28,8 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
     private final OkrCoreService okrCoreService;
 
     @Override
-    public void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
+    public void handle(DeadlineEvent deadlineEvent, Boolean needSend) {
+        long nowTimestamp = System.currentTimeMillis();
         FirstQuadrantEvent firstQuadrantEvent = deadlineEvent.getFirstQuadrantEvent();
         Long id = firstQuadrantEvent.getCoreId();
         Date firstQuadrantDeadline = firstQuadrantEvent.getDeadline();
@@ -41,6 +42,6 @@ public class FirstQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         if(Objects.nonNull(firstQuadrantDeadline) && needSend) {
             QuadrantDeadlineMessageUtil.scheduledComplete(firstQuadrantEvent);
         }
-        super.doNextHandler(deadlineEvent, nowTimestamp, needSend);//执行下一个责任处理器
+        super.doNextHandler(deadlineEvent, needSend);//执行下一个责任处理器
     }
 }

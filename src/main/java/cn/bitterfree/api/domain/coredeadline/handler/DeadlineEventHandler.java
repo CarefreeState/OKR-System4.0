@@ -16,15 +16,15 @@ public abstract class DeadlineEventHandler {
 
     private DeadlineEventHandler deadlineEventHandler;
 
-    public abstract void handle(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend);
+    public abstract void handle(DeadlineEvent deadlineEvent, Boolean needSend);
 
     public void setNextHandler(DeadlineEventHandler deadlineEventHandler) {
         this.deadlineEventHandler = deadlineEventHandler;
     }
 
-    protected void doNextHandler(DeadlineEvent deadlineEvent, long nowTimestamp, Boolean needSend) {
+    protected void doNextHandler(DeadlineEvent deadlineEvent, Boolean needSend) {
         if(Objects.nonNull(deadlineEventHandler)) {
-            deadlineEventHandler.handle(deadlineEvent, nowTimestamp, needSend);
+            deadlineEventHandler.handle(deadlineEvent, needSend);
         }
     }
 }
