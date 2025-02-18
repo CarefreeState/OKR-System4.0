@@ -183,6 +183,7 @@ public class RabbitMQSender {
         String messageCacheListKey = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
         // 计算还剩多少个缺口
         int opening = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - rabbitMQHttpClient.getMessagesDelayed(exchange);
+        log.info("延时交换机 {} 剩余缺口数 {}", messageCacheListKey, opening);
         // 若还有缺口就重新发送消息
         if (opening > 0) {
             // 这里的消息都是要直接加入延时交换机的
