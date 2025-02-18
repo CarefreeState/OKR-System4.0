@@ -1,5 +1,6 @@
-package cn.bitterfree.api.mq.sender;
+package cn.bitterfree.api.mq.config;
 
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +18,10 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class RabbitMQDelayMessageConverter implements RabbitMessageConverter {
+public class RabbitMQDelayMessageConverter implements RabbitMQSender.RabbitMessageConverter {
 
     @Override
     public <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries) {
-        long now = System.currentTimeMillis();
         RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries);
         // ttl 大的排在前面（找到适合的区间，对应的 ttl 队列）
         Map.Entry<Long, String> ttlQueue = DelayMessageConstants.GLOBAL_DELAY_TTL_MAP.entrySet().stream()

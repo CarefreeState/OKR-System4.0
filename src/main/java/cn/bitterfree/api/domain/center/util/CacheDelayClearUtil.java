@@ -1,7 +1,7 @@
 package cn.bitterfree.api.domain.center.util;
 
 import cn.bitterfree.api.domain.center.constants.CacheDelayClearConstants;
-import cn.bitterfree.api.mq.sender.RabbitMQSender;
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.util.CollectionUtils;
 

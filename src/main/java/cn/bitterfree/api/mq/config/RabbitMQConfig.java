@@ -1,8 +1,12 @@
 package cn.bitterfree.api.mq.config;
 
+import cn.bitterfree.api.mq.client.RabbitMQSender;
+import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -29,5 +33,11 @@ public class RabbitMQConfig {
     private String password;
 
     private String virtualHost;
+
+    @Bean
+    @ConditionalOnMissingBean(RabbitMQSender.RabbitMessageConverter.class)
+    public RabbitMQSender.RabbitMessageConverter rabbitMessageConverter() {
+        return RabbitMQMessage::new;
+    }
 
 }

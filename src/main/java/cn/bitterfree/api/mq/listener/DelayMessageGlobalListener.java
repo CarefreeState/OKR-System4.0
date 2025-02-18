@@ -1,9 +1,9 @@
 package cn.bitterfree.api.mq.listener;
 
 import cn.bitterfree.api.common.util.juc.threadpool.SchedulerThreadPool;
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
-import cn.bitterfree.api.mq.sender.RabbitMQSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Queue;

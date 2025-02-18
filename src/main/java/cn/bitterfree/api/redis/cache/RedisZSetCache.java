@@ -57,12 +57,12 @@ public class RedisZSetCache {
         return popSet;
     }
 
-    public void removeRangeByScore(final String key, final long min, final long max) {
+    public void removeRangeByScore(final String key, final double min, final double max) {
         redisTemplate.opsForZSet().removeRangeByScore(key, min, max);
         log.info("Redis 中的 SortedSet {} remove [{}, {}]", key, min, max);
     }
 
-    public <E> Set<ZSetOperations.TypedTuple<E>> popRangeByScore(final String key, final Class<E> eClazz, final long min, final long max) {
+    public <E> Set<ZSetOperations.TypedTuple<E>> popRangeByScore(final String key, final Class<E> eClazz, final double min, final double max) {
         Set<ZSetOperations.TypedTuple<String>> rangeSet = redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max);
         removeRangeByScore(key, min, max);
         Set<ZSetOperations.TypedTuple<E>> popRangeSet = ObjectUtil.nonNullstream(rangeSet)

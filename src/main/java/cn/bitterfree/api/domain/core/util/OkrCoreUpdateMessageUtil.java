@@ -2,7 +2,7 @@ package cn.bitterfree.api.domain.core.util;
 
 import cn.bitterfree.api.domain.core.constants.FanoutExchangeConstants;
 import cn.bitterfree.api.domain.core.model.message.operate.*;
-import cn.bitterfree.api.mq.sender.RabbitMQSender;
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.hutool.extra.spring.SpringUtil;
 
 /**

@@ -1,7 +1,7 @@
 package cn.bitterfree.api.mq.config;
 
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
-import cn.bitterfree.api.mq.sender.RabbitMQSender;
 import cn.bitterfree.api.redis.cache.RedisCache;
 import cn.bitterfree.api.xxljob.annotation.XxlRegister;
 import com.xxl.job.core.handler.annotation.XxlJob;

@@ -4,7 +4,7 @@ package cn.bitterfree.api.domain.core.util;
 import cn.bitterfree.api.domain.core.model.message.deadline.FirstQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.message.deadline.SecondQuadrantEvent;
 import cn.bitterfree.api.domain.core.model.message.deadline.ThirdQuadrantEvent;
-import cn.bitterfree.api.mq.sender.RabbitMQSender;
+import cn.bitterfree.api.mq.client.RabbitMQSender;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +31,7 @@ public class QuadrantDeadlineMessageUtil {
                 FIRST_DDL,
                 firstQuadrantEvent,
                 firstQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES,
-                Boolean.TRUE
+                MAX_RETRIES
         );
     }
 
@@ -42,8 +41,7 @@ public class QuadrantDeadlineMessageUtil {
                 SECOND_DDL,
                 secondQuadrantEvent,
                 secondQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES,
-                Boolean.TRUE
+                MAX_RETRIES
         );
     }
 
@@ -53,8 +51,7 @@ public class QuadrantDeadlineMessageUtil {
                 THIRD_DDL,
                 thirdQuadrantEvent,
                 thirdQuadrantEvent.getDeadline().getTime() - System.currentTimeMillis(),
-                MAX_RETRIES,
-                Boolean.TRUE
+                MAX_RETRIES
         );
     }
 

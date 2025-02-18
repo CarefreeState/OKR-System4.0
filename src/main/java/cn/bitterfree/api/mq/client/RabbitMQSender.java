@@ -1,10 +1,9 @@
-package cn.bitterfree.api.mq.sender;
+package cn.bitterfree.api.mq.client;
 
 import cn.bitterfree.api.common.util.convert.UUIDUtil;
 import cn.bitterfree.api.mq.config.PublisherReturnsCallBack;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
-import cn.bitterfree.api.mq.util.RabbitMQRequestUtil;
 import cn.bitterfree.api.redis.cache.RedisZSetCache;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,14 @@ public class RabbitMQSender {
     private final PublisherReturnsCallBack publisherReturnsCallBack;
 
     private final RabbitMessageConverter rabbitMessageConverter;
+
+    private final RabbitMQHttpClient rabbitMQHttpClient;
+
+    public interface RabbitMessageConverter {
+
+        <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries);
+
+    }
 
     @PostConstruct
     public void init() {
@@ -77,7 +84,7 @@ public class RabbitMQSender {
     private <T> boolean trySend(RabbitMQMessage<T> rabbitMQMessage) {
         long delay = rabbitMQMessage.getDelay();
         String exchange = rabbitMQMessage.getExchange();
-        if (delay > 0 && RabbitMQRequestUtil.getMessagesDelayed(exchange) >= DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY) {
+        if (delay > 0 && rabbitMQHttpClient.getMessagesDelayed(exchange) >= DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY) {
             log.info("延时交换机 {} 已达到安全值范围 {}，后续的延时消息将交给服务器实现延时或先进行缓存", exchange, DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY);
             if (delay < DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LISTEN_GAP) {
                 localDelaySend(rabbitMQMessage);
@@ -175,7 +182,7 @@ public class RabbitMQSender {
     public void popAndSendDelayMessage(String exchange) {
         String messageCacheListKey = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
         // 计算还剩多少个缺口
-        int opening = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - RabbitMQRequestUtil.getMessagesDelayed(exchange);
+        int opening = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - rabbitMQHttpClient.getMessagesDelayed(exchange);
         // 若还有缺口就重新发送消息
         if (opening > 0) {
             // 这里的消息都是要直接加入延时交换机的
