@@ -32,7 +32,7 @@ public class RabbitMQHttpClient {
 
     @PostConstruct
     public void init() {
-        Map.of(
+        authorizationHeader = Map.of(
                 HttpHeaders.AUTHORIZATION,
                 "Basic " + EncryptUtil.encodeBase64(String.format("%s:%s", rabbitMQConfig.getUsername(), rabbitMQConfig.getPassword()))
         );
