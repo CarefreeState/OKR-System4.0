@@ -1,7 +1,7 @@
 package cn.bitterfree.api.mq.config;
 
 import cn.bitterfree.api.common.util.convert.JsonUtil;
-import cn.bitterfree.api.mq.client.RabbitMQSender;
+import cn.bitterfree.api.mq.client.RabbitMessageConverter;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,8 +41,8 @@ public class RabbitMQConfig {
     private String virtualHost;
 
     @Bean
-    @ConditionalOnMissingBean(RabbitMQSender.RabbitMessageConverter.class)
-    public RabbitMQSender.RabbitMessageConverter rabbitMessageConverter() {
+    @ConditionalOnMissingBean(RabbitMessageConverter.class)
+    public RabbitMessageConverter rabbitMessageConverter() {
         return RabbitMQMessage::new;
     }
 

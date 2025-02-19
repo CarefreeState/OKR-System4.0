@@ -40,12 +40,6 @@ public class RabbitMQSender {
 
     private final RabbitMQHttpClient rabbitMQHttpClient;
 
-    public interface RabbitMessageConverter {
-
-        <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries);
-
-    }
-
     @PostConstruct
     public void init() {
         // 设置统一的 publisher-returns（confirm 也可以设置统一的，但最好还是在发送时设置在 future 里）

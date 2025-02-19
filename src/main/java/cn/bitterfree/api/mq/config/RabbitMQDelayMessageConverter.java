@@ -1,6 +1,6 @@
 package cn.bitterfree.api.mq.config;
 
-import cn.bitterfree.api.mq.client.RabbitMQSender;
+import cn.bitterfree.api.mq.client.RabbitMessageConverter;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 @Component
 @Slf4j
-public class RabbitMQDelayMessageConverter implements RabbitMQSender.RabbitMessageConverter {
+public class RabbitMQDelayMessageConverter implements RabbitMessageConverter {
 
     @Override
     public <T> RabbitMQMessage<?> getRabbitMQMessage(String exchange, String routingKey, T msg, long delay, int maxRetries) {
