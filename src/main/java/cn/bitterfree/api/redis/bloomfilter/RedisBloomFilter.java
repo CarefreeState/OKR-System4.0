@@ -8,8 +8,6 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.RedisException;
 
-import java.util.concurrent.TimeUnit;
-
 @RequiredArgsConstructor
 @Slf4j
 public class RedisBloomFilter<T> {
@@ -30,20 +28,14 @@ public class RedisBloomFilter<T> {
         return rBloomFilter.isExists();
     }
 
-    public void expire() {
-        rBloomFilter.expire(properties.getTimeout(), properties.getUnit());
-    }
-
     public void tryInit() {
         rBloomFilter.tryInit(properties.getPreSize(), properties.getRate());
-        expire();
     }
 
     public void add(T key) {
         try {
             log.info("加入布隆过滤器 {}", key);
             rBloomFilter.add(key);
-            expire();
         } catch (RedisException e) {
             tryInit();
             rBloomFilter.add(key);
@@ -53,7 +45,6 @@ public class RedisBloomFilter<T> {
     public boolean contains(T key) {
         try {
             boolean contains = rBloomFilter.contains(key);
-            expire();
             log.info("查询布隆过滤器 {} {}", key, contains);
             return contains;
         } catch (RedisException e) {
@@ -76,10 +67,6 @@ public class RedisBloomFilter<T> {
         private Long preSize;
 
         private Double rate;
-
-        private Long timeout;
-
-        private TimeUnit unit;
 
     }
 

@@ -168,8 +168,6 @@ bloom-filter:
     name: DigitalResourceCodeBloomFilter
     pre-size: 100000
     rate: 0.03
-    timeout: 365
-    unit: days
 
 short-code-generator:
   normal:
