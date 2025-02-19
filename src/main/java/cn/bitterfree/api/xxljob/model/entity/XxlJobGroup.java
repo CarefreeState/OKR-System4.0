@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -25,7 +24,7 @@ public class XxlJobGroup implements Serializable {
     private List<String> registryList;  // 执行器地址列表(系统注册)
     public List<String> getRegistryList() {
         if (StringUtils.hasText(addressList)) {
-            registryList = Arrays.asList(addressList.split(","));
+            registryList = List.of(addressList.split(","));
         }
         return registryList;
     }

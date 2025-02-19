@@ -105,8 +105,9 @@ public class RedisCache {
      * @return 键的集合（全名）
      */
     public Set<String> getKeysByPattern(final String pattern) {
-        log.info("获取 Redis 格式为 [{}] 的键", pattern);
-        return redisTemplate.keys(pattern);
+        Set<String> keys = redisTemplate.keys(pattern);
+        log.info("获取 Redis 格式为 [{}] 的键 {}", pattern, keys);
+        return keys;
     }
 
 }

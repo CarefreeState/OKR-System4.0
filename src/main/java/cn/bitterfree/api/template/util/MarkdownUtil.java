@@ -29,7 +29,7 @@ import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -50,7 +50,7 @@ public class MarkdownUtil {
         OPTIONS = new MutableDataSet()
                 // 指定 Markdown 标准为 COMMONMARK（使用 ParserEmulationProfile.MARKDOWN 可能会有一些语法失效！）
                 .setFrom(ParserEmulationProfile.COMMONMARK)
-                .set(Parser.EXTENSIONS, Arrays.asList(new Parser.ParserExtension[]{
+                .set(Parser.EXTENSIONS, List.of(new Parser.ParserExtension[]{
                         // 设置一些常扩展
                         TocExtension.create(), TablesExtension.create(), AbbreviationExtension.create(),
 //                        AutolinkExtension.create(),

@@ -34,11 +34,10 @@ public class DelayExchangeMessageCacheXxlJobConfig {
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每五分钟一次的延时交换机消息数扫描")
     public void listenDelayExchangeMessageCache() {
         // 常数级的，所以不需要多线程分批处理
-        redisCache.getKeysByPrefix(DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST).forEach(counterKey -> {
+        redisCache.getKeysByPrefix(DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST).forEach(zSetKey -> {
             // 获取 exchange
-            String exchange = counterKey.replaceFirst(DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST, "");
+            String exchange = zSetKey.replaceFirst(DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST, "");
             rabbitMQSender.popAndSendDelayMessage(exchange);
         });
-
     }
 }
