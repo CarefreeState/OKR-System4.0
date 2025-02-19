@@ -38,10 +38,10 @@ public class DayRecordPageOutXxlJobConfig {
     @XxlJob(value = "pageOutDayRecord")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
     public void pageOutDayRecord() {
-        List<DayRecord> dayRecordList = new ArrayList<>();
         // 数据量很大，需要分批处理
         String yesterday = dayRecordService.yesterdayRedisKeyPrefix();
         Set<String> keys = redisCache.getKeysByPrefix(yesterday);
+        List<DayRecord> dayRecordList = new ArrayList<>(keys.size());
         IOThreadPool.operateBatch(keys.stream().toList(), redisKeyList -> {
             redisKeyList.forEach(redisKey -> {
                 redisCache.getObject(redisKey, DayRecord.class).ifPresent(dayRecordList::add);
