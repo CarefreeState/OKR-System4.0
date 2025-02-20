@@ -91,7 +91,7 @@ public enum GlobalServiceStatusCode {
     MEMBER_NOT_EXISTS(5100, "团队成员不存在"),
     MEMBER_CANNOT_REMOVE(5101, "此成员无法移除"),
 
-    QR_CODE_GENERATE_FAIL(5200, "邀请码生成失败"),
+    QR_CODE_GENERATE_FAIL(5200, "二维码生成失败"),
 
     /*内核相关*/
     CORE_NOT_EXISTS(6000, "OKR 内核不存在或者不存在将其当作内核的 p/t/tp OKR "),
