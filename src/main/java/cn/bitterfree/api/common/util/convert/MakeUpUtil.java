@@ -16,34 +16,34 @@ import java.util.function.Supplier;
 @Slf4j
 public class MakeUpUtil {
 
-    private static void makeUp(List<Runnable> behaviorList) {
+    private static void makeUp(List<Runnable> behaviorList, Class<? extends Exception> checkedExceptionClazz) {
         ObjectUtil.nonNullstream(behaviorList).forEach(makeUp -> {
-            tryDoSomething(makeUp, Boolean.FALSE);
+            tryDoSomething(makeUp, checkedExceptionClazz, Boolean.FALSE);
         });
     }
 
-    public static void tryDoSomething(Runnable behavior, Boolean again, Runnable... makeUp) {
+    public static void tryDoSomething(Runnable behavior, Class<? extends Exception> checkedExceptionClazz, Boolean again, Runnable... makeUp) {
         try {
             behavior.run();
-        } catch (BadSqlGrammarException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
-            if(Boolean.TRUE.equals(again)) {
+            if(Boolean.TRUE.equals(again) && checkedExceptionClazz.isInstance(e)) {
                 log.warn("开始弥补...");
-                makeUp(List.of(makeUp));
+                makeUp(List.of(makeUp), checkedExceptionClazz);
                 log.warn("重新执行...");
                 behavior.run();
             }
         }
     }
 
-    public static <T> T tryGetSomething(Supplier<T> supplier, Boolean again, Runnable... makeUp) {
+    public static <T> T tryGetSomething(Supplier<T> supplier, Class<? extends Exception> checkedExceptionClazz, Boolean again, Runnable... makeUp) {
         try {
             return supplier.get();
-        } catch (BadSqlGrammarException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
-            if(Boolean.TRUE.equals(again)) {
+            if(Boolean.TRUE.equals(again) && checkedExceptionClazz.isInstance(e)) {
                 log.warn("开始弥补...");
-                makeUp(List.of(makeUp));
+                makeUp(List.of(makeUp), checkedExceptionClazz);
                 log.warn("重新执行...");
                 return supplier.get();
             }

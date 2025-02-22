@@ -29,6 +29,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -66,6 +67,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     public List<TeamOkr> selectChildTeams(Long id) {
         return MakeUpUtil.tryGetSomething(
                 () -> teamOkrMapper.queryTeamTree(id),
+                BadSqlGrammarException.class,
                 Boolean.TRUE,
                 // 创建存储过程
                 teamOkrMapper::createPrepareTeamTreeProcedure,
@@ -77,6 +79,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     public TeamOkr findRootTeam(Long id) {
         TeamOkr teamOkr = MakeUpUtil.tryGetSomething(
                 () -> teamOkrMapper.findTeamRoot(id),
+                BadSqlGrammarException.class,
                 Boolean.TRUE,
                 // 创建存储过程
                 teamOkrMapper::createFindTeamRootProcedure
