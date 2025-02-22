@@ -31,7 +31,6 @@ public class ThirdQuadrantDeadlineEventHandler extends DeadlineEventHandler {
 
     @Override
     public void handle(DeadlineEvent deadlineEvent, Boolean needSend) {
-        long nowTimestamp = System.currentTimeMillis();
         ThirdQuadrantEvent thirdQuadrantEvent = deadlineEvent.getThirdQuadrantEvent();
         Long id = thirdQuadrantEvent.getCoreId();
         Long thirdQuadrantId = thirdQuadrantEvent.getId();
@@ -41,7 +40,7 @@ public class ThirdQuadrantDeadlineEventHandler extends DeadlineEventHandler {
         if(Objects.nonNull(thirdQuadrantDeadline) && Objects.nonNull(thirdQuadrantCycle)) {
             // 获取一个正确的截止点
             long deadTimestamp = thirdQuadrantDeadline.getTime();
-            long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
+            long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
             Date nextDeadline = new Date(nextDeadTimestamp);
             Boolean flag = nextDeadTimestamp != deadTimestamp;
             // 更新截止时间

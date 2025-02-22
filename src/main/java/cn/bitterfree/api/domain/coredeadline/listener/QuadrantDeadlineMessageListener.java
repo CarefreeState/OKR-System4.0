@@ -105,7 +105,6 @@ public class QuadrantDeadlineMessageListener {
             key = DelayExchangeConstants.SECOND_DDL
     ))
     public void secondQuadrantDeadlineListener(SecondQuadrantEvent secondQuadrantEvent) {
-        long nowTimestamp = System.currentTimeMillis();
         Long coreId = secondQuadrantEvent.getCoreId();
         Long secondQuadrantId = secondQuadrantEvent.getId();
         Integer secondQuadrantCycle = secondQuadrantEvent.getCycle();
@@ -128,7 +127,7 @@ public class QuadrantDeadlineMessageListener {
                     return;
                 }
                 // 1. 获取一个正确的截止点
-                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, secondQuadrantCycle, TimeUnit.SECONDS);
+                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, secondQuadrantCycle, TimeUnit.SECONDS);
                 Date nextDeadline = new Date(nextDeadTimestamp);
                 // 2. 更新截止时间
                 if(nextDeadTimestamp != deadTimestamp) {
@@ -154,7 +153,6 @@ public class QuadrantDeadlineMessageListener {
             key = DelayExchangeConstants.THIRD_DDL
     ))
     public void thirdQuadrantDeadlineListener(ThirdQuadrantEvent thirdQuadrantEvent) {
-        long nowTimestamp = System.currentTimeMillis();
         Long coreId = thirdQuadrantEvent.getCoreId();
         Long thirdQuadrantId = thirdQuadrantEvent.getId();
         Integer thirdQuadrantCycle = thirdQuadrantEvent.getCycle();
@@ -177,7 +175,7 @@ public class QuadrantDeadlineMessageListener {
                     return;
                 }
                 // 1. 获取一个正确的截止点
-                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, nowTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
+                long nextDeadTimestamp = DeadlineUtil.getNextDeadline(deadTimestamp, thirdQuadrantCycle, TimeUnit.SECONDS);
                 Date nextDeadline = new Date(nextDeadTimestamp);
                 // 2. 更新截止时间
                 if(nextDeadTimestamp != deadTimestamp) {

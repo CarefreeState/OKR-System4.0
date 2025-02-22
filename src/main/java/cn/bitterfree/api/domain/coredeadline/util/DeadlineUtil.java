@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class DeadlineUtil {
 
-    public static long getNextDeadline(long deadTimestamp, long nowTimestamp, int cycle, TimeUnit cycleUnit) {
+    public static long getNextDeadline(long deadTimestamp, int cycle, TimeUnit cycleUnit) {
+        long nowTimestamp = System.currentTimeMillis();
         long gap = cycleUnit.toMillis(cycle);
         while(deadTimestamp <= nowTimestamp) {
             deadTimestamp += gap;
