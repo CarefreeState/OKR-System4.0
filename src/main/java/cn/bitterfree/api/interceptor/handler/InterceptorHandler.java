@@ -25,7 +25,7 @@ public abstract class InterceptorHandler {
         return DEFAULT_PATH_PATTERNS;
     };
 
-    public Boolean condition() {
+    public Boolean condition(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return Boolean.TRUE;
     }
 
@@ -39,7 +39,7 @@ public abstract class InterceptorHandler {
 
     public final void handle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uri = request.getRequestURI();
-        if(HttpRequestUtil.anyMatchPath(pathPatterns(), uri) && Boolean.TRUE.equals(condition())) {
+        if(HttpRequestUtil.anyMatchPath(pathPatterns(), uri) && Boolean.TRUE.equals(condition(request, response, handler))) {
             action(request, response, handler);
         }
         doNext(request, response, handler);

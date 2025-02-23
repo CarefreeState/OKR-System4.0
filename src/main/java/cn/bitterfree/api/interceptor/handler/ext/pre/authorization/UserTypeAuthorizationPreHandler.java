@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class UserTypeAuthorizationPreHandler extends InterceptorHandler {
 
     @Override
-    public Boolean condition() {
+    public Boolean condition(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !InterceptorContext.isAuthorized();
     }
 

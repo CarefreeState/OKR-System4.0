@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 public class JwtPrepareHeaderHandler extends InterceptorHandler {
 
     @Override
-    public Boolean condition() {
+    public Boolean condition(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !InterceptorContext.isAuthenticated() && !StringUtils.hasText(InterceptorContext.getJwt());
     }
 

@@ -29,7 +29,7 @@ public class JwtAuthenticationPreHandler extends InterceptorHandler {
     private final UserInfoLoadService userInfoLoadService;
 
     @Override
-    public Boolean condition() {
+    public Boolean condition(HttpServletRequest request, HttpServletResponse response, Object handler) {
         return !InterceptorContext.isAuthenticated();
     }
 
