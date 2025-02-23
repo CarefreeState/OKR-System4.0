@@ -1,6 +1,6 @@
 package cn.bitterfree.api.email.provider.strategy;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.List;
@@ -16,6 +16,6 @@ public class RandomProvideStrategy implements ProvideStrategy {
 
     @Override
     public JavaMailSenderImpl getSender(List<JavaMailSenderImpl> senderList) {
-        return senderList.get(RandomUtil.randomInt(senderList.size()));
+        return ObjectUtil.randomOne(senderList);
     }
 }

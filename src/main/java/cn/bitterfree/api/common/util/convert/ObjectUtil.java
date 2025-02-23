@@ -1,13 +1,12 @@
 package cn.bitterfree.api.common.util.convert;
 
+import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,5 +100,11 @@ public class ObjectUtil {
         return Arrays.stream(objects).noneMatch(Objects::isNull);
     }
 
+    public static <T> T randomOne(List<T> list) {
+        return Optional.ofNullable(list)
+                .filter(l -> !CollectionUtils.isEmpty(l))
+                .map(l -> l.get(RandomUtil.randomInt(l.size())))
+                .orElse(null);
+    }
 
 }

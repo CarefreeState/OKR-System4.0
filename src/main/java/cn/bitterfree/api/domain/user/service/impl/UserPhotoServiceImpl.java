@@ -2,6 +2,7 @@ package cn.bitterfree.api.domain.user.service.impl;
 
 import cn.bitterfree.api.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.api.common.exception.GlobalServiceException;
+import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import cn.bitterfree.api.common.util.juc.threadpool.IOThreadPool;
 import cn.bitterfree.api.domain.media.service.FileMediaService;
 import cn.bitterfree.api.domain.user.constants.UserConstants;
@@ -11,7 +12,6 @@ import cn.bitterfree.api.domain.user.service.UserPhotoService;
 import cn.bitterfree.api.domain.user.service.UserService;
 import cn.bitterfree.api.redis.config.RedisLockProperties;
 import cn.bitterfree.api.redis.lock.RedisLock;
-import cn.hutool.core.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     public String getAnyOnePhoto() {
         List<String> defaultPhotoList = defaultPhotoService.getDefaultPhotoList();
         return !CollectionUtils.isEmpty(defaultPhotoList) ?
-                defaultPhotoList.get(RandomUtil.randomInt(defaultPhotoList.size())) :
+                ObjectUtil.randomOne(defaultPhotoList) :
                 UserConstants.DEFAULT_PHOTO;
     }
 
