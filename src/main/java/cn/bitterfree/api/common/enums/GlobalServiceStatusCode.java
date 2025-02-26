@@ -44,6 +44,7 @@ public enum GlobalServiceStatusCode {
     USER_ACCOUNT_NOT_EXIST(2008, "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST(2009, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2010, "账号下线"),
+    USER_ACCOUNT_MERGE_CONFLICT(2011, "账号合并冲突"),
 
     USER_TOKEN_NOT_VALID(2010, "用户登录凭据无效"),
     USER_LOGIN_CODE_VALID(2011, "用户登录码失效"),

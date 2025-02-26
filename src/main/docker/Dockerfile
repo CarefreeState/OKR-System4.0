@@ -11,7 +11,7 @@ ENV TZ=Asia/Shanghai
 # RUN yum install fontconfig
 WORKDIR /root
 
-# S1:S2:E = 2:2:6，适当降低了 Eden 区的大小
+# S1:S2:E = 1:1:6，适当降低了 Eden 区的大小
 # 设置一个虚拟机栈初始化 256k
 # 使用 G1 回收器，并让老年代的字符串对象去重，进行共享
 ENTRYPOINT java -jar -XX:+UseG1GC -XX:+UseStringDeduplication -XX:SurvivorRatio=6 -Xss256K /root/app.jar
