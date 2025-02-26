@@ -6,7 +6,6 @@ import cn.bitterfree.api.domain.medal.service.UserMedalService;
 import cn.bitterfree.api.domain.medal.util.MedalUtil;
 import cn.bitterfree.api.domain.okr.handler.ext.OkrUserMergeHandler;
 import cn.bitterfree.api.domain.userbinding.handler.UserMergeHandler;
-import cn.bitterfree.api.redis.cache.RedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
