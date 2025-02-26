@@ -13,6 +13,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * JWT 工具类
@@ -125,11 +126,14 @@ public class JwtUtil {
     }
 
     // 解析并无感刷新
-    public static <T> T parseJwtData(String jwt, T data, HttpServletResponse response) {
+    public static <T> T parseJwtData(String jwt, T data, Consumer<T> dataDesign, HttpServletResponse response) {
         Claims claims = parseJwt(jwt);
         // map -(灌入)-> data
         data = BeanUtil.fillBeanWithMap(claims.get(JWT_PROPERTIES.getCustomKey(), Map.class), data, Boolean.TRUE);
+        // 修饰一下 data
+        dataDesign.accept(data);
         String subject = claims.getSubject();
+        // 判断是否即将过期
         if(Objects.nonNull(response) && judgeApproachExpiration(claims)) {
             response.setHeader(JWT_PROPERTIES.getTokenName(), createJwt(subject, data));
         }

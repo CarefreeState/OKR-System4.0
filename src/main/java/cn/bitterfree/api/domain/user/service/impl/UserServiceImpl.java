@@ -4,7 +4,6 @@ import cn.bitterfree.api.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.api.common.exception.GlobalServiceException;
 import cn.bitterfree.api.common.util.juc.threadpool.IOThreadPool;
 import cn.bitterfree.api.domain.media.service.FileMediaService;
-import cn.bitterfree.api.domain.user.constants.UserConstants;
 import cn.bitterfree.api.domain.user.enums.UserType;
 import cn.bitterfree.api.domain.user.model.converter.UserConverter;
 import cn.bitterfree.api.domain.user.model.dto.UserQueryDTO;
@@ -13,7 +12,6 @@ import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.domain.user.model.mapper.UserMapper;
 import cn.bitterfree.api.domain.user.model.vo.UserQueryVO;
 import cn.bitterfree.api.domain.user.service.UserService;
-import cn.bitterfree.api.jwt.config.JwtProperties;
 import cn.bitterfree.api.redis.cache.RedisCache;
 import cn.bitterfree.api.redis.lock.RedisLock;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -38,8 +36,6 @@ import static cn.bitterfree.api.domain.user.constants.UserConstants.*;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
-
-    private final JwtProperties jwtProperties;
 
     private final RedisLock redisLock;
 
@@ -217,18 +213,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public List<String> mergeUser(Long mainUserId, Long userId) {
         return getUserById(userId).map(user -> {
             return getUserById(mainUserId).map(mainUser -> {
-                // 0. 迁移账号信息（如果被合并掉的用户，也绑定了多种信息）
+                // 1. 迁移账号信息（如果被合并掉的用户，也绑定了多种信息）
                 mergeUser(mainUser, user);
-                // 1. 删除用户
+                // 2. 删除用户
                 log.warn("删除用户 {}", userId);
                 this.removeById(userId);
                 IOThreadPool.submit(() -> {
-                    // 2. 删除头像
+                    // 3. 删除头像
                     fileMediaService.remove(user.getPhoto());
                 });
-                // 4. 缓存 userId -> mainUserId 的映射
-                redisCache.setObject(UserConstants.USER_ID_REDIRECT + userId, mainUserId,
-                        jwtProperties.getTtl(), jwtProperties.getUnit());
                 return List.of(ID_USER_MAP + user.getId(), USERNAME_USER_MAP + user.getUsername(),
                         EMAIL_USER_MAP + user.getEmail(), WX_USER_MAP + user.getOpenid());
             }).orElseGet(ArrayList::new);
