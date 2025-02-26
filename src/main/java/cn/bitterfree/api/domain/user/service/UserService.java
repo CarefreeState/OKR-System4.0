@@ -7,6 +7,7 @@ import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.domain.user.model.vo.UserQueryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,5 +31,8 @@ public interface UserService extends IService<User> {
 
     UserQueryVO queryUser(UserQueryDTO userQueryDTO);
     void updateUserType(Long userId, UserType userType);
+
+    void mergeUser(User mainUser, User user);
+    List<String> mergeUser(Long mainUserId, Long userId);
 
 }

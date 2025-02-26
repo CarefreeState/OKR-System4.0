@@ -13,6 +13,7 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class GreatStateMedalXxlJobConfig {
     // 渐入佳境勋章
     @XxlJob(value = "issueGreatStateMedal")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天结束前的一次渐入佳境勋章检查")
+    @Transactional
     public void issueGreatStateMedal() {
         List<Long> userIds = userService.lambdaQuery()
                 .select(User::getId)

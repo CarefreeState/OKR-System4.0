@@ -120,6 +120,23 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
     }
 
     @Override
+    public List<String> mergeUserOkr(Long mainUserId, Long userId) {
+        List<String> redisKeys = this.lambdaQuery()
+                .eq(TeamPersonalOkr::getUserId, userId)
+                .list()
+                .stream()
+                .map(TeamPersonalOkr::getCoreId)
+                .map(uid -> OkrConstants.USER_CORE_MAP + uid)
+                .toList();
+        // 更新
+        this.lambdaUpdate()
+                .eq(TeamPersonalOkr::getUserId, userId)
+                .set(TeamPersonalOkr::getUserId, mainUserId)
+                .update();
+        return redisKeys;
+    }
+
+    @Override
     public List<TeamPersonalOkrVO> getTeamPersonalOkrList(User user) {
         // 获取当前用户 id
         Long id = user.getId();

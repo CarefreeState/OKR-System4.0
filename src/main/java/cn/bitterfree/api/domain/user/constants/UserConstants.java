@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
  */
 public interface UserConstants {
 
+    String USER_ID_REDIRECT = "userIdRedirect:";
+
     UserType DEFAULT_USER_TYPE = UserType.NORMAL_USER; // 如果默认是封禁，也就是说每个用户都得经过审核（实际系统并非如此）
     String DEFAULT_EMAIL_USER_NICKNAME = "邮箱用户";
     String DEFAULT_WX_USER_NICKNAME = "微信用户";

@@ -8,6 +8,7 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created With Intellij IDEA
@@ -32,6 +33,7 @@ public class DelayExchangeMessageCacheXxlJobConfig {
     // 热点时间的任务最多延时五秒
     @XxlJob(value = "listenDelayExchangeMessageCache")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每五分钟一次的延时交换机消息数扫描")
+    @Transactional
     public void listenDelayExchangeMessageCache() {
         // 常数级的，所以不需要多线程分批处理
         redisCache.getKeysByPrefix(DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST).forEach(zSetKey -> {

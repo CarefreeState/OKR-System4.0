@@ -6,6 +6,7 @@ import cn.bitterfree.api.domain.auth.service.BindingAckIdentifyService;
 import cn.bitterfree.api.domain.user.constants.UserConstants;
 import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.domain.user.service.UserService;
+import cn.bitterfree.api.domain.userbinding.handler.chain.UserMergeHandlerChain;
 import cn.bitterfree.api.domain.userbinding.model.dto.BindingDTO;
 import cn.bitterfree.api.domain.userbinding.model.dto.WxBindingDTO;
 import cn.bitterfree.api.domain.userbinding.service.BindingService;
@@ -14,6 +15,7 @@ import cn.bitterfree.api.wxtoken.model.vo.JsCode2SessionVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
@@ -36,7 +38,10 @@ public class WxBindingServiceImpl implements BindingService {
 
     private final BindingAckIdentifyService bindingAckIdentifyService;
 
+    private final UserMergeHandlerChain userMergeHandlerChain;
+
     @Override
+    @Transactional
     public void binding(User user, BindingDTO bindingDTO) {
         WxBindingDTO wxBindingDTO = Optional.ofNullable(bindingDTO.getWxBindingDTO()).orElseThrow(() ->
                 new GlobalServiceException(GlobalServiceStatusCode.PARAM_IS_BLANK));
@@ -49,12 +54,21 @@ public class WxBindingServiceImpl implements BindingService {
         // 2.  解析
         String openid = jsCode2Session.getOpenid();
         String unionid = jsCode2Session.getUnionid();
+        Long userId = user.getId();
         // 若没人使用这个 openid 就绑定
         redisLock.tryLockDoSomething(UserConstants.EXISTS_USER_WX_LOCK + openid, () -> {
             userService.getUserByOpenid(openid).ifPresentOrElse(wxUser -> {
-                throw new GlobalServiceException(GlobalServiceStatusCode.WX_USER_BE_BOUND);
+                if(!wxUser.getUserType().equals(user.getUserType())) {
+                    throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_PERMISSION);
+                }
+                // merge
+                Long wxUserId = wxUser.getId();
+                if(userId.equals(wxUserId)) {
+                    throw new GlobalServiceException(GlobalServiceStatusCode.WX_USER_BE_BOUND);
+                }
+                userMergeHandlerChain.handle(userId, wxUserId);
+                log.info("用户 {} 成功合并微信 {}", userId, openid);
             }, () -> {
-                Long userId = user.getId();
                 // 绑定
                 log.info("用户 {} 成功绑定微信 {}", userId, openid);
                 userService.lambdaUpdate().eq(User::getId, userId).set(User::getOpenid, openid).update();

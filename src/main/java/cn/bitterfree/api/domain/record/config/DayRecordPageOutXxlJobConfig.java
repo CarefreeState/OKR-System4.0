@@ -9,6 +9,7 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class DayRecordPageOutXxlJobConfig {
     // 渐入佳境勋章
     @XxlJob(value = "pageOutDayRecord")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的昨日 OKR 日记录缓存写入数据库")
+    @Transactional
     public void pageOutDayRecord() {
         // 数据量很大，需要分批处理
         String yesterday = dayRecordService.yesterdayRedisKeyPrefix();

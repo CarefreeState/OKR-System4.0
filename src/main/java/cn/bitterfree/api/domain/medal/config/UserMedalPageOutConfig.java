@@ -11,6 +11,7 @@ import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -39,6 +40,7 @@ public class UserMedalPageOutConfig {
     // 渐入佳境勋章
     @XxlJob(value = "pageOutUserMedal")
     @XxlRegister(cron = CRON, executorRouteStrategy = ROUTE, triggerStatus = TRIGGER_STATUS, jobDesc = "【固定任务】每天一次的用户勋章缓存写入数据库")
+    @Transactional
     public void pageOutUserMedal() {
         List<UserMedal> userMedalUpdateList = new ArrayList<>();
         List<UserMedal> userMedalSaveList = new ArrayList<>();
@@ -62,7 +64,7 @@ public class UserMedalPageOutConfig {
                         });
             });
         });
-        redisCache.deleteObjects(keys);
+//        redisCache.deleteObjects(keys); // 无需删除
         userMedalService.saveBatch(userMedalSaveList);
         userMedalService.updateBatchById(userMedalUpdateList);
         log.info("用户勋章已成功写入数据库，共 {} 条更新，{} 条新增", userMedalUpdateList.size(), userMedalSaveList.size());

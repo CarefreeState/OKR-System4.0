@@ -25,6 +25,7 @@ import cn.bitterfree.api.domain.okr.util.TeamOkrUtil;
 import cn.bitterfree.api.domain.qrcode.service.QRCodeService;
 import cn.bitterfree.api.domain.user.model.entity.User;
 import cn.bitterfree.api.redis.cache.RedisCache;
+import cn.bitterfree.api.redis.cache.RedisMapCache;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
 * @author 马拉圈
@@ -56,6 +56,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
     private final TeamPersonalOkrMapper teamPersonalOkrMapper;
 
     private final RedisCache redisCache;
+    private final RedisMapCache redisMapCache;
 
     private final OkrCoreService okrCoreService;
 
@@ -267,6 +268,28 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
             return Collections.emptyList();
         }
         return teamOkrMapper.getStatusFlagsByUserId(ids);
+    }
+
+    @Override
+    public Set<String> mergeUserOkr(Long mainUserId, Long userId) {
+        Set<String> redisKeys = this.lambdaQuery()
+                .eq(TeamOkr::getManagerId, userId)
+                .list()
+                .stream()
+                .flatMap(okr -> {
+                    return Stream.of(OkrConstants.USER_CORE_MAP + okr.getCoreId(), OkrConstants.TEAM_ID_MANAGER_MAP + okr.getId());
+                })
+                .collect(Collectors.toSet());
+        // 更新
+        this.lambdaUpdate()
+                .eq(TeamOkr::getManagerId, userId)
+                .set(TeamOkr::getManagerId, mainUserId)
+                .update();
+        // 团队相关缓存
+        IOThreadPool.operateBatch(new ArrayList<>(redisCache.getKeysByPrefix(OkrConstants.USER_TEAM_MEMBER)), keys -> {
+            redisKeys.addAll(keys.stream().filter(key -> redisMapCache.containsKey(key, userId)).toList());
+        });
+        return redisKeys;
     }
 
 }

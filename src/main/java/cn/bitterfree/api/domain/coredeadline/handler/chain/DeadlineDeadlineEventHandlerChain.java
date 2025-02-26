@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created With Intellij IDEA
@@ -37,6 +38,7 @@ public class DeadlineDeadlineEventHandlerChain extends DeadlineEventHandler {
     }
 
     @Override
+    @Transactional
     public void handle(DeadlineEvent deadlineEvent, Boolean needSend) {
         super.doNextHandler(deadlineEvent, needSend);
         log.warn("责任链处理完毕！");

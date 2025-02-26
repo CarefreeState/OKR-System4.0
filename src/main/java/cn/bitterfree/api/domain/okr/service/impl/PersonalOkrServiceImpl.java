@@ -103,6 +103,22 @@ public class PersonalOkrServiceImpl extends ServiceImpl<PersonalOkrMapper, Perso
         return personalOkrMapper.getStatusFlagsByUserId(ids);
     }
 
+    @Override
+    public List<String> mergeUserOkr(Long mainUserId, Long userId) {
+        List<String> redisKeys = this.lambdaQuery()
+                .eq(PersonalOkr::getUserId, userId)
+                .list()
+                .stream()
+                .map(PersonalOkr::getCoreId)
+                .map(uid -> OkrConstants.USER_CORE_MAP + uid)
+                .toList();
+        // 更新
+        this.lambdaUpdate()
+                .eq(PersonalOkr::getUserId, userId)
+                .set(PersonalOkr::getUserId, mainUserId)
+                .update();
+        return redisKeys;
+    }
 
     @Override
     public List<PersonalOkrVO> getPersonalOkrList(User user) {
