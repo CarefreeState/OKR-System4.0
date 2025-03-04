@@ -1,14 +1,8 @@
 package cn.bitterfree.api.common.constants;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-
-@Configuration
-@EnableWebMvc
 public interface DateTimeConstants {
 
     /**
