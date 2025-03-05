@@ -1,4 +1,4 @@
-package cn.bitterfree.api.wxtoken.feign;
+package cn.bitterfree.api.wxtoken.client;
 
 import cn.bitterfree.api.wxtoken.model.dto.AccessTokenDTO;
 import cn.bitterfree.api.wxtoken.model.dto.WxQRCode;

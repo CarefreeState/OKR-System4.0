@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @MapperScan({"cn.bitterfree.api.domain.**.mapper"})
-@EnableFeignClients(basePackages = {"cn.bitterfree.api.**.feign"})
+@EnableFeignClients(basePackages = {"cn.bitterfree.api.**.client"})
 public class OkrSystemApplication {
 
 	public static void main(String[] args) {

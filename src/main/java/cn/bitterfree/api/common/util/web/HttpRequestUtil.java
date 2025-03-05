@@ -69,7 +69,7 @@ public class HttpRequestUtil {
         queryParams = Optional.ofNullable(queryParams).orElseGet(Map::of);
         return UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
-                .encode() // 开启译码模式
+                .encode() // 开启译码模式，这里之后路径参数，/ 也会被转义为 %2F！
                 .queryParams(new LinkedMultiValueMap<>(queryParams))
                 .buildAndExpand(uriVariableValues)
                 .toUriString();

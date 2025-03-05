@@ -1,4 +1,4 @@
-package cn.bitterfree.api.xxljob.feign;
+package cn.bitterfree.api.xxljob.client;
 
 import com.xxl.job.core.biz.model.ReturnT;
 import org.springframework.cloud.openfeign.FeignClient;

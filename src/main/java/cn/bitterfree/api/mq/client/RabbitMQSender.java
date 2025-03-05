@@ -1,7 +1,9 @@
 package cn.bitterfree.api.mq.client;
 
+import cn.bitterfree.api.common.util.convert.EncryptUtil;
 import cn.bitterfree.api.common.util.convert.UUIDUtil;
 import cn.bitterfree.api.mq.config.PublisherReturnsCallBack;
+import cn.bitterfree.api.mq.config.RabbitMQConfig;
 import cn.bitterfree.api.mq.constants.DelayMessageConstants;
 import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import cn.bitterfree.api.redis.cache.RedisZSetCache;
@@ -13,6 +15,8 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -32,13 +36,12 @@ public class RabbitMQSender {
 
     private final RedisZSetCache redisZSetCache;
 
+    private final RabbitMQConfig rabbitMQConfig;
     private final RabbitTemplate rabbitTemplate;
-
     private final PublisherReturnsCallBack publisherReturnsCallBack;
 
-    private final RabbitMessageConverter rabbitMessageConverter;
-
-    private final RabbitMQHttpClient rabbitMQHttpClient;
+    private final RabbitMQHttpFeignClient rabbitMQHttpFeignClient;
+    private String authorization;
 
     @PostConstruct
     public void init() {
@@ -46,6 +49,13 @@ public class RabbitMQSender {
         // rabbitTemplate 的 publisher-returns 同一时间只能存在一个
         // 因为 publisher confirm 后，其实 exchange 有没有转发成功，publisher 没必要每次发送都关注这个 exchange 的内部职责，更多的是“系统与 MQ 去约定”
         rabbitTemplate.setReturnsCallback(publisherReturnsCallBack);
+        authorization = "Basic " + EncryptUtil.encodeBase64(String.format("%s:%s", rabbitMQConfig.getUsername(), rabbitMQConfig.getPassword()));
+    }
+
+    private int getMessagesDelayed(String exchange){
+        Integer count = rabbitMQHttpFeignClient.getMessagesDelayed(authorization, rabbitMQConfig.getVirtualHost(), exchange).getMessagesDelayed();
+        log.info("查询延时交换机 {} 消息数 {}", exchange, count);
+        return count;
     }
 
     private final static Function<Throwable, ? extends CorrelationData.Confirm> ON_FAILURE = ex -> {
@@ -78,7 +88,7 @@ public class RabbitMQSender {
     private <T> boolean trySend(RabbitMQMessage<T> rabbitMQMessage) {
         long delay = rabbitMQMessage.getDelay();
         String exchange = rabbitMQMessage.getExchange();
-        if (delay > 0 && rabbitMQHttpClient.getMessagesDelayed(exchange) >= DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY) {
+        if (delay > 0 && getMessagesDelayed(exchange) >= DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY) {
             log.info("延时交换机 {} 已达到安全值范围 {}，后续的延时消息将交给服务器实现延时或先进行缓存", exchange, DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY);
             if (delay < DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LISTEN_GAP) {
                 localDelaySend(rabbitMQMessage);
@@ -141,7 +151,30 @@ public class RabbitMQSender {
      * @param <T> 消息的对象类型
      */
     private <T> void send(String exchange, String routingKey, T msg, long delay, int maxRetries){
-        send(rabbitMessageConverter.getRabbitMQMessage(exchange, routingKey, msg, delay, maxRetries));
+        RabbitMQMessage<T> rabbitMQMessage = new RabbitMQMessage<>(exchange, routingKey, msg, delay, maxRetries);
+        // ttl 大的排在前面（找到适合的区间，对应的 ttl 队列）
+        Map.Entry<Long, String> ttlQueue = DelayMessageConstants.GLOBAL_DELAY_TTL_MAP.entrySet().stream()
+                .filter(tq -> tq.getKey().compareTo(delay) < 0)
+                .max(Map.Entry.comparingByKey()) // 获取 ttl 最大的
+                .orElse(null);
+        // queue 非空则代表进入 ttl 队列
+        if(Objects.nonNull(ttlQueue)) {
+            Long ttl = ttlQueue.getKey();
+            String queue = ttlQueue.getValue();
+            long newDelay = delay - ttl;
+            log.info("由于原 delay 过长，需重新计算新的 delay {} -> {}，先进入 ttl 队列 {} {}", delay, newDelay, ttl, queue);
+            rabbitMQMessage.setDelay(newDelay); // 这个 rabbitMQMessage 是未来要执行的（因为准确知道未来几时执行，所以可以预先计算新的 delay）
+            RabbitMQMessage<RabbitMQMessage<T>> boxMessage = RabbitMQMessage.<RabbitMQMessage<T>>builder()
+                    .exchange("")
+                    .routingKey(queue)
+                    .msg(rabbitMQMessage)
+                    .delay(0L)
+                    .maxRetries(0)
+                    .build();
+            send(boxMessage);
+        } else {
+            send(rabbitMQMessage);
+        }
     }
 
     public void sendMessage(String exchange, String routingKey, Object msg) {
@@ -176,7 +209,7 @@ public class RabbitMQSender {
     public void popAndSendDelayMessage(String exchange) {
         String messageCacheListKey = DelayMessageConstants.DELAY_EXCHANGE_MESSAGE_CACHE_LIST + exchange;
         // 计算还剩多少个缺口
-        int opening = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - rabbitMQHttpClient.getMessagesDelayed(exchange);
+        int opening = DelayMessageConstants.MAX_DELAY_EXCHANGE_CAPACITY - getMessagesDelayed(exchange);
         log.info("延时交换机 {} 剩余缺口数 {}", messageCacheListKey, opening);
         // 若还有缺口就重新发送消息
         if (opening > 0) {

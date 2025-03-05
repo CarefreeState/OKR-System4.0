@@ -2,8 +2,8 @@ package cn.bitterfree.api.xxljob.cookie;
 
 import cn.bitterfree.api.common.exception.GlobalServiceException;
 import cn.bitterfree.api.common.util.web.HttpRequestUtil;
+import cn.bitterfree.api.xxljob.client.XxlJobClient;
 import cn.bitterfree.api.xxljob.config.Admin;
-import cn.bitterfree.api.xxljob.feign.XxlJobClient;
 import cn.hutool.extra.spring.SpringUtil;
 import com.xxl.job.core.biz.model.ReturnT;
 import lombok.Getter;

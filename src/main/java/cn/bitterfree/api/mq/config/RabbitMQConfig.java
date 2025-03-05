@@ -1,8 +1,6 @@
 package cn.bitterfree.api.mq.config;
 
 import cn.bitterfree.api.common.util.convert.JsonUtil;
-import cn.bitterfree.api.mq.client.RabbitMessageConverter;
-import cn.bitterfree.api.mq.model.entity.RabbitMQMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,7 +8,6 @@ import org.springframework.amqp.rabbit.retry.MessageRecoverer;
 import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,12 +36,6 @@ public class RabbitMQConfig {
     private String password;
 
     private String virtualHost;
-
-    @Bean
-    @ConditionalOnMissingBean(RabbitMessageConverter.class)
-    public RabbitMessageConverter rabbitMessageConverter() {
-        return RabbitMQMessage::new;
-    }
 
     @Bean
     public MessageConverter messageConverter(){

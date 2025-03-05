@@ -2,10 +2,10 @@ package cn.bitterfree.api.xxljob.service.impl;
 
 import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import cn.bitterfree.api.redis.lock.RedisLock;
+import cn.bitterfree.api.xxljob.client.JobGroupClient;
 import cn.bitterfree.api.xxljob.config.Executor;
 import cn.bitterfree.api.xxljob.constants.XxlJobConstants;
 import cn.bitterfree.api.xxljob.cookie.XxlJobCookie;
-import cn.bitterfree.api.xxljob.feign.JobGroupClient;
 import cn.bitterfree.api.xxljob.model.entity.XxlJobGroup;
 import cn.bitterfree.api.xxljob.service.JobGroupService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package cn.bitterfree.api.xxljob.feign;
+package cn.bitterfree.api.xxljob.client;
 
 import cn.bitterfree.api.xxljob.model.entity.XxlJobInfo;
 import cn.bitterfree.api.xxljob.model.vo.InfoPageListVO;
