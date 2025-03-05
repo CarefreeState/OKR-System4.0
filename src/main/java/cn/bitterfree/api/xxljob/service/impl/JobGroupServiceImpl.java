@@ -4,11 +4,10 @@ import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import cn.bitterfree.api.redis.lock.RedisLock;
 import cn.bitterfree.api.xxljob.config.Executor;
 import cn.bitterfree.api.xxljob.constants.XxlJobConstants;
-import cn.bitterfree.api.xxljob.model.dto.GroupPageListDTO;
-import cn.bitterfree.api.xxljob.model.dto.JobGroupDTO;
+import cn.bitterfree.api.xxljob.cookie.XxlJobCookie;
+import cn.bitterfree.api.xxljob.feign.JobGroupClient;
 import cn.bitterfree.api.xxljob.model.entity.XxlJobGroup;
 import cn.bitterfree.api.xxljob.service.JobGroupService;
-import cn.bitterfree.api.xxljob.util.XxlJobRequestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,13 +23,12 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     private final RedisLock redisLock;
 
+    private final JobGroupClient jobGroupClient;
+
     @Override
     public List<XxlJobGroup> getJobGroup() {
-        GroupPageListDTO groupPageListDTO = GroupPageListDTO.builder()
-                .appname(executor.getAppname())
-                .title(executor.getTitle())
-                .build();
-        return XxlJobRequestUtil.groupPageList(groupPageListDTO);
+        return jobGroupClient.pageList(XxlJobCookie.getXxlJobCookie().getCookie(), null, null,
+                executor.getAppname(), executor.getTitle()).getData();
     }
 
     @Override
@@ -42,20 +40,20 @@ public class JobGroupServiceImpl implements JobGroupService {
     public void saveOrUpdateJobGroup() {
         String appname = executor.getAppname();
         String title = executor.getTitle();
-        String lock = String.format(XxlJobConstants.XXL_JOB_GROUP_LOCK, appname, title);
-        redisLock.tryLockDoSomething(lock, () -> {
-            JobGroupDTO jobGroupDTO = JobGroupDTO.builder()
+        redisLock.tryLockDoSomething(String.format(XxlJobConstants.XXL_JOB_GROUP_LOCK, appname, title), () -> {
+            XxlJobGroup jobGroup = XxlJobGroup.builder()
                     .appname(appname)
                     .title(title)
                     .addressType(executor.getAddressType())
                     .addressList(executor.getAddressList())
                     .build();
             // 判断是否更新 group
+            String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
             ObjectUtil.nonNullstream(getJobGroup()).findFirst().ifPresentOrElse(group -> {
-                jobGroupDTO.setId(group.getId());
-                XxlJobRequestUtil.groupUpdate(jobGroupDTO);
+                jobGroup.setId(group.getId());
+                jobGroupClient.update(cookie, jobGroup);
             }, () -> {
-                XxlJobRequestUtil.groupSave(jobGroupDTO);
+                jobGroupClient.save(cookie, jobGroup);
             });
         }, () -> {});
     }

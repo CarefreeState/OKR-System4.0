@@ -1,5 +1,6 @@
 package cn.bitterfree.api.common.cors.filter;
 
+import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,10 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -39,14 +37,7 @@ public class CorsFilter implements Filter {
 
     @PostConstruct
     public void init() {
-        allowOriginSet = Optional.ofNullable(allowOrigin)
-                .stream()
-                .filter(StringUtils::hasText)
-                .map(origins -> origins.split(","))
-                .flatMap(Arrays::stream)
-                .map(String::trim)
-                .filter(StringUtils::hasText)
-                .collect(Collectors.toSet());
+        allowOriginSet = ObjectUtil.split(allowOrigin, ",");
         log.info("允许跨域的请求源：{}", allowOriginSet);
     }
 

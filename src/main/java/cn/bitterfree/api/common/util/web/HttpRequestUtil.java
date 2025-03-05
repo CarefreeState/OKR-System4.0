@@ -33,6 +33,16 @@ public class HttpRequestUtil {
     private final static Map<String, String> JSON_CONTENT_TYPE_HEADER = Map.of(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
     private final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
+    // 这里的参数 setCookies 的元素，一定有 key=value
+    public static String convertCookie(List<String> setCookies) {
+        return ObjectUtil.distinctNonNullStream(setCookies)
+                .map(setCookie -> {
+                    int index = setCookie.indexOf(";");
+                    return index < 0 ? setCookie : setCookie.substring(0, index);
+                }) // Set-Cookie 第一个分句就是 key=value
+                .collect(Collectors.joining("; "));
+    }
+
     public static boolean matchPath(String pattern, String path) {
         return PATH_MATCHER.match(pattern, path);
     }

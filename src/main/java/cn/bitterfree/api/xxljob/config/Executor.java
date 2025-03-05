@@ -26,7 +26,7 @@ public class Executor {
 
     private Integer logretentiondays;
 
-    private String addressType;
+    private Integer addressType;
 
     private String addressList;
 

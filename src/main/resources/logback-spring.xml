@@ -123,7 +123,7 @@
         <appender-ref ref="async_info" />
         <appender-ref ref="async_error" />
         <appender-ref ref="file_console" />
-        <!--        <appender-ref ref="sky_log"/>-->
+<!--        <appender-ref ref="sky_log"/>-->
     </root>
 
 </configuration>

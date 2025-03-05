@@ -3,6 +3,7 @@ package cn.bitterfree.api.common.util.convert;
 import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -10,6 +11,7 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -105,6 +107,17 @@ public class ObjectUtil {
                 .filter(l -> !CollectionUtils.isEmpty(l))
                 .map(l -> l.get(RandomUtil.randomInt(l.size())))
                 .orElse(null);
+    }
+
+    public static Set<String> split(String str, String regex) {
+        return Optional.ofNullable(str)
+                .stream()
+                .filter(StringUtils::hasText)
+                .map(origins -> origins.split(regex))
+                .flatMap(Arrays::stream)
+                .map(String::trim)
+                .filter(StringUtils::hasText)
+                .collect(Collectors.toSet());
     }
 
 }

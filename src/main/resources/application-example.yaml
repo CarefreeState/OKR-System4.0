@@ -3,7 +3,6 @@ server:
   port: 1701
   ip: 127.0.0.1 # 运行时 ip
 
-
 okr:
   db:
     host:
@@ -162,6 +161,16 @@ spring:
 #          multiplier: 2
 #          max-attempts: 3
 #          stateless: true # true 代表没有状态，若有消费者包含事务，这里改为 false
+  cloud:
+    openfeign:
+      httpclient:
+        enabled: true # 客户端底层试：Apache HttpClient（支持连接池）的开关
+        max-connections: 200 # 最大连接数
+        max-connections-per-route: 50 # 单个路径的最大连接数
+      client:
+        config:
+          default: #针对某一个微服务
+            logger-level: basic #日志级别
 
 bloom-filter:
   digital-resource-code:
@@ -190,7 +199,7 @@ resource:
 
 quadrant-cycle:
   limit:
-    second: 10
+    second: 86400
 
 secure:
   refused:

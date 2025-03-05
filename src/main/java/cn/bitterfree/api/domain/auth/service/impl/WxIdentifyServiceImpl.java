@@ -4,7 +4,6 @@ import cn.bitterfree.api.common.enums.GlobalServiceStatusCode;
 import cn.bitterfree.api.domain.auth.constants.AuthConstants;
 import cn.bitterfree.api.domain.auth.service.ValidateService;
 import cn.bitterfree.api.domain.auth.service.WxIdentifyService;
-import cn.bitterfree.api.wxtoken.model.dto.JsCode2SessionDTO;
 import cn.bitterfree.api.wxtoken.model.vo.JsCode2SessionVO;
 import cn.bitterfree.api.wxtoken.util.WxHttpRequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,7 @@ public class WxIdentifyServiceImpl implements WxIdentifyService {
     @Override
     public JsCode2SessionVO validateCode(String code) {
         // 构造请求 + 发起请求 -> code2Session
-        JsCode2SessionDTO jsCode2SessionDTO = JsCode2SessionDTO.builder().jsCode(code).build();
-        JsCode2SessionVO jsCode2SessionVO = WxHttpRequestUtil.jsCode2Session(jsCode2SessionDTO);
+        JsCode2SessionVO jsCode2SessionVO = WxHttpRequestUtil.jsCode2Session(code);
         validateService.validate(AuthConstants.VALIDATE_WX_CODE_KEY + code, () -> {
             return Objects.nonNull(jsCode2SessionVO.getOpenid());
         }, GlobalServiceStatusCode.WX_CODE_NOT_VALID);

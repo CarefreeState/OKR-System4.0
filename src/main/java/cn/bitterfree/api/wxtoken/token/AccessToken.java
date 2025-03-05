@@ -5,6 +5,7 @@ import cn.bitterfree.api.wxtoken.model.vo.AccessTokenVO;
 import cn.bitterfree.api.wxtoken.util.WxHttpRequestUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -16,16 +17,14 @@ public class AccessToken {
     private final static TimeUnit UNIT = TimeUnit.SECONDS;
 
     private String token;
-
-    private long expireIn;//有效期限
-
+    private long deadline;
     private volatile static AccessToken ACCESS_TOKEN = null;
 
     private AccessToken() {
     }
 
     public boolean isExpired() {
-        return Objects.isNull(this.token) || System.currentTimeMillis() > this.expireIn;
+        return !StringUtils.hasText(this.token) || System.currentTimeMillis() > this.deadline;
     }
 
     private static void setAccessToken() {
@@ -34,7 +33,7 @@ public class AccessToken {
         }
         AccessTokenVO accessTokenVO = WxHttpRequestUtil.accessToken(AccessTokenDTO.builder().build());
         ACCESS_TOKEN.setToken(accessTokenVO.getAccessToken());
-        ACCESS_TOKEN.setExpireIn(System.currentTimeMillis() + UNIT.toMillis(accessTokenVO.getExpiresIn()));
+        ACCESS_TOKEN.setDeadline(System.currentTimeMillis() + UNIT.toMillis(accessTokenVO.getExpiresIn()));
     }
 
     public static AccessToken getAccessToken() {
