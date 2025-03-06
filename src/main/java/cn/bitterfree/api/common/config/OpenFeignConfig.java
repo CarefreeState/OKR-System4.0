@@ -3,6 +3,7 @@ package cn.bitterfree.api.common.config;
 import feign.Contract;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ import java.util.Collections;
  * Date: 2025-03-05
  * Time: 17:10
  */
-@Component
+@Configuration
 public class OpenFeignConfig {
 
     @Bean

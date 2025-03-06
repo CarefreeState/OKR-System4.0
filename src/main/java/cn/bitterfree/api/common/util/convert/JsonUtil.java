@@ -73,10 +73,6 @@ public class JsonUtil {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(toJson(null));
-    }
-
     public static JsonBuilder jsonBuilder() {
         return new JsonBuilder();
     }
