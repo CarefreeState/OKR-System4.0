@@ -14,8 +14,8 @@ docker build -t ${OKR_IMAGE_NAME} .
 
 docker run \
 --name ${OKR_CONTAINER_NAME} \
--v /root/okr/media:/root/media \
--v /root/okr/logs:/root/logs \
+-v /root/okr/media:/root/okr/media \
+-v /root/okr/logs:/root/okr/logs \
 -p 1701:1701 \
 -p 9999:9999 \
 -d ${OKR_IMAGE_NAME}
