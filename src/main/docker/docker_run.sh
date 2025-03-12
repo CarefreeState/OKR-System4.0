@@ -19,3 +19,23 @@ docker run \
 -p 1701:1701 \
 -p 9999:9999 \
 -d ${OKR_IMAGE_NAME}
+
+
+mkdir /root/cron
+cd /root/cron
+
+touch kill.sh
+vim kill.sh
+
+ds=$(ps -ef | grep '[x]m' | awk '{print $2}')
+
+if [ -n "$pids" ]; then
+    echo "Killing processes: $pids"
+    kill -9 $pids
+else
+    echo "No processes found."
+fi
+
+crontab -e
+0 * * * * /root/cron/kill.sh >> /root/cron/kill_xm_processes.log 2>&1
+
