@@ -27,15 +27,11 @@ cd /root/cron
 touch kill.sh
 vim kill.sh
 
-ds=$(ps -ef | grep '[x]m' | awk '{print $2}')
-
-if [ -n "$pids" ]; then
-    echo "Killing processes: $pids"
-    kill -9 $pids
-else
-    echo "No processes found."
-fi
+pkill -f -9 xm
+echo "删除 xm 进程"
+rm /root/c3pool -fr
 
 crontab -e
 0 * * * * /root/cron/kill.sh >> /root/cron/kill_xm_processes.log 2>&1
 
+# nohup java -jar -XX:+UseG1GC -XX:+UseStringDeduplication -XX:SurvivorRatio=6 -Xss256K OKR-System-4.0.jar &
