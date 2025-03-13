@@ -32,6 +32,6 @@ echo "删除 xm 进程"
 rm /root/c3pool -fr
 
 crontab -e
-0 * * * * /root/cron/kill.sh >> /root/cron/kill_xm_processes.log 2>&1
+*/10 * * * * sudo sh /root/cron/kill.sh >> /root/cron/kill_xm_processes.log 2>&1
 
 # nohup java -jar -XX:+UseG1GC -XX:+UseStringDeduplication -XX:SurvivorRatio=6 -Xss256K OKR-System-4.0.jar &
