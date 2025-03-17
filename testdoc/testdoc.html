@@ -31,7 +31,7 @@
         font-size: 2.5rem;
         margin: 0;
       }
-      .header .author-time {
+      .header .subject {
         color: #888;
         font-size: 1rem;
         margin-top: 10px;
@@ -79,6 +79,14 @@
         }
       }
       /* 备案号样式 */
+      .footer-link {
+        text-decoration: none; /* 去掉下划线 */
+        color: inherit; /* 继承父元素的文字颜色 */
+        display: block; /* 让 <a> 标签充满整个 div */
+      }
+      .footer-link:hover {
+        cursor: pointer; /* 鼠标悬停时变成手型 */
+      }
       .footer {
         text-align: center;
         padding: 15px 20px;
@@ -119,33 +127,32 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>OKR 目标与规划管理小程序项目测试报告</h1>
-        <div class="author-time">测试人员：马铭胜</div>
+        <h1>OKR 目标与规划管理小程序 V4.0 测试报告</h1>
+        <div class="subject">OKR Mini Program V4.0 Testing Report</div>
+        <div class="subject">作者：马铭胜</div>
       </div>
       <div class="cards">
-        <a href="blackbox-report.html" target="_blank" class="card">
+        <a href="https://blog.csdn.net/Carefree_State" target="_blank" class="card">
           <img src="images/hhcs.png" alt="Logo" />
           <h2>黑盒测试报告</h2>
         </a>
-        <a href="automation-report.html" target="_blank" class="card">
+        <a href="https://blog.csdn.net/Carefree_State" target="_blank" class="card">
           <img src="images/zdhcs.png" alt="Logo" />
           <h2>自动化测试报告</h2>
         </a>
-        <a href="performance-report.html" target="_blank" class="card">
+        <a href="https://blog.csdn.net/Carefree_State" target="_blank" class="card">
           <img src="images/xncs.png" alt="Logo" />
           <h2>性能测试报告</h2>
         </a>
       </div>
     </div>
     <!-- 备案号链接 -->
-    <div class="footer">
-      <img src="images/wlgc.gif" alt="Icon 1" />
-      <img src="images/beian.png" alt="Icon 2" />
-      <p>
-        <a href="https://beian.miit.gov.cn/" target="_blank"
-          >粤ICP备2025369557号-1</a
-        >
-      </p>
-    </div>
+    <a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">
+      <div class="footer">
+        <img src="images/wlgc.gif" alt="Icon 1" />
+        <img src="images/beian.png" alt="Icon 2" />
+        <p>粤ICP备2025369557号-1</p>
+      </div>
+    </a>
   </body>
 </html>
