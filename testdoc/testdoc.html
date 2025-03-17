@@ -12,11 +12,15 @@
         padding: 0;
         background-color: #ffffff; /* 纯白背景 */
         color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* 确保页面高度占满整个视口 */
       }
       .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
+        flex: 1; /* 让内容区域占据剩余空间 */
       }
       .header {
         text-align: center;
@@ -74,6 +78,42 @@
           margin: 10px 0;
         }
       }
+      /* 备案号样式 */
+      .footer {
+        text-align: center;
+        padding: 15px 20px;
+        background-color: #ffffff; /* 白色背景 */
+        font-size: 0.9rem;
+        color: #000; /* 黑色字体 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .footer img {
+        width: 1em; /* 图片大小与字体相同 */
+        height: 1em;
+        vertical-align: middle;
+      }
+      .footer a {
+        color: #000; /* 黑色字体 */
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+      /* 移动端样式 */
+      @media (max-width: 768px) {
+        .footer {
+          font-size: 0.8rem; /* 移动端字体更小 */
+          padding: 10px;
+        }
+        .footer img {
+          width: 0.9em; /* 移动端图片稍小 */
+          height: 0.9em;
+        }
+      }
     </style>
   </head>
   <body>
@@ -96,6 +136,16 @@
           <h2>性能测试报告</h2>
         </a>
       </div>
+    </div>
+    <!-- 备案号链接 -->
+    <div class="footer">
+      <img src="images/wlgc.gif" alt="Icon 1" />
+      <img src="images/beian.png" alt="Icon 2" />
+      <p>
+        <a href="https://beian.miit.gov.cn/" target="_blank"
+          >粤ICP备2025369557号-1</a
+        >
+      </p>
     </div>
   </body>
 </html>
