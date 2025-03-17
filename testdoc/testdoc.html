@@ -79,14 +79,6 @@
         }
       }
       /* 备案号样式 */
-      .footer-link {
-        text-decoration: none; /* 去掉下划线 */
-        color: inherit; /* 继承父元素的文字颜色 */
-        display: block; /* 让 <a> 标签充满整个 div */
-      }
-      .footer-link:hover {
-        cursor: pointer; /* 鼠标悬停时变成手型 */
-      }
       .footer {
         text-align: center;
         padding: 15px 20px;
@@ -98,6 +90,16 @@
         justify-content: center;
         flex-wrap: wrap;
         gap: 10px;
+      }
+      .footer-link {
+        text-decoration: none; /* 去掉下划线 */
+        color: inherit; /* 继承父元素的文字颜色 */
+        display: flex; /* 让 <a> 标签内部内容水平排列 */
+        align-items: center; /* 垂直居中 */
+        gap: 10px; /* 调整图标和文字之间的间距 */
+      }
+      .footer-link span {
+        display: inline-block; /* 确保文字区域可点击 */
       }
       .footer img {
         width: 1em; /* 图片大小与字体相同 */
@@ -147,12 +149,12 @@
       </div>
     </div>
     <!-- 备案号链接 -->
-    <a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">
-      <div class="footer">
-        <img src="images/wlgc.gif" alt="Icon 1" />
-        <img src="images/beian.png" alt="Icon 2" />
-        <p>粤ICP备2025369557号-1</p>
-      </div>
-    </a>
+    <div class="footer">
+      <a href="https://beian.miit.gov.cn/" target="_blank" class="footer-link">
+          <img src="images/wlgc.gif" alt="Icon 1" />
+          <img src="images/beian.png" alt="Icon 2" />
+          <span>粤ICP备2025369557号-1</span>
+      </a>
+    </div>
   </body>
 </html>
