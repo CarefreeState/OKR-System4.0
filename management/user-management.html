@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>系统用户管理</title>
+    <link rel="stylesheet" href="./dist/css/jquery.toast.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="icon" href="./images/logo.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- 导航栏 -->
+      <div class="navbar">
+        <h1>系统用户管理</h1>
+        <div class="nav-links">
+          <a href="login.html" class="nav-link">管理员登录</a>
+          <a href="avatar-management.html" class="nav-link">默认头像管理</a>
+        </div>
+      </div>
+
+      <!-- 用户列表 -->
+      <div class="user-list">
+        <!-- 示例数据 -->
+        <div class="user-card">
+          <img
+            src="https://api.bitterfree.cn/static/default.png"
+            alt="头像"
+            class="avatar"
+          />
+          <div class="user-info">
+            <span>用户名: user1</span>
+            <span>昵称: 昵称1</span>
+            <span>用户类型: 普通用户</span>
+          </div>
+          <div class="actions">
+            <button class="reset-avatar">重置头像</button>
+            <button class="update-type">更新用户类型</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <img
+            src="https://api.bitterfree.cn/static/default.png"
+            alt="头像"
+            class="avatar"
+          />
+          <div class="user-info">
+            <span>用户名: user2</span>
+            <span>昵称: 昵称2</span>
+            <span>用户类型: 管理员</span>
+          </div>
+          <div class="actions">
+            <button class="reset-avatar">重置头像</button>
+            <button class="update-type">更新用户类型</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <img
+            src="https://api.bitterfree.cn/static/default.png"
+            alt="头像"
+            class="avatar"
+          />
+          <div class="user-info">
+            <span>用户名: user3</span>
+            <span>昵称: 昵称3</span>
+            <span>用户类型: 封禁用户</span>
+          </div>
+          <div class="actions">
+            <button class="reset-avatar">重置头像</button>
+            <button class="update-type">更新用户类型</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <img
+            src="https://api.bitterfree.cn/static/default.png"
+            alt="头像"
+            class="avatar"
+          />
+          <div class="user-info">
+            <span>用户名: user4</span>
+            <span>昵称: 昵称4</span>
+            <span>用户类型: 普通用户</span>
+          </div>
+          <div class="actions">
+            <button class="reset-avatar">重置头像</button>
+            <button class="update-type">更新用户类型</button>
+          </div>
+        </div>
+        <div class="user-card">
+          <img
+            src="https://api.bitterfree.cn/static/default.png"
+            alt="头像"
+            class="avatar"
+          />
+          <div class="user-info">
+            <span>用户名: user5</span>
+            <span>昵称: 昵称5</span>
+            <span>用户类型: 管理员</span>
+          </div>
+          <div class="actions">
+            <button class="reset-avatar">重置头像</button>
+            <button class="update-type">更新用户类型</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 条件查询 -->
+      <div class="search-bar">
+        <div class="search-filters">
+          <input type="text" placeholder="用户名" class="search-input" />
+          <input type="text" placeholder="昵称" class="search-input" />
+          <select class="search-input">
+            <option value="">选择用户类型</option>
+            <option value="normal">普通用户</option>
+            <option value="admin">管理员</option>
+            <option value="banned">封禁用户</option>
+          </select>
+        </div>
+        <div class="pagination">
+          <input type="number" placeholder="页码" class="page-input" />
+          <input type="number" placeholder="页内条数" class="page-input" />
+          <span>总页数: 10</span>
+          <span>总条数: 100</span>
+          <button class="page-button">首页</button>
+          <button class="page-button">上一页</button>
+          <button class="page-button">下一页</button>
+          <button class="page-button">尾页</button>
+        </div>
+      </div>
+      <!-- 备案号链接 -->
+      <div class="footer">
+        <img src="images/beian.png" alt="Icon" />
+        <a
+          href="https://beian.mps.gov.cn/#/query/webSearch?code=44051302000230"
+          rel="noreferrer"
+          target="_blank"
+          class="footer-link"
+        >
+          <span>粤公网安备44051302000230号</span>
+        </a>
+        |
+        <a
+          href="https://beian.miit.gov.cn/"
+          rel="noreferrer"
+          target="_blank"
+          class="footer-link"
+        >
+          <span>粤ICP备2025369557号-1</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 头像放大模态框 -->
+    <div id="avatar-modal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modal-avatar" />
+    </div>
+
+    <!-- 重置头像确认模态框 -->
+    <div id="reset-modal" class="modal">
+      <div class="modal-box">
+        <p>确定要重置头像吗？</p>
+        <div class="modal-actions">
+          <button id="confirm-reset" class="modal-button confirm">确定</button>
+          <button id="cancel-reset" class="modal-button cancel">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 更新用户类型模态框 -->
+    <div id="update-modal" class="modal">
+      <div class="modal-box large">
+        <p>选择新的用户类型：</p>
+        <select id="new-user-type" class="search-input">
+          <option value="normal">普通用户</option>
+          <option value="admin">管理员</option>
+          <option value="banned">封禁用户</option>
+        </select>
+        <div class="modal-actions">
+          <button id="confirm-update" class="modal-button confirm">确定</button>
+          <button id="cancel-update" class="modal-button cancel">取消</button>
+        </div>
+      </div>
+    </div>
+    <script src="./dist/js/jquery-3.6.3.js"></script>
+    <script src="./dist/js/jquery.cookie.js"></script>
+    <script src="./dist/js/jquery.toast.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/request.js"></script>
+  </body>
+</html>

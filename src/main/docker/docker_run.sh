@@ -1,6 +1,7 @@
 
 mkdir /root/okr
 mkdir /root/okr/testdoc
+mkdir /root/okr/manage
 mkdir /root/okr/media
 mkdir /root/okr/media/medal
 mkdir /root/okr/media/static

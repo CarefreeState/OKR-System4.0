@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -35,6 +36,10 @@ public class GlobalInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 忽略 OPTIONS 请求
+        if(HttpMethod.OPTIONS.name().equals(request.getMethod())) {
+            return Boolean.TRUE;
+        }
         // 执行初始化认拦截参数 pre 链
         initPreHandlerChain.handle(request, response, handler);
         // 若没有拦截参数，则无法访问接口（这种情况的出现，代表这个接口并没有在配置文件里自定义配置，也没有目标方法的 Intercept 注解）
