@@ -28,10 +28,51 @@ cancelDelete.addEventListener("click", function () {
   deleteModal.style.display = "none"; // 隐藏模态框
 });
 
-// 上传图片逻辑
-const uploadInput = document.getElementById("upload-input");
+queryPhotos();
 
-uploadInput.addEventListener("change", function (event) {
+function queryPhotos() {
+  jQuery(".avatar-grid").empty();
+  jsonRequestWithToken("/user/defaultphoto/list", "GET", null, function (data) {
+    for (i = 0; i < data.length; i++) {
+      var code = data[i];
+      var photo =
+        '<div class="avatar-item"><img src="' + getBaseUrl("/" + code);
+      photo +=
+        '" alt="头像" /><div class="delete-overlay" data-photo-code="' + code;
+      photo += '">×</div>';
+      jQuery(".avatar-grid").append(jQuery(photo));
+    }
+    jQuery(".avatar-grid").append(
+      jQuery(
+        '<div id="upload-button" class="avatar-item" onclick="uploadClick()"><input type="file" id="upload-input" accept="image/*" style="display: none" /><span class="upload-flag">+</span></div>'
+      )
+    );
+    initImageEvent();
+  });
+}
+
+function initImageEvent() {
+  // 上传图片逻辑
+  document
+    .getElementById("upload-input")
+    .addEventListener("change", uploadPhoto);
+  // 点击删除按钮时显示模态框
+  document.querySelectorAll(".delete-overlay").forEach((overlay) => {
+    overlay.addEventListener("click", function (event) {
+      event.stopPropagation(); // 阻止事件冒泡
+      currentAvatarItem = this.closest(".avatar-item"); // 记录当前点击的头像
+      console.log(overlay.getAttribute("data-photo-code"));
+      code = overlay.getAttribute("data-photo-code");
+      deleteModal.style.display = "flex"; // 显示模态框
+    });
+  });
+}
+
+function uploadClick() {
+  uploadInput.click();
+}
+
+function uploadPhoto(event) {
   const file = event.target.files[0];
   if (file) {
     if (file.type.startsWith("image/")) {
@@ -60,44 +101,4 @@ uploadInput.addEventListener("change", function (event) {
       });
     }
   }
-});
-
-queryPhotos();
-
-function queryPhotos() {
-  jQuery(".avatar-grid").empty();
-  jsonRequestWithToken("/user/defaultphoto/list", "GET", null, function (data) {
-    for (i = 0; i < data.length; i++) {
-      var code = data[i];
-      var photo =
-        '<div class="avatar-item"><img src="' + getBaseUrl("/" + code);
-      photo +=
-        '" alt="头像" /><div class="delete-overlay" data-photo-code="' + code;
-      photo += '">×</div>';
-      jQuery(".avatar-grid").append(jQuery(photo));
-    }
-    jQuery(".avatar-grid").append(
-      jQuery(
-        '<div id="upload-button" class="avatar-item" onclick="uploadClick()"><input type="file" id="upload-input" accept="image/*" style="display: none" /><span class="upload-flag">+</span></div>'
-      )
-    );
-    initImageEvent();
-  });
-}
-
-function initImageEvent() {
-  // 点击删除按钮时显示模态框
-  document.querySelectorAll(".delete-overlay").forEach((overlay) => {
-    overlay.addEventListener("click", function (event) {
-      event.stopPropagation(); // 阻止事件冒泡
-      currentAvatarItem = this.closest(".avatar-item"); // 记录当前点击的头像
-      console.log(overlay.getAttribute("data-photo-code"));
-      code = overlay.getAttribute("data-photo-code");
-      deleteModal.style.display = "flex"; // 显示模态框
-    });
-  });
-}
-
-function uploadClick() {
-  uploadInput.click();
 }
