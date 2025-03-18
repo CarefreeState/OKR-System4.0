@@ -32,7 +32,6 @@ function setToken(token) {
 }
 
 function getToken() {
-  return "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLnmbvlvZXorqTor4EiLCJjdXN0b20iOnsidXNlcklkIjoxMDAzNX0sImlzcyI6Ik9LUi1TeXN0ZW0iLCJleHAiOjE3NzM4MzUxNDMsImlhdCI6MTc0MjI5OTE0MywianRpIjoiNzdlY2MwNTJlNjQ3NGMzOGIxZmE4NWU4ODM0M2U2ODcifQ.W1g9C7Ba9je6k_ceSndphnWU5qAMLE_jTbyAlZckE_g";
   var token = jQuery.cookie("token");
   if (token) {
     console.log("获取 token：" + token);
