@@ -23,48 +23,64 @@
       <div id="user-list" class="user-list"></div>
 
       <!-- 条件查询 -->
-      <div class="search-bar">
-        <div class="search-filters">
-          <input
-            id="input-username"
-            placeholder="请输入用户名关键词"
-            type="text"
-            class="search-input"
-          />
-          <input
-            id="input-nickname"
-            placeholder="请输入昵称关键词"
-            type="text"
-            class="search-input"
-          />
-          <select id="select-userType" class="search-select">
-            <option value="">选择用户类型</option>
-            <option value="0">封禁用户</option>
-            <option value="1">普通用户</option>
-            <option value="2">管理员</option>
-          </select>
-          <span>输入页码:</span>
-          <input id="input-current" type="number" class="page-input" />
-          <span>页内条数:</span>
-          <input id="input-pageSize" type="number" class="page-input" />
-        </div>
-        <div class="pagination">
-          <span>第</span>
-          <span id="res-current"></span>
-          <span>页，总共</span>
-          <span id="res-pages"></span>
-          <span>页</span>
-          <button class="page-button" onclick="first()">首页</button>
-          <button class="page-button" onclick="prev()">上一页</button>
-          <button class="page-button" onclick="next()">下一页</button>
-          <button class="page-button" onclick="last()">尾页</button>
-          <span>每页</span>
-          <span id="res-pageSize"></span>
-          <span>条，总共</span>
-          <span id="res-total"></span>
-          <span>条</span>
+      <div class="search-container">
+        <button id="toggle-search" class="toggle-button">
+          <i class="arrow-icon">▲</i>
+        </button>
+        <div class="search-bar collapsed">
+          <div class="search-filters">
+            <input
+              id="input-username"
+              placeholder="请输入用户名关键词"
+              type="text"
+              class="search-input"
+            />
+            <input
+              id="input-nickname"
+              placeholder="请输入昵称关键词"
+              type="text"
+              class="search-input"
+            />
+            <select id="select-userType" class="search-select">
+              <option value="">请选择用户类型</option>
+              <option value="0">封禁用户</option>
+              <option value="1">普通用户</option>
+              <option value="2">管理员</option>
+            </select>
+            <div class="pagination-controls">
+              <span>页码:</span>
+              <input
+                id="input-current"
+                type="number"
+                class="page-input"
+                min="1"
+              />
+              <span>条数:</span>
+              <input
+                id="input-pageSize"
+                type="number"
+                class="page-input"
+                min="1"
+              />
+            </div>
+          </div>
+          <div class="pagination">
+            <span
+              >第 <span id="res-current">1</span> 页，共
+              <span id="res-pages">1</span> 页</span
+            >
+            <button class="page-button" onclick="first()">首页</button>
+            <button class="page-button" onclick="prev()">上一页</button>
+            <button class="page-button" onclick="next()">下一页</button>
+            <button class="page-button" onclick="last()">尾页</button>
+            <span
+              >每页 <span id="res-pageSize">10</span> 条，共
+              <span id="res-total">0</span> 条</span
+            >
+          </div>
         </div>
       </div>
+
       <!-- 备案号链接 -->
       <div class="footer">
         <img src="images/beian.png" alt="Icon" />
@@ -88,13 +104,11 @@
       </div>
     </div>
 
-    <!-- 头像放大模态框 -->
+    <!-- 模态框 -->
     <div id="avatar-modal" class="modal">
       <span class="close">&times;</span>
       <img class="modal-content" id="modal-avatar" />
     </div>
-
-    <!-- 重置头像确认模态框 -->
     <div id="reset-modal" class="modal">
       <div class="modal-box">
         <input id="reset-user-id" type="text" style="display: none" />
@@ -105,14 +119,12 @@
         </div>
       </div>
     </div>
-
-    <!-- 更新用户类型模态框 -->
     <div id="update-modal" class="modal">
       <div class="modal-box large">
         <input id="update-user-id" type="text" style="display: none" />
-        <p>选择新的用户类型：</p>
+        <p>该用户当前为<span id="now-user-type"></span></p>
         <select id="new-user-type" class="search-input">
-          <option value="">选择用户类型</option>
+          <option value="">选择新用户类型</option>
           <option value="0">封禁用户</option>
           <option value="1">普通用户</option>
           <option value="2">管理员</option>
@@ -123,6 +135,7 @@
         </div>
       </div>
     </div>
+
     <script src="./dist/js/jquery-3.6.3.js"></script>
     <script src="./dist/js/jquery.cookie.js"></script>
     <script src="./dist/js/jquery.toast.js"></script>

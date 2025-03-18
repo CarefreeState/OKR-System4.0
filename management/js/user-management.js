@@ -17,6 +17,19 @@ var confirmUpdate = document.getElementById("confirm-update");
 var cancelUpdate = document.getElementById("cancel-update");
 var newUserType = document.getElementById("new-user-type");
 
+var toggleButton = document.getElementById("toggle-search");
+var searchBar = document.querySelector(".search-bar");
+
+toggleButton.addEventListener("click", function () {
+  searchBar.classList.toggle("collapsed");
+  // 更新按钮文字
+  if (searchBar.classList.contains("collapsed")) {
+    jQuery(".arrow-icon").text("▲");
+  } else {
+    jQuery(".arrow-icon").text("▼");
+  }
+});
+
 closeBtn.addEventListener("click", function () {
   avatarModal.style.display = "none";
 });
@@ -149,7 +162,10 @@ function initUserEvent() {
   // 更新用户类型模态框
   document.querySelectorAll(".update-type").forEach((button) => {
     button.addEventListener("click", function () {
-      jQuery("#update-user-id").val(button.getAttribute("data-user-id"));
+      var userId = button.getAttribute("data-user-id");
+      jQuery("#update-user-id").val(userId);
+      jQuery("#now-user-type").text(jQuery("#userType" + userId).text());
+      jQuery("#new-user-type").val("");
       updateModal.style.display = "flex";
     });
   });
