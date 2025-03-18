@@ -2,6 +2,7 @@
 const deleteModal = document.getElementById("delete-modal");
 const confirmDelete = document.getElementById("confirm-delete");
 const cancelDelete = document.getElementById("cancel-delete");
+let uploadInput = null;
 let currentAvatarItem = null;
 let code = null;
 
@@ -53,9 +54,8 @@ function queryPhotos() {
 
 function initImageEvent() {
   // 上传图片逻辑
-  document
-    .getElementById("upload-input")
-    .addEventListener("change", uploadPhoto);
+  uploadInput = document.getElementById("upload-input");
+  uploadInput.addEventListener("change", uploadPhoto);
   // 点击删除按钮时显示模态框
   document.querySelectorAll(".delete-overlay").forEach((overlay) => {
     overlay.addEventListener("click", function (event) {
