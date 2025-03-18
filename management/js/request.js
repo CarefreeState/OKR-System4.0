@@ -6,7 +6,7 @@ function toLogin() {
     allowToastClose: true,
   });
   setTimeout(function () {
-    location.href = "../login.html";
+    location.href = "login.html";
   }, 3000);
 }
 
@@ -18,31 +18,8 @@ function toUserManagement() {
     allowToastClose: true,
   });
   setTimeout(function () {
-    location.href = "../user-management.html";
+    location.href = "user-management.html";
   }, 3000);
-}
-
-// 根据 key 获取 url 中对应的 value
-function getParamValue(key) {
-  // 1.得到当前url的参数部分
-  var params = location.search;
-  // 2.去除“?”
-  if (params.indexOf("?") >= 0) {
-    params = params.substring(1);
-    // 3.根据“&”将参数分割成多个数组
-    var paramArray = params.split("&");
-    // 4.循环对比 key，并返回查询的 value
-    if (paramArray.length >= 1) {
-      for (var i = 0; i < paramArray.length; i++) {
-        // key=value
-        var item = paramArray[i].split("=");
-        if (item[0] == key) {
-          return item[1];
-        }
-      }
-    }
-  }
-  return null;
 }
 
 function setToken(token) {
@@ -55,6 +32,7 @@ function setToken(token) {
 }
 
 function getToken() {
+  return "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiLnmbvlvZXorqTor4EiLCJjdXN0b20iOnsidXNlcklkIjoxMDAzNX0sImlzcyI6Ik9LUi1TeXN0ZW0iLCJleHAiOjE3NzM4MzUxNDMsImlhdCI6MTc0MjI5OTE0MywianRpIjoiNzdlY2MwNTJlNjQ3NGMzOGIxZmE4NWU4ODM0M2U2ODcifQ.W1g9C7Ba9je6k_ceSndphnWU5qAMLE_jTbyAlZckE_g";
   var token = jQuery.cookie("token");
   if (token) {
     console.log("获取 token：" + token);
@@ -79,6 +57,50 @@ function getBaseUrl(u) {
   return "https://api.bitterfree.cn" + u;
 }
 
+function formRequestWithToken(u, m, d, s) {
+  fetch(getBaseUrl(u), {
+    method: m,
+    headers: {
+      token: getToken(),
+    },
+    body: d ? d : null,
+  })
+    .then((response) => {
+      var headers = response.headers;
+      setToken(headers.get("Token"));
+      toastHeader("提示", "info", headers.get("info"));
+      toastHeader("警告", "warning", headers.get("warn"));
+      toastHeader("错误", "error", headers.get("error"));
+      return response.json();
+    })
+    .then((data) => {
+      if (data.code === 200) {
+        s(data.data);
+      } else {
+        jQuery.toast({
+          heading: "异常",
+          text: data.message,
+          icon: "warning",
+          allowToastClose: true,
+        });
+        if (data.code === 2001) {
+          toLogin();
+        }
+      }
+    })
+    .finally(() => {})
+    .catch((error) => {
+      //提示信息
+      console.error("访问出现问题:", error);
+      $.toast({
+        heading: "错误",
+        text: "访问出现问题",
+        icon: "error",
+        allowToastClose: true,
+      });
+    });
+}
+
 function jsonRequestWithToken(u, m, d, s) {
   jQuery.ajax({
     crossDomain: true,
@@ -88,7 +110,7 @@ function jsonRequestWithToken(u, m, d, s) {
     headers: {
       token: getToken(),
     },
-    data: JSON.stringify(d),
+    data: d ? JSON.stringify(d) : null,
     success: function (body) {
       if (body.code === 200) {
         s(body.data);

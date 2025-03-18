@@ -64,7 +64,7 @@
   opacity: 1;
 }
 
-.upload-button {
+#upload-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,7 +73,7 @@
   cursor: pointer;
 }
 
-.upload-label {
+.upload-flag {
   font-size: 40px;
   color: #6a11cb;
   cursor: pointer;

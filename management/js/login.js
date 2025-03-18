@@ -12,7 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (username && password) {
       login(username, password);
     } else {
-      alert("请输入用户名和密码！");
+      jQuery.toast({
+        heading: "异常",
+        text: "请输入用户名和密码！",
+        icon: "warning",
+        allowToastClose: true,
+      });
     }
   });
 });

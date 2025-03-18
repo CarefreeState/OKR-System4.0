@@ -53,11 +53,11 @@ public class UserManageController {
 
     @Operation(summary = "重置用户头像")
     @PostMapping("/reset/photo/{userId}")
-    public SystemJsonResponse<?> resetUserPhoto(@PathVariable("userId") @NotNull(message = "用户 id 不能为空") @Parameter(description = "用户 id") Long userId) {
-        userService.getUserById(userId).ifPresent(user -> {
-            userPhotoService.updateUserPhoto(userPhotoService::getAnyOnePhoto, userId, user.getPhoto());
-        });
-        return SystemJsonResponse.SYSTEM_SUCCESS();
+    public SystemJsonResponse<String> resetUserPhoto(@PathVariable("userId") @NotNull(message = "用户 id 不能为空") @Parameter(description = "用户 id") Long userId) {
+        String code = userService.getUserById(userId).map(user -> {
+            return userPhotoService.updateUserPhoto(userPhotoService::getAnyOnePhoto, userId, user.getPhoto());
+        }).orElse(null);
+        return SystemJsonResponse.SYSTEM_SUCCESS(code);
     }
 
     @Operation(summary = "条件分页查询用户")

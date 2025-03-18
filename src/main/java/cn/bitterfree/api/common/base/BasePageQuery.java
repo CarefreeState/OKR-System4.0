@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +48,8 @@ public class BasePageQuery {
     public void init() {
         current = Optional.ofNullable(current).orElse(DEFAULT_CURRENT);
         pageSize = Optional.ofNullable(pageSize).orElse(DEFAULT_PAGE_SIZE);
+        current = current <= 0 ? DEFAULT_CURRENT : current;
+        pageSize = pageSize <= 0 ? DEFAULT_PAGE_SIZE : pageSize;
         limit = pageSize;
         offset = pageSize * (current - 1);
     }

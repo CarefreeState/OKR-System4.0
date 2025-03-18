@@ -28,88 +28,13 @@
             <img
               src="https://api.bitterfree.cn/static/default.png"
               alt="头像"
+              data-photo-code="111"
             />
             <div class="delete-overlay">×</div>
           </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <div class="avatar-item">
-            <img
-              src="https://api.bitterfree.cn/static/default.png"
-              alt="头像"
-            />
-            <div class="delete-overlay">×</div>
-          </div>
-          <!-- 重复 32 次 -->
           <!-- 上传按钮 -->
-          <div class="avatar-item upload-button">
-            <input
-              type="file"
-              id="upload-input"
-              accept="image/*"
-              style="display: none"
-            />
+          <div id="upload-button" class="avatar-item" onclick="uploadClick()">
+            <input type="file" id="upload-input" accept="image/*" style="display: none" />
             <label for="upload-input" class="upload-label">+</label>
           </div>
         </div>
@@ -150,7 +75,7 @@
     <script src="./dist/js/jquery-3.6.3.js"></script>
     <script src="./dist/js/jquery.cookie.js"></script>
     <script src="./dist/js/jquery.toast.js"></script>
-    <script src="js/avatar-management.js"></script>
     <script src="js/request.js"></script>
+    <script src="js/avatar-management.js"></script>
   </body>
 </html>

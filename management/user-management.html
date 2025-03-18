@@ -20,111 +20,49 @@
       </div>
 
       <!-- 用户列表 -->
-      <div class="user-list">
-        <!-- 示例数据 -->
-        <div class="user-card">
-          <img
-            src="https://api.bitterfree.cn/static/default.png"
-            alt="头像"
-            class="avatar"
-          />
-          <div class="user-info">
-            <span>用户名: user1</span>
-            <span>昵称: 昵称1</span>
-            <span>用户类型: 普通用户</span>
-          </div>
-          <div class="actions">
-            <button class="reset-avatar">重置头像</button>
-            <button class="update-type">更新用户类型</button>
-          </div>
-        </div>
-        <div class="user-card">
-          <img
-            src="https://api.bitterfree.cn/static/default.png"
-            alt="头像"
-            class="avatar"
-          />
-          <div class="user-info">
-            <span>用户名: user2</span>
-            <span>昵称: 昵称2</span>
-            <span>用户类型: 管理员</span>
-          </div>
-          <div class="actions">
-            <button class="reset-avatar">重置头像</button>
-            <button class="update-type">更新用户类型</button>
-          </div>
-        </div>
-        <div class="user-card">
-          <img
-            src="https://api.bitterfree.cn/static/default.png"
-            alt="头像"
-            class="avatar"
-          />
-          <div class="user-info">
-            <span>用户名: user3</span>
-            <span>昵称: 昵称3</span>
-            <span>用户类型: 封禁用户</span>
-          </div>
-          <div class="actions">
-            <button class="reset-avatar">重置头像</button>
-            <button class="update-type">更新用户类型</button>
-          </div>
-        </div>
-        <div class="user-card">
-          <img
-            src="https://api.bitterfree.cn/static/default.png"
-            alt="头像"
-            class="avatar"
-          />
-          <div class="user-info">
-            <span>用户名: user4</span>
-            <span>昵称: 昵称4</span>
-            <span>用户类型: 普通用户</span>
-          </div>
-          <div class="actions">
-            <button class="reset-avatar">重置头像</button>
-            <button class="update-type">更新用户类型</button>
-          </div>
-        </div>
-        <div class="user-card">
-          <img
-            src="https://api.bitterfree.cn/static/default.png"
-            alt="头像"
-            class="avatar"
-          />
-          <div class="user-info">
-            <span>用户名: user5</span>
-            <span>昵称: 昵称5</span>
-            <span>用户类型: 管理员</span>
-          </div>
-          <div class="actions">
-            <button class="reset-avatar">重置头像</button>
-            <button class="update-type">更新用户类型</button>
-          </div>
-        </div>
-      </div>
+      <div id="user-list" class="user-list"></div>
 
       <!-- 条件查询 -->
       <div class="search-bar">
         <div class="search-filters">
-          <input type="text" placeholder="用户名" class="search-input" />
-          <input type="text" placeholder="昵称" class="search-input" />
-          <select class="search-input">
+          <input
+            id="input-username"
+            placeholder="请输入用户名关键词"
+            type="text"
+            class="search-input"
+          />
+          <input
+            id="input-nickname"
+            placeholder="请输入昵称关键词"
+            type="text"
+            class="search-input"
+          />
+          <select id="select-userType" class="search-select">
             <option value="">选择用户类型</option>
-            <option value="normal">普通用户</option>
-            <option value="admin">管理员</option>
-            <option value="banned">封禁用户</option>
+            <option value="0">封禁用户</option>
+            <option value="1">普通用户</option>
+            <option value="2">管理员</option>
           </select>
+          <span>输入页码:</span>
+          <input id="input-current" type="number" class="page-input" />
+          <span>页内条数:</span>
+          <input id="input-pageSize" type="number" class="page-input" />
         </div>
         <div class="pagination">
-          <input type="number" placeholder="页码" class="page-input" />
-          <input type="number" placeholder="页内条数" class="page-input" />
-          <span>总页数: 10</span>
-          <span>总条数: 100</span>
-          <button class="page-button">首页</button>
-          <button class="page-button">上一页</button>
-          <button class="page-button">下一页</button>
-          <button class="page-button">尾页</button>
+          <span>第</span>
+          <span id="res-current"></span>
+          <span>页，总共</span>
+          <span id="res-pages"></span>
+          <span>页</span>
+          <button class="page-button" onclick="first()">首页</button>
+          <button class="page-button" onclick="prev()">上一页</button>
+          <button class="page-button" onclick="next()">下一页</button>
+          <button class="page-button" onclick="last()">尾页</button>
+          <span>每页</span>
+          <span id="res-pageSize"></span>
+          <span>条，总共</span>
+          <span id="res-total"></span>
+          <span>条</span>
         </div>
       </div>
       <!-- 备案号链接 -->
@@ -159,6 +97,7 @@
     <!-- 重置头像确认模态框 -->
     <div id="reset-modal" class="modal">
       <div class="modal-box">
+        <input id="reset-user-id" type="text" style="display: none" />
         <p>确定要重置头像吗？</p>
         <div class="modal-actions">
           <button id="confirm-reset" class="modal-button confirm">确定</button>
@@ -170,11 +109,13 @@
     <!-- 更新用户类型模态框 -->
     <div id="update-modal" class="modal">
       <div class="modal-box large">
+        <input id="update-user-id" type="text" style="display: none" />
         <p>选择新的用户类型：</p>
         <select id="new-user-type" class="search-input">
-          <option value="normal">普通用户</option>
-          <option value="admin">管理员</option>
-          <option value="banned">封禁用户</option>
+          <option value="">选择用户类型</option>
+          <option value="0">封禁用户</option>
+          <option value="1">普通用户</option>
+          <option value="2">管理员</option>
         </select>
         <div class="modal-actions">
           <button id="confirm-update" class="modal-button confirm">确定</button>
@@ -185,7 +126,7 @@
     <script src="./dist/js/jquery-3.6.3.js"></script>
     <script src="./dist/js/jquery.cookie.js"></script>
     <script src="./dist/js/jquery.toast.js"></script>
-    <script src="js/scripts.js"></script>
     <script src="js/request.js"></script>
+    <script src="js/user-management.js"></script>
   </body>
 </html>

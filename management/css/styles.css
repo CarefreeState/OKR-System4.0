@@ -121,23 +121,34 @@ body {
 
 /* 条件查询 */
 .search-bar {
-  height: 10%;
+  height: 15%;
   padding: 20px;
   background-color: white;
   display: flex;
   flex-direction: column;
   gap: 15px;
   box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px 10px 0 0;
+  align-items: center; /* 水平居中 */
+  justify-content: center; /* 垂直居中 */
 }
 
 .search-filters {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .search-input {
   width: 150px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-select {
+  width: 180px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -152,7 +163,7 @@ body {
 }
 
 .page-input {
-  width: 75px;
+  width: 40px;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 5px;
