@@ -4,7 +4,6 @@ package cn.bitterfree.api.domain.center.controller;
 import cn.bitterfree.api.common.SystemJsonResponse;
 import cn.bitterfree.api.common.config.TestDocConfig;
 import cn.bitterfree.api.common.util.convert.EncryptUtil;
-import cn.bitterfree.api.common.util.media.FileResourceUtil;
 import cn.bitterfree.api.common.util.media.MediaUtil;
 import cn.bitterfree.api.domain.center.model.vo.TestFileVO;
 import cn.bitterfree.api.domain.login.model.vo.LoginVO;
@@ -20,7 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
