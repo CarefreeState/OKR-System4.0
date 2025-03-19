@@ -207,3 +207,7 @@ secure:
     urls:
       # 根据 userId 生成 jwt
       - /jwt/{userId}
+
+testdoc:
+  root: /root/okr/testdoc
+  images: ${testdoc.root}/images/automation

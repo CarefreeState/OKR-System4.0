@@ -4,7 +4,6 @@ import cn.bitterfree.api.common.constants.DateTimeConstants;
 import cn.hutool.core.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -20,11 +19,11 @@ import java.util.concurrent.TimeUnit;
 public class DateTimeUtil {
 
     public static String getDateFormat(Date date) {
-        return Optional.ofNullable(date).map(d -> new SimpleDateFormat(DateTimeConstants.DATE_TIME_PATTERN).format(d)).orElse(null);
+        return Optional.ofNullable(date).map(DateTimeConstants.DATE_TIME_FORMAT::format).orElse(null);
     }
 
     public static String getOnlyDateFormat(Date date) {
-        return Optional.ofNullable(date).map(d -> new SimpleDateFormat(DateTimeConstants.DATE_PATTERN).format(d)).orElse(null);
+        return Optional.ofNullable(date).map(DateTimeConstants.DATE_FORMAT::format).orElse(null);
     }
 
     public static Date beginOfDay(Date date) {

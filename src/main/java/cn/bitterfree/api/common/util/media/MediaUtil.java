@@ -1,14 +1,20 @@
 package cn.bitterfree.api.common.util.media;
 
 import cn.bitterfree.api.common.exception.GlobalServiceException;
+import cn.bitterfree.api.common.util.convert.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,6 +62,16 @@ public class MediaUtil {
         } catch (IOException e) {
             throw new GlobalServiceException(e.getMessage());
         }
+    }
+
+    public static Stream<File> getFiles(String path) {
+        File dir = new File(path);
+        if (dir.exists() && dir.isDirectory()) {
+            // 获取目录下的所有文件和子目录
+            File[] files = dir.listFiles();
+            return ObjectUtil.stream(files).filter(Objects::nonNull);
+        }
+        return Stream.empty();
     }
 
 }

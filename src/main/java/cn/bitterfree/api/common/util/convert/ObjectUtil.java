@@ -75,6 +75,13 @@ public class ObjectUtil {
         return Optional.ofNullable(collection).stream().flatMap(Collection::stream);
     }
 
+    public static <T> Stream<T> stream(T[] arr) {
+        return Optional.ofNullable(arr)
+                .map(Arrays::stream)
+                .stream()
+                .flatMap(stream -> stream);
+    }
+
     public static <T> Stream<T> nonNullstream(Collection<T> collection) {
         return stream(collection).filter(Objects::nonNull);
     }
@@ -99,7 +106,7 @@ public class ObjectUtil {
     }
 
     public static boolean noneIsNull(Object... objects) {
-        return Arrays.stream(objects).noneMatch(Objects::isNull);
+        return stream(objects).noneMatch(Objects::isNull);
     }
 
     public static <T> T randomOne(List<T> list) {
