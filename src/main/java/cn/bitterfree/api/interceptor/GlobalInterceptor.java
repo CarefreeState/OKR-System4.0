@@ -34,12 +34,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
     private final AuthorizationPreHandlerChain authorizationPreHandlerChain;
     private final AfterHandlerChain afterHandlerChain;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 忽略 OPTIONS 请求
-        if(HttpMethod.OPTIONS.name().equals(request.getMethod())) {
-            return Boolean.TRUE;
-        }
+    public void preHandleChain(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 执行初始化认拦截参数 pre 链
         initPreHandlerChain.handle(request, response, handler);
         // 若没有拦截参数，则无法访问接口（这种情况的出现，代表这个接口并没有在配置文件里自定义配置，也没有目标方法的 Intercept 注解）
@@ -57,14 +52,39 @@ public class GlobalInterceptor implements HandlerInterceptor {
         if(!InterceptorContext.isAuthorized()) {
             throw new GlobalServiceException(GlobalServiceStatusCode.USER_NO_AUTHORIZED);
         }
+    }
+
+    public void afterHandleChain(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        // 执行 after 链
+        afterHandlerChain.handle(request, response, handler);
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 忽略 OPTIONS 请求
+        if(HttpMethod.OPTIONS.name().equals(request.getMethod())) {
+            return Boolean.TRUE;
+        }
+        try {
+            preHandleChain(request, response, handler);
+        } catch (Throwable t) {
+            log.error("前置链执行失败 {} ", t.getMessage());
+            // 如果抛异常，则不会触发后置方法了，这里需要手动执行后置链！不能放 finally 里面！
+            afterHandleChain(request, response, handler);
+            throw  t;
+        }
         // 上述操作若无抛出异常则认为认证授权通过
         log.info("允许本次请求访问此接口");
         return Boolean.TRUE;
     }
 
     @Override
+    /**
+     * 这个方法是有执行条件的，必须 preHandle 方法执行完毕并返回 true
+     * 所以平时在
+     */
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         // 执行 after 链
-        afterHandlerChain.handle(request, response, handler);
+        afterHandleChain(request, response, handler);
     }
 }

@@ -35,8 +35,9 @@ public class UserTypeAuthorizationPreHandler extends InterceptorHandler {
             UserType userType = user.getUserType();
             boolean isValid = ObjectUtil.distinctNonNullStream(InterceptorContext.getInterceptProperties().getPermit())
                     .anyMatch(type -> type.equals(userType));
+            log.info("对当前用户授权 {}", user);
             if (Boolean.TRUE.equals(isValid)) {
-                log.info("当前用户授权成功 {}", user);
+                log.info("当前用户授权成功");
                 InterceptorContext.setIsAuthorized(Boolean.TRUE);
             }
         } catch (Exception e) {
