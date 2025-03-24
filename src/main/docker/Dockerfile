@@ -10,7 +10,7 @@ EXPOSE 9999
 ENV TZ=Asia/Shanghai
 
 # 如果 java 字体有问题，构建镜像时需要下载 👇（因为有些 jdk 这方面有点问题）
-# RUN yum install fontconfig
+# RUN yum install fontconfig -y
 WORKDIR /root/okr
 
 # S1:S2:E = 1:1:6，适当降低了 Eden 区的大小
