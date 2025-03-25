@@ -140,7 +140,7 @@ public class OkrMedalMessageListener {
     public void stayTrueBeginningMedalMessageListener(OkrInitialize okrInitialize) {
         MedalType medalType = MedalType.STAY_TRUE_BEGINNING;
         Long medalId = medalType.getMedalId();
-        // 判断是否是第一次指定 OKR
+        // 判断是否是第一次制定 OKR
         Long userId = okrInitialize.getUserId();
         UserMedal dbUserMedal = userMedalService.getUserMedal(userId, medalId);
         if(Objects.isNull(dbUserMedal)) {
