@@ -89,7 +89,7 @@ resource:
     patten: /media/** # 路由前缀
     location: file:D:/media/ # 本地存储的根路径
   compression:
-    threshold: 65536
+    threshold: 65536 # 64KB
   upload:
     max-file-size: 20
     max-request-size: 100
