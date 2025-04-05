@@ -32,14 +32,15 @@
 
     <select id="getTeamMembers" parameterType="java.lang.Long" resultType="cn.bitterfree.api.domain.okr.model.vo.TeamMemberVO">
         select
-            tp.id, tp.user_id, tp.create_time, u.nickname, u.email, u.phone, u.photo
+            tp.id, tp.user_id, tp.create_time, u.nickname, u.email, u.phone, u.photo, t2.id sub_team_id
         from
-            team_okr t, team_personal_okr tp, user u
+            team_okr t
+            left join team_personal_okr tp on tp.team_id = t.id and tp.is_deleted = 0 and t.is_deleted = 0
+            left join user u on tp.user_id = u.id and u.is_deleted = 0 and tp.is_deleted = 0
+            left join team_okr t2 on t2.parent_team_id = t.id and t2.manager_id = u.id and u.is_deleted = 0 and t2.is_deleted = 0
         where
             t.id = #{id,jdbcType=BIGINT}
-          and t.is_deleted = 0 and tp.is_deleted = 0 and u.is_deleted = 0
-          and t.id = tp.team_id
-          and tp.user_id = u.id
+          and t.is_deleted = 0
           and u.id != t.manager_id
         order by tp.create_time desc
     </select>

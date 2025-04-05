@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created With Intellij IDEA
@@ -72,11 +71,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Boolean haveExtendTeam(Long teamId, Long userId) {
-        TeamOkr teamOkr = Db.lambdaQuery(TeamOkr.class)
+        return !Db.lambdaQuery(TeamOkr.class)
                 .eq(TeamOkr::getParentTeamId, teamId)
                 .eq(TeamOkr::getManagerId, userId)
-                .one();
-        return Objects.nonNull(teamOkr);
+                .list()
+                .isEmpty();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cn.bitterfree.api.domain.okr.model.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -44,6 +45,11 @@ public class TeamMemberVO {
     @TableField("create_time")
     @Schema(description = "加入时间")
     private Date createTime;
+
+    @TableField("sub_team_id")
+    @JsonIgnore
+    @Schema(description = "子团队 id")
+    private Boolean subTeamId;
 
     @Schema(description = "是否有子团队")
     private Boolean isExtend;

@@ -43,7 +43,7 @@ public class RedisLock {
                            final Long timeout, final TimeUnit timeUnit) throws InterruptedException {
         String key = rLock.getName();
         log.info("尝试获取锁 {}, wait {} {}, timeout {} {}", key, wait, timeUnit, timeout, timeUnit);
-        boolean flag = rLock.tryLock(wait, timeout, timeUnit);
+        boolean flag = rLock.tryLock(wait, timeout, timeUnit); // 显示指定超时时间（未启动续期）
         if(Boolean.TRUE.equals(flag)) {
             log.info("尝试获取锁 {} 成功", key);
         } else {

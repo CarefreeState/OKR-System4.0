@@ -118,7 +118,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
         Db.lambdaQuery(TeamPersonalOkr.class)
                 .eq(TeamPersonalOkr::getTeamId, teamId)
                 .eq(TeamPersonalOkr::getUserId, userId)
-                .oneOpt().orElseThrow(() ->
+                .list().stream().findFirst().orElseThrow(() ->
                         new GlobalServiceException(GlobalServiceStatusCode.NON_TEAM_MEMBER));
         // 判断用户是否管理着父亲节点为 teamId 的团队 OKR
         Boolean isExtend = memberService.haveExtendTeam(teamId, userId);
@@ -281,6 +281,7 @@ public class TeamOkrServiceImpl extends ServiceImpl<TeamOkrMapper, TeamOkr>
                 })
                 .collect(Collectors.toSet());
         // 更新
+        // 这种情况允许一个人一棵团队树下管理多个团队
         this.lambdaUpdate()
                 .eq(TeamOkr::getManagerId, userId)
                 .set(TeamOkr::getManagerId, mainUserId)

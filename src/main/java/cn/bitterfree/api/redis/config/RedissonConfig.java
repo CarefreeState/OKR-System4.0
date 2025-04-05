@@ -42,6 +42,7 @@ public class RedissonConfig {
                 .setPassword(Optional.ofNullable(password).filter(StringUtils::hasText).orElse(null)) // 设置密码
                 .setDatabase(database) // 设置数据库索引
         ;
+//        config.setLockWatchdogTimeout(); // 设置看门狗（但如果在 tryLock 的时候指定 timeout，就不启动看门狗）
         return Redisson.create(config);
     }
 

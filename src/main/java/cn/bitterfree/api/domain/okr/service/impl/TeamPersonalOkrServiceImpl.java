@@ -27,8 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
 * @author 马拉圈
@@ -129,6 +128,7 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
                 .map(uid -> OkrConstants.USER_CORE_MAP + uid)
                 .toList();
         // 更新
+        // 这种情况允许一个人存在一棵团队树下
         this.lambdaUpdate()
                 .eq(TeamPersonalOkr::getUserId, userId)
                 .set(TeamPersonalOkr::getUserId, mainUserId)
@@ -150,12 +150,19 @@ public class TeamPersonalOkrServiceImpl extends ServiceImpl<TeamPersonalOkrMappe
     public List<TeamMemberVO> getTeamMembers(Long id) {
         // 查询团队成员列表
         List<TeamMemberVO> teamMembers = teamPersonalOkrMapper.getTeamMembers(id);
+        Set<Long> hash = new HashSet<>();
+        List<TeamMemberVO> ret = new ArrayList<>();
+        // 去重
         teamMembers.stream().parallel().forEach(teamMemberVO -> {
             Long userId = teamMemberVO.getUserId();
-            teamMemberVO.setIsExtend(memberService.haveExtendTeam(id, userId));
+            if(!hash.contains(userId)) {
+                teamMemberVO.setIsExtend(Objects.nonNull(teamMemberVO.getSubTeamId()));
+                hash.add(userId);
+                ret.add(teamMemberVO);
+            }
         });
-        log.info("查询团队 {} 的成员列表 : {} 行", id, teamMembers.size());
-        return teamMembers;
+        log.info("查询团队 {} 的成员列表 : {} 行", id, ret.size());
+        return ret;
     }
 
 

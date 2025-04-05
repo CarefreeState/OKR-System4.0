@@ -54,12 +54,10 @@ public class QRCodeServiceImpl implements QRCodeService {
 
     @Override
     public void deleteTeamNameQRCodeCache(Long teamId) {
-        Arrays.stream(QRCodeType.values()).map(type -> String.format(QRCodeConstants.TEAM_INVITE_QR_CODE_MAP, type.getType(), teamId))
+        Arrays.stream(QRCodeType.values()).map(type -> String.format(QRCodeConstants.TEAM_INVITE_QR_CODE_MAP, type, teamId))
                 .forEach(redisKey -> {
-                    redisCache.getObject(redisKey, String.class).ifPresent(qrCode -> {
-                        redisCache.deleteObject(qrCode);
-                        fileMediaService.remove(qrCode);
-                    });
+                    redisCache.getObject(redisKey, String.class).ifPresent(fileMediaService::remove);
+                    redisCache.deleteObject(redisKey);
                 });
     }
 
