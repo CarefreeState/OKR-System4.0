@@ -13,6 +13,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +39,23 @@ public class UserMergeHandlerChain extends UserMergeHandler implements Initializ
     @Override
     @Transactional
     public List<String> handle(Long mainUserId, Long userId) {
-        // 对用户 id 进行加锁（通过 timeout 的方式防止死锁）
+        if(mainUserId.equals(userId)) {
+            return Collections.emptyList();
+        }
+//        // 对用户 id 进行加锁（按照大小顺序加锁的方式避免死锁）
+//        redisLock.tryLockDoSomething(UserBindingConstants.USER_BINDING_ID_LOCK + Math.min(mainUserId, userId), () -> {
+//            redisLock.tryLockDoSomething(UserBindingConstants.USER_BINDING_ID_LOCK + Math.max(mainUserId, userId), () -> {
+//                log.info("开始合并用户多账号 {} <- {}", mainUserId, userId);
+//                List<String> redisKeys = super.doNextHandler(mainUserId, userId);
+//                log.info("用户多账号 {} <- {} 合并完毕，需删除缓存 {}！", mainUserId, userId, redisKeys);
+//                redisCache.deleteObjects(redisKeys);
+//                // 缓存 userId -> mainUserId 的映射
+//                log.info("设置 {} -> {} 的映射", userId, mainUserId);
+//                redisCache.setObject(UserIdConstants.USER_ID_REDIRECT + userId, mainUserId,
+//                        jwtProperties.getTtl(), jwtProperties.getUnit());
+//            }, () -> {});
+//        }, () -> {});
+        // 对用户 id 进行加锁（通过 timeout 的方式避免死锁）
         redisLock.tryLockDoSomething(UserBindingConstants.USER_BINDING_ID_LOCK + mainUserId, () -> {
             redisLock.tryLockDoSomething(UserBindingConstants.USER_BINDING_ID_LOCK + userId, () -> {
                 log.info("开始合并用户多账号 {} <- {}", mainUserId, userId);
