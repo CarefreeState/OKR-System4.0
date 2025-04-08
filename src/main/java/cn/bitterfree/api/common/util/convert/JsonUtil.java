@@ -16,6 +16,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.StringUtils;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created With Intellij IDEA
@@ -60,6 +62,18 @@ public class JsonUtil {
         }
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new GlobalServiceException(e.getMessage());
+        }
+    }
+
+    public static <T> List<T> parseList(String json, Class<T[]> clazz) {
+        // json 为空串，返回 null
+        if (!StringUtils.hasText(json) || !clazz.isArray()) {
+            return null;
+        }
+        try {
+            return Arrays.asList(OBJECT_MAPPER.readValue(json, clazz));
         } catch (Exception e) {
             throw new GlobalServiceException(e.getMessage());
         }
