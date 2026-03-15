@@ -36,7 +36,7 @@ public class XxlJobAutoRegister implements ApplicationListener<ApplicationStarte
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        //注册执行器
+        //注册执行器（此方法失效，需要事先创建好！）
         jobGroupService.saveOrUpdateJobGroup();
         //注册任务
         XxlJobGroup xxlJobGroup = jobGroupService.getJobGroup(0);

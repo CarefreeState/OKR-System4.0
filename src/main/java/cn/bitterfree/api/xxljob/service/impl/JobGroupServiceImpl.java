@@ -51,9 +51,11 @@ public class JobGroupServiceImpl implements JobGroupService {
             String cookie = XxlJobCookie.getXxlJobCookie().getCookie();
             ObjectUtil.nonNullstream(getJobGroup()).findFirst().ifPresentOrElse(group -> {
                 jobGroup.setId(group.getId());
-                jobGroupClient.update(cookie, jobGroup);
+                Object o = jobGroupClient.update(cookie, jobGroup);
+                log.info("mms XXL-JOB 更新任务组 {} 成功，返回值 {}", jobGroup, o);
             }, () -> {
-                jobGroupClient.save(cookie, jobGroup);
+                Object o = jobGroupClient.save(cookie, jobGroup);
+                log.info("mms XXL-JOB 添加任务组 {} 成功，返回值 {}", jobGroup, o);
             });
         }, () -> {});
     }

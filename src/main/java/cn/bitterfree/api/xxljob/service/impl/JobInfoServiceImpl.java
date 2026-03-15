@@ -39,9 +39,11 @@ public class JobInfoServiceImpl implements JobInfoService {
                     .findFirst()
                     .ifPresentOrElse(info -> {
                         xxlJobInfo.setId(info.getId());
-                        jobInfoClient.update(cookie, xxlJobInfo);
+                        Object o = jobInfoClient.update(cookie, xxlJobInfo);
+                        log.info("mms XXL-JOB 更新任务 {} 成功，返回值 {}", xxlJobInfo, o);
                     }, () -> {
-                        jobInfoClient.add(cookie, xxlJobInfo);
+                        Object o = jobInfoClient.add(cookie, xxlJobInfo);
+                        log.info("mms XXL-JOB 添加任务 {} 成功，返回值 {}", xxlJobInfo, o);
                     });
         }, () -> {});
     }

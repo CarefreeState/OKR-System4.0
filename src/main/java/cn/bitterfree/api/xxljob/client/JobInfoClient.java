@@ -5,6 +5,7 @@ import cn.bitterfree.api.xxljob.model.vo.InfoPageListVO;
 import com.xxl.job.core.biz.model.ReturnT;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,10 +30,16 @@ public interface JobInfoClient {
                             @RequestParam("executorHandler") String executorHandler,
                             @RequestParam("author") String author);
 
-    @PostMapping("/add")
+    @PostMapping(
+            value = "/add",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    )
     ReturnT<String> add(@RequestHeader(HttpHeaders.COOKIE) String cookie, XxlJobInfo jobInfo);
 
-    @PostMapping("/update")
+    @PostMapping(
+            value = "/update",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+    )
     ReturnT<String> update(@RequestHeader(HttpHeaders.COOKIE) String cookie, XxlJobInfo jobInfo);
 
 }
